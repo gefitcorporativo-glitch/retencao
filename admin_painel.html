@@ -415,6 +415,85 @@ tr:hover td{background:rgba(255,255,255,.02)}
   </div>
 </div>
 
+<!-- MODAL EDITAR ACADEMIA -->
+<div class="modal-bg" id="modalEditAcad">
+  <div class="modal">
+    <div class="modal-title">Editar Academia</div>
+    <input type="hidden" id="eaNome_id">
+    <div class="modal-field"><label>Nome *</label><input type="text" id="eaNome"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="modal-field"><label>Cidade *</label><input type="text" id="eaCidade"></div>
+      <div class="modal-field"><label>Estado</label>
+        <select id="eaEstado">
+          <option>SP</option><option>RJ</option><option>MG</option><option>RS</option>
+          <option>PR</option><option>SC</option><option>BA</option><option>GO</option>
+          <option>DF</option><option>PE</option><option>CE</option><option>MA</option>
+          <option>MT</option><option>MS</option><option>ES</option><option>PA</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="fecharModal('modalEditAcad')">Cancelar</button>
+      <button class="btn-save" onclick="salvarEditAcad()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ADICIONAR TREINADOR -->
+<div class="modal-bg" id="modalAddTreinador">
+  <div class="modal">
+    <div class="modal-title">Adicionar Treinador</div>
+    <input type="hidden" id="atAcadId">
+    <div class="modal-field"><label>Academia</label><input type="text" id="atAcadNome" readonly style="color:var(--muted)"></div>
+    <div class="modal-field"><label>Nome completo *</label><input type="text" id="atNome" placeholder="Ex: Ana Costa"></div>
+    <div class="modal-field"><label>E-mail *</label><input type="email" id="atEmail" placeholder="ana@academia.com.br"></div>
+    <div class="modal-field"><label>Tipo</label>
+      <select id="atTipo">
+        <option value="interno">Interno</option>
+        <option value="externo">Externo / Personal</option>
+      </select>
+    </div>
+    <div class="modal-field"><label>Senha *</label>
+      <div style="display:flex;gap:8px">
+        <input type="text" id="atSenha" placeholder="Mínimo 8 caracteres" style="flex:1;background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px 12px;color:var(--text);font-size:13px;outline:none;font-family:'DM Sans',sans-serif">
+        <button onclick="gerarSenhaModal('atSenha')" style="padding:10px 14px;border-radius:8px;border:1px solid var(--border2);background:#111;color:var(--muted);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">🎲 Gerar</button>
+      </div>
+    </div>
+    <div id="atResultado" style="display:none;background:var(--green-dim);border:1px solid var(--green-border);border-radius:10px;padding:12px;margin-top:10px;font-size:12px;line-height:1.8">
+      <div style="color:var(--green);font-weight:700;margin-bottom:4px">✅ Treinador criado!</div>
+      <div id="atCredenciais"></div>
+      <button onclick="copiarTexto(document.getElementById('atCredenciais').innerText)" style="margin-top:8px;padding:6px 12px;border-radius:6px;border:1px solid var(--green-border);background:transparent;color:var(--green);font-size:11px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">📋 Copiar</button>
+    </div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="fecharModal('modalAddTreinador')">Fechar</button>
+      <button class="btn-save" id="atBtnSalvar" onclick="salvarNovoTreinador()">Criar treinador</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL REDEFINIR SENHA -->
+<div class="modal-bg" id="modalSenha">
+  <div class="modal">
+    <div class="modal-title">Redefinir Senha</div>
+    <input type="hidden" id="rsSenhaEmail">
+    <div class="modal-field"><label>Usuário</label><input type="text" id="rsNomeDisplay" readonly style="color:var(--muted)"></div>
+    <div class="modal-field"><label>E-mail</label><input type="text" id="rsEmailDisplay" readonly style="color:var(--muted)"></div>
+    <div class="modal-field"><label>Nova senha *</label>
+      <div style="display:flex;gap:8px">
+        <input type="text" id="rsSenha" placeholder="Mínimo 8 caracteres" style="flex:1;background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px 12px;color:var(--text);font-size:13px;outline:none;font-family:'DM Sans',sans-serif">
+        <button onclick="gerarSenhaModal('rsSenha')" style="padding:10px 14px;border-radius:8px;border:1px solid var(--border2);background:#111;color:var(--muted);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">🎲 Gerar</button>
+      </div>
+    </div>
+    <div style="background:var(--yellow-dim);border:1px solid rgba(234,179,8,.25);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--yellow);margin-top:4px;line-height:1.5">
+      ⚠️ A nova senha será enviada via Supabase. O usuário precisará fazer logout e login novamente.
+    </div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="fecharModal('modalSenha')">Cancelar</button>
+      <button class="btn-save" onclick="salvarNovaSenha()">Redefinir senha</button>
+    </div>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 // ── CREDENCIAIS ADMIN ─────────────────────────────────────────
@@ -424,6 +503,7 @@ const ADMIN_PASS = 'QG90admin2026';
 
 const SUPABASE_URL  = 'https://xpvedihpejivnkssryhc.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhwdmVkaWhwZWppdm5rc3NyeWhjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MzM2OTEsImV4cCI6MjA5NTMwOTY5MX0.23eRl7PSoak-YGS91N8lBLIRC0MqHRh5Su1r1Zr6CC4';
+const SUPABASE_SERVICE = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhwdmVkaWhwZWppdm5rc3NyeWhjIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3OTczMzY5MSwiZXhwIjoyMDk1MzA5NjkxfQ.9C-JwXbqyWC4cXHTNet20fOPfKI8rG0jDcZ_pQyLp7k';
 
 const PLANOS = {
   piloto: { label:'Piloto', valor: 0 },
@@ -558,6 +638,8 @@ function renderAcademias(){
       <td style="color:var(--muted);font-size:11px">${data}</td>
       <td>
         <button class="btn-action" onclick="abrirModalPlano('${a.id}','${a.nome}','${a.plano||'piloto'}')">Plano</button>
+        <button class="btn-action" onclick="abrirModalEditAcad('${a.id}','${a.nome}','${a.cidade||''}','${a.estado||'SP'}')">Editar</button>
+        <button class="btn-action" onclick="abrirModalAddTreinador('${a.id}','${a.nome}')">+ Treinador</button>
         <button class="btn-action" onclick="verDetalhesAcademia('${a.id}')">Ver</button>
       </td>
     </tr>
@@ -633,6 +715,7 @@ function renderUsuarios(){
       <td><span class="badge ${u.tipo||'interno'}">${u.tipo||'—'}</span></td>
       <td>
         <button class="btn-action" onclick="copiarEmail('${u.email}')">Copiar e-mail</button>
+        <button class="btn-action" onclick="abrirModalSenha('${u.nome}','${u.email}')">🔑 Senha</button>
       </td>
     </tr>`).join('');
 }
@@ -773,6 +856,135 @@ function showTab(id, btn){
   document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
   document.getElementById('panel-'+id).classList.add('active');
   btn.classList.add('active');
+}
+
+// ── EDITAR ACADEMIA ───────────────────────────────────────────
+function abrirModalEditAcad(id, nome, cidade, estado){
+  document.getElementById('eaNome_id').value = id;
+  document.getElementById('eaNome').value = nome;
+  document.getElementById('eaCidade').value = cidade;
+  document.getElementById('eaEstado').value = estado;
+  document.getElementById('modalEditAcad').classList.add('open');
+}
+
+async function salvarEditAcad(){
+  const id = document.getElementById('eaNome_id').value;
+  const nome = document.getElementById('eaNome').value.trim();
+  const cidade = document.getElementById('eaCidade').value.trim();
+  const estado = document.getElementById('eaEstado').value;
+
+  if(!nome||!cidade){ showToast('Preencha nome e cidade'); return; }
+
+  const {error} = await sb.from('academias').update({nome,cidade,estado}).eq('id',id);
+  if(error){ showToast('Erro: '+error.message); return; }
+
+  showToast('✅ Academia atualizada!');
+  fecharModal('modalEditAcad');
+  await carregarTudo();
+}
+
+// ── ADICIONAR TREINADOR ───────────────────────────────────────
+function abrirModalAddTreinador(acadId, acadNome){
+  document.getElementById('atAcadId').value = acadId;
+  document.getElementById('atAcadNome').value = acadNome;
+  document.getElementById('atNome').value = '';
+  document.getElementById('atEmail').value = '';
+  document.getElementById('atSenha').value = '';
+  document.getElementById('atResultado').style.display = 'none';
+  document.getElementById('atBtnSalvar').style.display = 'inline-block';
+  document.getElementById('modalAddTreinador').classList.add('open');
+}
+
+async function salvarNovoTreinador(){
+  const acadId = document.getElementById('atAcadId').value;
+  const nome = document.getElementById('atNome').value.trim();
+  const email = document.getElementById('atEmail').value.trim();
+  const senha = document.getElementById('atSenha').value.trim();
+  const tipo = document.getElementById('atTipo').value;
+
+  if(!nome){ showToast('Preencha o nome'); return; }
+  if(!email){ showToast('Preencha o e-mail'); return; }
+  if(!senha||senha.length<8){ showToast('Senha mínimo 8 caracteres'); return; }
+
+  document.getElementById('atBtnSalvar').disabled = true;
+  document.getElementById('atBtnSalvar').textContent = 'Criando...';
+
+  try {
+    const {data:tAuth, error:tErr} = await sb.auth.signUp({
+      email, password:senha,
+      options:{data:{nome, role:'treinador', academia_id:acadId}}
+    });
+    if(tErr) throw new Error(tErr.message);
+
+    if(tAuth.user?.id){
+      await sb.from('treinadores').insert([{
+        user_id:tAuth.user.id, academia_id:acadId, nome, email, tipo
+      }]);
+    }
+
+    document.getElementById('atCredenciais').innerHTML =
+      `E-mail: ${email}\nSenha: ${senha}\nURL: https://gefitcorporativo-glitch.github.io/retencao/`;
+    document.getElementById('atResultado').style.display = 'block';
+    document.getElementById('atBtnSalvar').style.display = 'none';
+    await carregarTudo();
+    showToast('✅ Treinador criado!');
+
+  } catch(err){
+    showToast('Erro: '+err.message);
+    document.getElementById('atBtnSalvar').disabled = false;
+    document.getElementById('atBtnSalvar').textContent = 'Criar treinador';
+  }
+}
+
+// ── REDEFINIR SENHA ───────────────────────────────────────────
+function abrirModalSenha(nome, email){
+  document.getElementById('rsNomeDisplay').value = nome;
+  document.getElementById('rsEmailDisplay').value = email;
+  document.getElementById('rsSenhaEmail').value = email;
+  document.getElementById('rsSenha').value = '';
+  document.getElementById('modalSenha').classList.add('open');
+}
+
+async function salvarNovaSenha(){
+  const email = document.getElementById('rsSenhaEmail').value;
+  const novaSenha = document.getElementById('rsSenha').value.trim();
+
+  if(!novaSenha||novaSenha.length<8){ showToast('Senha mínimo 8 caracteres'); return; }
+
+  try {
+    // Usar cliente admin com service role key
+    const sbAdmin = window.supabase.createClient(SUPABASE_URL, SUPABASE_SERVICE);
+    
+    // Buscar UID pelo email
+    const {data: users} = await sbAdmin.auth.admin.listUsers();
+    const user = users?.users?.find(u => u.email === email);
+    
+    if(!user){ showToast('Usuário não encontrado'); return; }
+    
+    const {error} = await sbAdmin.auth.admin.updateUserById(user.id, {password: novaSenha});
+    
+    if(error) throw new Error(error.message);
+
+    showToast('✅ Senha redefinida com sucesso!');
+    fecharModal('modalSenha');
+
+  } catch(err){
+    console.error(err);
+    showToast('Erro: '+err.message);
+  }
+}
+
+function gerarSenhaModal(inputId){
+  const chars = 'ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789@#!';
+  let pw = '';
+  for(let i=0;i<10;i++) pw += chars[Math.floor(Math.random()*chars.length)];
+  const el = document.getElementById(inputId);
+  if(el) el.value = pw;
+}
+
+function copiarTexto(texto){
+  navigator.clipboard.writeText(texto);
+  showToast('✅ Copiado!');
 }
 
 // ── NOVA ACADEMIA ─────────────────────────────────────────────
