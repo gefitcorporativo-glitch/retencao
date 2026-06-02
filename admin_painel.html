@@ -415,13 +415,20 @@ tr:hover td{background:rgba(255,255,255,.02)}
   </div>
 </div>
 
-<!-- MODAL EDITAR ACADEMIA -->
-<div class="modal-bg" id="modalEditAcad">
-  <div class="modal">
-    <div class="modal-title">Editar Academia</div>
+<!-- MODAL GERENCIAR ACADEMIA (completo) -->
+<div class="modal-bg" id="modalEditAcad" style="align-items:flex-start;padding:20px;overflow-y:auto">
+  <div class="modal" style="max-width:620px;width:100%;margin:auto">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+      <div class="modal-title" id="editAcadTitle" style="margin:0">Gerenciar Academia</div>
+      <button onclick="fecharModal('modalEditAcad')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:20px">✕</button>
+    </div>
+
     <input type="hidden" id="eaNome_id">
+
+    <!-- Dados da academia -->
+    <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;margin-bottom:10px;display:flex;align-items:center;gap:8px">Dados da academia <span style="flex:1;height:1px;background:var(--border2);display:block"></span></div>
     <div class="modal-field"><label>Nome *</label><input type="text" id="eaNome"></div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px">
       <div class="modal-field"><label>Cidade *</label><input type="text" id="eaCidade"></div>
       <div class="modal-field"><label>Estado</label>
         <select id="eaEstado">
@@ -432,10 +439,45 @@ tr:hover td{background:rgba(255,255,255,.02)}
         </select>
       </div>
     </div>
-    <div class="modal-btns">
-      <button class="btn-cancel" onclick="fecharModal('modalEditAcad')">Cancelar</button>
-      <button class="btn-save" onclick="salvarEditAcad()">Salvar</button>
+    <div class="modal-field" style="margin-bottom:14px"><label>Plano</label>
+      <select id="eaPlano">
+        <option value="piloto">Piloto (gratuito)</option>
+        <option value="basico">Básico — R$ 150/mês</option>
+        <option value="pro">Pro — R$ 300/mês</option>
+      </select>
     </div>
+    <button onclick="salvarEditAcad()" class="btn-save" style="width:100%;padding:10px;margin-bottom:20px">Salvar dados da academia</button>
+
+    <!-- Usuários cadastrados -->
+    <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;margin-bottom:10px;display:flex;align-items:center;gap:8px">Usuários cadastrados <span style="flex:1;height:1px;background:var(--border2);display:block"></span></div>
+    <div id="eaUsuariosList" style="margin-bottom:16px"></div>
+
+    <!-- Adicionar novo usuário -->
+    <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;margin-bottom:10px;display:flex;align-items:center;gap:8px">Adicionar usuário <span style="flex:1;height:1px;background:var(--border2);display:block"></span></div>
+    <div style="background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:14px">
+      <div style="display:flex;gap:8px;margin-bottom:10px">
+        <button class="filter-btn active" id="novoUserTipo-treinador" onclick="selectNovoUserTipo('treinador')">Treinador</button>
+        <button class="filter-btn" id="novoUserTipo-gestor" onclick="selectNovoUserTipo('gestor')">Gestor</button>
+      </div>
+      <div class="modal-field"><label>Nome completo *</label><input type="text" id="nuNome" placeholder="Ex: Ana Costa"></div>
+      <div class="modal-field"><label>E-mail *</label><input type="email" id="nuEmail" placeholder="ana@academia.com.br"></div>
+      <div id="nuTipoWrap" class="modal-field"><label>Tipo</label>
+        <select id="nuTipo"><option value="interno">Interno</option><option value="externo">Externo / Personal</option></select>
+      </div>
+      <div class="modal-field"><label>Senha *</label>
+        <div style="display:flex;gap:8px">
+          <input type="text" id="nuSenha" placeholder="Mínimo 8 caracteres" style="flex:1;background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px 12px;color:var(--text);font-size:13px;outline:none;font-family:'DM Sans',sans-serif">
+          <button onclick="gerarSenhaModal('nuSenha')" style="padding:10px 14px;border-radius:8px;border:1px solid var(--border2);background:#111;color:var(--muted);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">🎲 Gerar</button>
+        </div>
+      </div>
+      <div id="nuResultado" style="display:none;background:var(--green-dim);border:1px solid var(--green-border);border-radius:8px;padding:10px;margin-bottom:10px;font-size:12px;line-height:1.8">
+        <div style="color:var(--green);font-weight:700;margin-bottom:4px">✅ Usuário criado!</div>
+        <div id="nuCredenciais" style="font-family:'DM Mono',monospace"></div>
+        <button onclick="copiarTexto(window._nuCredText||'')" style="margin-top:6px;padding:5px 10px;border-radius:6px;border:1px solid var(--green-border);background:transparent;color:var(--green);font-size:11px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">📋 Copiar</button>
+      </div>
+      <button id="nuBtnSalvar" onclick="salvarNovoUsuario()" class="btn-save" style="width:100%;padding:10px">Criar usuário</button>
+    </div>
+
   </div>
 </div>
 
@@ -858,82 +900,130 @@ function showTab(id, btn){
   btn.classList.add('active');
 }
 
-// ── EDITAR ACADEMIA ───────────────────────────────────────────
+// ── GERENCIAR ACADEMIA (completo) ─────────────────────────────
+let editAcadIdAtual = null;
+let novoUserTipoAtual = 'treinador';
+
 function abrirModalEditAcad(id, nome, cidade, estado){
+  editAcadIdAtual = id;
+  const acad = allAcademias.find(a=>a.id===id);
   document.getElementById('eaNome_id').value = id;
   document.getElementById('eaNome').value = nome;
   document.getElementById('eaCidade').value = cidade;
-  document.getElementById('eaEstado').value = estado;
+  document.getElementById('eaEstado').value = estado||'SP';
+  document.getElementById('eaPlano').value = acad?.plano||'piloto';
+  document.getElementById('editAcadTitle').textContent = nome;
+  // Reset form novo usuário
+  ['nuNome','nuEmail','nuSenha'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('nuResultado').style.display='none';
+  document.getElementById('nuBtnSalvar').disabled=false;
+  document.getElementById('nuBtnSalvar').textContent='Criar usuário';
+  document.getElementById('nuBtnSalvar').onclick=salvarNovoUsuario;
+  novoUserTipoAtual='treinador';
+  selectNovoUserTipo('treinador');
+  renderUsuariosAcademia(id);
   document.getElementById('modalEditAcad').classList.add('open');
 }
 
+function renderUsuariosAcademia(acadId){
+  const treinadores = allTreinadores.filter(t=>t.academia_id===acadId);
+  const gestores = allGestores.filter(g=>g.academia_id===acadId);
+  const todos = [];
+  treinadores.forEach(t=>{
+    const isGestor = gestores.some(g=>g.user_id===t.user_id);
+    todos.push({...t, perfil:'Treinador'+(isGestor?' + Gestor':'')});
+  });
+  gestores.forEach(g=>{
+    if(!treinadores.some(t=>t.user_id===g.user_id)){
+      todos.push({...g, perfil:'Gestor'});
+    }
+  });
+  const el = document.getElementById('eaUsuariosList');
+  if(!todos.length){
+    el.innerHTML='<div style="font-size:13px;color:var(--muted);padding:10px 0">Nenhum usuário cadastrado ainda.</div>';
+    return;
+  }
+  el.innerHTML = todos.map(u=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--card2);border:1px solid var(--border);border-radius:8px;margin-bottom:6px">
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600">${u.nome||'—'}</div>
+        <div style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace">${u.email||'—'}</div>
+        <div style="font-size:10px;color:var(--orange);margin-top:2px">${u.perfil}${u.tipo?' · '+u.tipo:''}</div>
+      </div>
+      <button onclick="abrirModalSenha('${u.nome}','${u.email}')" style="padding:5px 10px;border-radius:6px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">🔑 Senha</button>
+    </div>`).join('');
+}
+
+function selectNovoUserTipo(tipo){
+  novoUserTipoAtual = tipo;
+  ['treinador','gestor'].forEach(t=>{
+    const btn=document.getElementById('novoUserTipo-'+t);
+    if(btn) btn.classList.toggle('active',t===tipo);
+  });
+  const tipoWrap=document.getElementById('nuTipoWrap');
+  if(tipoWrap) tipoWrap.style.display=tipo==='treinador'?'flex':'none';
+}
+
 async function salvarEditAcad(){
-  const id = document.getElementById('eaNome_id').value;
-  const nome = document.getElementById('eaNome').value.trim();
-  const cidade = document.getElementById('eaCidade').value.trim();
-  const estado = document.getElementById('eaEstado').value;
-
-  if(!nome||!cidade){ showToast('Preencha nome e cidade'); return; }
-
-  const {error} = await sb.from('academias').update({nome,cidade,estado}).eq('id',id);
-  if(error){ showToast('Erro: '+error.message); return; }
-
+  const id=document.getElementById('eaNome_id').value;
+  const nome=document.getElementById('eaNome').value.trim();
+  const cidade=document.getElementById('eaCidade').value.trim();
+  const estado=document.getElementById('eaEstado').value;
+  const plano=document.getElementById('eaPlano').value;
+  if(!nome||!cidade){showToast('Preencha nome e cidade');return;}
+  const {error}=await sb.from('academias').update({nome,cidade,estado,plano}).eq('id',id);
+  if(error){showToast('Erro: '+error.message);return;}
   showToast('✅ Academia atualizada!');
-  fecharModal('modalEditAcad');
   await carregarTudo();
 }
 
-// ── ADICIONAR TREINADOR ───────────────────────────────────────
-function abrirModalAddTreinador(acadId, acadNome){
-  document.getElementById('atAcadId').value = acadId;
-  document.getElementById('atAcadNome').value = acadNome;
-  document.getElementById('atNome').value = '';
-  document.getElementById('atEmail').value = '';
-  document.getElementById('atSenha').value = '';
-  document.getElementById('atResultado').style.display = 'none';
-  document.getElementById('atBtnSalvar').style.display = 'inline-block';
-  document.getElementById('modalAddTreinador').classList.add('open');
-}
-
-async function salvarNovoTreinador(){
-  const acadId = document.getElementById('atAcadId').value;
-  const nome = document.getElementById('atNome').value.trim();
-  const email = document.getElementById('atEmail').value.trim();
-  const senha = document.getElementById('atSenha').value.trim();
-  const tipo = document.getElementById('atTipo').value;
-
-  if(!nome){ showToast('Preencha o nome'); return; }
-  if(!email){ showToast('Preencha o e-mail'); return; }
-  if(!senha||senha.length<8){ showToast('Senha mínimo 8 caracteres'); return; }
-
-  document.getElementById('atBtnSalvar').disabled = true;
-  document.getElementById('atBtnSalvar').textContent = 'Criando...';
-
+async function salvarNovoUsuario(){
+  const acadId=editAcadIdAtual;
+  const nome=document.getElementById('nuNome').value.trim();
+  const email=document.getElementById('nuEmail').value.trim();
+  const senha=document.getElementById('nuSenha').value.trim();
+  const tipo=document.getElementById('nuTipo')?.value||'interno';
+  const perfil=novoUserTipoAtual;
+  if(!nome){showToast('Preencha o nome');return;}
+  if(!email){showToast('Preencha o e-mail');return;}
+  if(!senha||senha.length<8){showToast('Senha mínimo 8 caracteres');return;}
+  const btn=document.getElementById('nuBtnSalvar');
+  btn.disabled=true; btn.textContent='Criando...';
   try {
-    const {data:tAuth, error:tErr} = await sb.auth.signUp({
-      email, password:senha,
-      options:{data:{nome, role:'treinador', academia_id:acadId}}
+    const {data:auth,error:authErr}=await sb.auth.signUp({
+      email,password:senha,
+      options:{data:{nome,role:perfil,academia_id:acadId}}
     });
-    if(tErr) throw new Error(tErr.message);
-
-    if(tAuth.user?.id){
-      await sb.from('treinadores').insert([{
-        user_id:tAuth.user.id, academia_id:acadId, nome, email, tipo
-      }]);
+    if(authErr) throw new Error(authErr.message);
+    const userId=auth.user?.id;
+    if(userId){
+      if(perfil==='treinador') await sb.from('treinadores').insert([{user_id:userId,academia_id:acadId,nome,email,tipo}]);
+      if(perfil==='gestor') await sb.from('gestores').insert([{user_id:userId,academia_id:acadId,nome,email}]);
     }
-
-    document.getElementById('atCredenciais').innerHTML =
-      `E-mail: ${email}\nSenha: ${senha}\nURL: https://gefitcorporativo-glitch.github.io/retencao/`;
-    document.getElementById('atResultado').style.display = 'block';
-    document.getElementById('atBtnSalvar').style.display = 'none';
+    const credText=`${perfil==='treinador'?'Treinador':'Gestor'}: ${nome}\nE-mail: ${email}\nSenha: ${senha}\nURL: https://gefitcorporativo-glitch.github.io/retencao/`;
+    window._nuCredText=credText;
+    document.getElementById('nuCredenciais').innerHTML=credText.replace(/\n/g,'<br>');
+    document.getElementById('nuResultado').style.display='block';
+    btn.textContent='+ Criar outro';
+    btn.disabled=false;
+    btn.onclick=()=>{
+      ['nuNome','nuEmail','nuSenha'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+      document.getElementById('nuResultado').style.display='none';
+      btn.textContent='Criar usuário'; btn.onclick=salvarNovoUsuario;
+    };
     await carregarTudo();
-    showToast('✅ Treinador criado!');
-
+    renderUsuariosAcademia(acadId);
+    showToast('✅ Usuário criado!');
   } catch(err){
     showToast('Erro: '+err.message);
-    document.getElementById('atBtnSalvar').disabled = false;
-    document.getElementById('atBtnSalvar').textContent = 'Criar treinador';
+    btn.disabled=false; btn.textContent='Criar usuário';
   }
+}
+
+// Botão + Treinador redireciona para Editar completo
+function abrirModalAddTreinador(acadId, acadNome){
+  const acad=allAcademias.find(a=>a.id===acadId);
+  abrirModalEditAcad(acadId,acadNome,acad?.cidade||'',acad?.estado||'SP');
 }
 
 // ── REDEFINIR SENHA ───────────────────────────────────────────
