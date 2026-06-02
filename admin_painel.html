@@ -990,9 +990,11 @@ async function salvarNovoUsuario(){
   const btn=document.getElementById('nuBtnSalvar');
   btn.disabled=true; btn.textContent='Criando...';
   try {
-    const {data:auth,error:authErr}=await sb.auth.signUp({
-      email,password:senha,
-      options:{data:{nome,role:perfil,academia_id:acadId}}
+    const sbAdmin = window.supabase.createClient(SUPABASE_URL, SUPABASE_SERVICE);
+    const {data:auth,error:authErr}=await sbAdmin.auth.admin.createUser({
+      email, password:senha,
+      email_confirm: true,
+      user_metadata:{nome, role:perfil, academia_id:acadId}
     });
     if(authErr) throw new Error(authErr.message);
     const userId=auth.user?.id;
@@ -1187,9 +1189,11 @@ async function naCadastrar(){
 
     // 2. Gestor
     naSetStep('naStep2','loading');
-    const {data:gAuth, error:gErr} = await sb.auth.signUp({
+    const sbAdmin2 = window.supabase.createClient(SUPABASE_URL, SUPABASE_SERVICE);
+    const {data:gAuth, error:gErr} = await sbAdmin2.auth.admin.createUser({
       email: gestorEmail, password: gestorSenha,
-      options:{data:{nome:gestorNome, role:'gestor', academia_id:academiaId}}
+      email_confirm: true,
+      user_metadata:{nome:gestorNome, role:'gestor', academia_id:academiaId}
     });
     if(gErr) throw new Error('Gestor: '+gErr.message);
     if(gAuth.user?.id){
@@ -1201,9 +1205,11 @@ async function naCadastrar(){
     // 3. Treinadores
     naSetStep('naStep3','loading');
     for(const t of naTreinadores){
-      const {data:tAuth, error:tErr} = await sb.auth.signUp({
+      const sbAdmin3 = window.supabase.createClient(SUPABASE_URL, SUPABASE_SERVICE);
+      const {data:tAuth, error:tErr} = await sbAdmin3.auth.admin.createUser({
         email:t.email, password:t.senha,
-        options:{data:{nome:t.nome, role:'treinador', academia_id:academiaId}}
+        email_confirm: true,
+        user_metadata:{nome:t.nome, role:'treinador', academia_id:academiaId}
       });
       if(tErr){ console.warn('Treinador err:', tErr.message); continue; }
       if(tAuth.user?.id){
