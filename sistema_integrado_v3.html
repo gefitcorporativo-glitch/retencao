@@ -2168,7 +2168,7 @@ function gerarQRCodeReal(plannerId){
   if(!qrContainer) return;
 
   const base = window.location.href.split('/').slice(0,-1).join('/');
-  const appUrl = `${base}/sistema_integrado_v3.html?planner=${plannerId}`;
+  const appUrl = `${base}/app_aluno.html?planner=${plannerId}`;
 
   // Usar QR Code API gratuita
   const qrImg = document.createElement('img');
