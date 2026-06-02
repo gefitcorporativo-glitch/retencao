@@ -308,8 +308,12 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;max
       <div class="nps-pergunta">
         <div class="nps-num">3 de 5 · Avaliação do treinador</div>
         <div class="nps-texto">Como você avalia o profissionalismo e o conhecimento do seu treinador nessa consultoria?</div>
-        <div style="display:flex;gap:6px;justify-content:center;font-size:24px;margin-top:4px">
-          ${[1,2,3,4,5].map(n=>`<span style="cursor:pointer" onclick="setEstrelas(${n})" id="star-${n}">☆</span>`).join('')}
+        <div style="display:flex;gap:10px;justify-content:center;font-size:28px;margin-top:8px" id="starsRow">
+          <span style="cursor:pointer" onclick="setEstrelas(1)" id="star-1">☆</span>
+          <span style="cursor:pointer" onclick="setEstrelas(2)" id="star-2">☆</span>
+          <span style="cursor:pointer" onclick="setEstrelas(3)" id="star-3">☆</span>
+          <span style="cursor:pointer" onclick="setEstrelas(4)" id="star-4">☆</span>
+          <span style="cursor:pointer" onclick="setEstrelas(5)" id="star-5">☆</span>
         </div>
       </div>
 
@@ -486,7 +490,25 @@ function renderApp(){
   document.getElementById('treinoTitulo').textContent = ehDiaTreino ? '💪 Dia de treino!' : '😴 Dia de descanso';
   document.getElementById('treinoInfo').textContent = ehDiaTreino ?
     `Programa: ${getProgramaNome(plannerData.programa)} · Foco: ${area.name}` :
-    'Aproveite para descansar e recuperar. Hidrate-se bem!';
+    'Dia de descanso no seu plano. Mas se quiser treinar, registre como treino adicional!';
+
+  // Botão de treino adicional para dias de descanso
+  if(!ehDiaTreino){
+    const treinoCard = document.getElementById('treinoCard');
+    const extraBtn = document.createElement('button');
+    extraBtn.id = 'btnTreinoExtra';
+    extraBtn.style.cssText = 'width:100%;margin-top:10px;padding:10px;border-radius:8px;border:1px solid rgba(96,165,250,.4);background:rgba(96,165,250,.1);color:#60A5FA;font-size:13px;font-weight:700;cursor:pointer;font-family:"DM Sans",sans-serif;transition:all .2s';
+    extraBtn.textContent = '⚡ Marcar treino adicional';
+    extraBtn.onclick = () => {
+      treinoFeito = !treinoFeito;
+      extraBtn.textContent = treinoFeito ? '✅ Treino adicional realizado!' : '⚡ Marcar treino adicional';
+      extraBtn.style.background = treinoFeito ? 'rgba(34,197,94,.1)' : 'rgba(96,165,250,.1)';
+      extraBtn.style.borderColor = treinoFeito ? 'rgba(34,197,94,.4)' : 'rgba(96,165,250,.4)';
+      extraBtn.style.color = treinoFeito ? 'var(--green)' : '#60A5FA';
+      document.getElementById('kpiTreinos').textContent = treinoFeito ? '1' : '0';
+    };
+    treinoCard.appendChild(extraBtn);
+  }
 
   const diasEl = document.getElementById('treinoDias');
   ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'].forEach((d,i) => {
