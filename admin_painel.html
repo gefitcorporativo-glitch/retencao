@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QG.90 · Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0A0A0A;--card:#141414;--card2:#1A1A1A;--border:#1E1E1E;--border2:#2A2A2A;
+  --orange:#E87722;--orange-dim:rgba(232,119,34,.12);--orange-border:rgba(232,119,34,.28);
+  --text:#F0F0F0;--muted:#666;--dim:#2A2A2A;
+  --green:#22C55E;--green-dim:rgba(34,197,94,.1);--green-border:rgba(34,197,94,.25);
+  --red:#EF4444;--red-dim:rgba(239,68,68,.1);
+  --blue:#60A5FA;--blue-dim:rgba(96,165,250,.1);
+  --yellow:#EAB308;--yellow-dim:rgba(234,179,8,.1);
+  --purple:#A78BFA;--purple-dim:rgba(167,139,250,.1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh}
+
+/* ── LOGIN ── */
+.login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px}
+.login-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:36px 32px;width:100%;max-width:380px;position:relative;overflow:hidden}
+.login-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--orange),transparent)}
+.login-logo{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--orange);margin-bottom:4px}
+.login-sub{font-size:12px;color:var(--muted);margin-bottom:28px;text-transform:uppercase;letter-spacing:.1em}
+.field{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.field label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+.field input{background:#111;border:1px solid var(--border2);border-radius:8px;padding:11px 14px;color:var(--text);font-size:14px;outline:none;font-family:'DM Sans',sans-serif;transition:border-color .15s;width:100%}
+.field input:focus{border-color:var(--orange)}
+.btn-login{width:100%;padding:13px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--orange),#F59E4A);color:#000;font-size:14px;font-weight:800;cursor:pointer;font-family:'Syne',sans-serif;margin-top:4px;transition:opacity .2s}
+.btn-login:hover{opacity:.9}
+.login-error{color:var(--red);font-size:12px;margin-top:10px;text-align:center;display:none}
+
+/* ── APP (escondido até login) ── */
+.app-wrap{display:none}
+
+/* ── HEADER ── */
+.header{background:rgba(10,10,10,.96);border-bottom:1px solid var(--border);padding:0 24px;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px)}
+.header-inner{max-width:1400px;margin:0 auto;height:56px;display:flex;align-items:center;gap:16px}
+.hlogo{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--orange)}
+.htitle{font-size:12px;color:var(--muted);padding-left:14px;border-left:1px solid var(--border2)}
+.hright{margin-left:auto;display:flex;align-items:center;gap:12px}
+.hadmin{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;background:var(--orange-dim);border:1px solid var(--orange-border);color:var(--orange)}
+.hlogout{padding:5px 12px;border-radius:6px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s}
+.hlogout:hover{border-color:var(--red);color:var(--red)}
+
+/* ── LAYOUT ── */
+.content{max-width:1400px;margin:0 auto;padding:24px}
+
+/* ── KPI CARDS ── */
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-bottom:24px}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.kpi.orange::before{background:var(--orange)}
+.kpi.green::before{background:var(--green)}
+.kpi.blue::before{background:var(--blue)}
+.kpi.yellow::before{background:var(--yellow)}
+.kpi.purple::before{background:var(--purple)}
+.kpi-icon{font-size:20px;margin-bottom:8px}
+.kpi-val{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;line-height:1;margin-bottom:3px}
+.kpi-label{font-size:11px;color:var(--muted)}
+
+/* ── TABS ── */
+.tabs{display:flex;gap:4px;margin-bottom:20px;border-bottom:1px solid var(--border);padding-bottom:0}
+.tab{padding:8px 16px;border-radius:8px 8px 0 0;font-size:12px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;border-bottom:2px solid transparent;transition:all .15s;margin-bottom:-1px}
+.tab.active{color:var(--orange);border-bottom-color:var(--orange);background:var(--orange-dim)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* ── SECTION LABEL ── */
+.sec{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;margin:0 0 12px;display:flex;align-items:center;gap:8px}
+.sec::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* ── TABLE ── */
+.table-wrap{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:16px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead tr{background:#131313;border-bottom:1px solid var(--border)}
+th{padding:10px 14px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;text-align:left;white-space:nowrap}
+td{padding:10px 14px;border-bottom:1px solid var(--border);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,.02)}
+
+/* ── BADGES ── */
+.badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;white-space:nowrap}
+.badge.piloto{background:var(--blue-dim);color:var(--blue);border:1px solid rgba(96,165,250,.25)}
+.badge.basico{background:var(--green-dim);color:var(--green);border:1px solid var(--green-border)}
+.badge.pro{background:var(--orange-dim);color:var(--orange);border:1px solid var(--orange-border)}
+.badge.ativo{background:var(--green-dim);color:var(--green);border:1px solid var(--green-border)}
+.badge.inativo{background:var(--red-dim);color:var(--red);border:1px solid rgba(239,68,68,.25)}
+.badge.interno{background:var(--blue-dim);color:var(--blue)}
+.badge.externo{background:var(--purple-dim);color:var(--purple)}
+.badge.gestor{background:var(--orange-dim);color:var(--orange)}
+.badge.treinador{background:var(--blue-dim);color:var(--blue)}
+
+/* ── EXPAND ROW ── */
+.expand-btn{background:none;border:1px solid var(--border2);border-radius:5px;color:var(--muted);cursor:pointer;padding:3px 8px;font-size:11px;font-family:'DM Sans',sans-serif;transition:all .15s}
+.expand-btn:hover{border-color:var(--orange);color:var(--orange)}
+.detail-row{display:none;background:var(--card2)}
+.detail-row.open{display:table-row}
+.detail-inner{padding:14px 20px;border-bottom:1px solid var(--border)}
+
+/* ── SEARCH ── */
+.search-row{display:flex;gap:10px;margin-bottom:14px;align-items:center;flex-wrap:wrap}
+.search-input{background:#111;border:1px solid var(--border2);border-radius:8px;padding:8px 12px;color:var(--text);font-size:13px;outline:none;font-family:'DM Sans',sans-serif;transition:border-color .15s;min-width:220px}
+.search-input:focus{border-color:var(--orange)}
+.filter-btn{padding:7px 12px;border-radius:7px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s}
+.filter-btn.active{background:var(--orange-dim);border-color:var(--orange);color:var(--orange)}
+
+/* ── AÇÕES ── */
+.btn-action{padding:5px 10px;border-radius:6px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;margin-right:4px}
+.btn-action:hover{border-color:var(--orange);color:var(--orange)}
+.btn-action.danger:hover{border-color:var(--red);color:var(--red)}
+
+/* ── MINI STAT ── */
+.mini-stats{display:flex;gap:16px;margin-bottom:8px}
+.mini-stat{font-size:12px;color:var(--muted)}
+.mini-stat strong{color:var(--text);font-weight:600}
+
+/* ── RECEITA ── */
+.receita-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:12px}
+.receita-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px}
+.receita-row:last-child{border:none}
+.receita-total{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--green);margin-top:12px}
+
+/* ── MODAL ── */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;align-items:center;justify-content:center;padding:20px}
+.modal-bg.open{display:flex}
+.modal{background:var(--card);border:1px solid var(--border2);border-radius:16px;padding:24px;width:100%;max-width:480px;max-height:80vh;overflow-y:auto}
+.modal-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;margin-bottom:16px}
+.modal-field{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
+.modal-field label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+.modal-field input,.modal-field select{background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px 12px;color:var(--text);font-size:13px;outline:none;font-family:'DM Sans',sans-serif;width:100%}
+.modal-field input:focus,.modal-field select:focus{border-color:var(--orange)}
+.modal-btns{display:flex;gap:8px;margin-top:16px;justify-content:flex-end}
+.btn-cancel{padding:9px 16px;border-radius:8px;border:1px solid var(--border2);background:transparent;color:var(--text);font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif}
+.btn-save{padding:9px 16px;border-radius:8px;border:none;background:var(--orange);color:#000;font-size:13px;font-weight:800;cursor:pointer;font-family:'Syne',sans-serif}
+
+/* ── TOAST ── */
+.toast{position:fixed;top:16px;left:50%;transform:translateX(-50%) translateY(-80px);background:var(--orange);color:#000;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:700;z-index:999;transition:transform .3s;max-width:300px;text-align:center}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* ── LOADING ── */
+.loading{text-align:center;padding:40px;color:var(--muted);font-size:13px}
+.spinner{width:24px;height:24px;border:2px solid var(--border2);border-top-color:var(--orange);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+@media(max-width:768px){
+  .kpi-row{grid-template-columns:repeat(2,1fr)}
+  table{font-size:11px}
+  th,td{padding:8px 10px}
+}
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<!-- ── LOGIN ── -->
+<div class="login-wrap" id="loginWrap">
+  <div class="login-card">
+    <div class="login-logo">QG.90</div>
+    <div class="login-sub">Painel Administrativo</div>
+    <div class="field">
+      <label>Usuário</label>
+      <input type="text" id="loginUser" placeholder="admin" onkeydown="if(event.key==='Enter')fazerLogin()">
+    </div>
+    <div class="field">
+      <label>Senha</label>
+      <input type="password" id="loginPass" placeholder="••••••••" onkeydown="if(event.key==='Enter')fazerLogin()">
+    </div>
+    <button class="btn-login" onclick="fazerLogin()">Entrar</button>
+    <div class="login-error" id="loginError">Usuário ou senha incorretos</div>
+  </div>
+</div>
+
+<!-- ── APP ── -->
+<div class="app-wrap" id="appWrap">
+
+  <div class="header">
+    <div class="header-inner">
+      <div class="hlogo">QG.90</div>
+      <div class="htitle">Painel Admin — Gestão de Clientes</div>
+      <div class="hright">
+        <div class="hadmin">🔐 Nelson Rabelo</div>
+        <button class="hlogout" onclick="fazerLogout()">Sair</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- KPIs -->
+    <div class="kpi-row" id="kpiRow">
+      <div class="loading"><div class="spinner"></div>Carregando...</div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('academias',this)">🏢 Academias</button>
+      <button class="tab" onclick="showTab('usuarios',this)">👤 Usuários</button>
+      <button class="tab" onclick="showTab('alunos',this)">🎓 Alunos</button>
+      <button class="tab" onclick="showTab('receita',this)">💰 Receita</button>
+    </div>
+
+    <!-- TAB: ACADEMIAS -->
+    <div class="tab-panel active" id="panel-academias">
+      <div class="search-row">
+        <input class="search-input" id="searchAcad" placeholder="Buscar academia..." oninput="filtrarAcademias()">
+        <button class="filter-btn active" onclick="filtroPlano('todos',this)">Todos</button>
+        <button class="filter-btn" onclick="filtroPlano('piloto',this)">Piloto</button>
+        <button class="filter-btn" onclick="filtroPlano('basico',this)">Básico</button>
+        <button class="filter-btn" onclick="filtroPlano('pro',this)">Pro</button>
+        <button class="btn-action" onclick="abrirModalNovaAcademia()" style="margin-left:auto;border-color:var(--orange);color:var(--orange)">+ Nova academia</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Academia</th>
+              <th>Cidade / Estado</th>
+              <th>Plano</th>
+              <th>Treinadores</th>
+              <th>Alunos</th>
+              <th>Planners</th>
+              <th>Status</th>
+              <th>Cadastro</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tbAcademias">
+            <tr><td colspan="9" class="loading"><div class="spinner"></div>Carregando academias...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB: USUÁRIOS -->
+    <div class="tab-panel" id="panel-usuarios">
+      <div class="search-row">
+        <input class="search-input" id="searchUser" placeholder="Buscar usuário..." oninput="filtrarUsuarios()">
+        <button class="filter-btn active" onclick="filtroTipoUser('todos',this)">Todos</button>
+        <button class="filter-btn" onclick="filtroTipoUser('treinador',this)">Treinadores</button>
+        <button class="filter-btn" onclick="filtroTipoUser('gestor',this)">Gestores</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>E-mail</th>
+              <th>Academia</th>
+              <th>Perfil</th>
+              <th>Tipo</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tbUsuarios">
+            <tr><td colspan="6" class="loading"><div class="spinner"></div>Carregando usuários...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB: ALUNOS -->
+    <div class="tab-panel" id="panel-alunos">
+      <div class="search-row">
+        <input class="search-input" id="searchAluno" placeholder="Buscar aluno..." oninput="filtrarAlunos()">
+        <button class="filter-btn active" onclick="filtroAlunoStatus('todos',this)">Todos</button>
+        <button class="filter-btn" onclick="filtroAlunoStatus('ativo',this)">Ativos</button>
+        <button class="filter-btn" onclick="filtroAlunoStatus('inativo',this)">Inativos</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Aluno</th>
+              <th>Matrícula</th>
+              <th>Idade</th>
+              <th>Academia</th>
+              <th>Treinador</th>
+              <th>Planners</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="tbAlunos">
+            <tr><td colspan="7" class="loading"><div class="spinner"></div>Carregando alunos...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB: RECEITA -->
+    <div class="tab-panel" id="panel-receita">
+      <div class="sec">Resumo financeiro</div>
+      <div class="receita-card" id="receitaCard">
+        <div class="loading"><div class="spinner"></div>Carregando...</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL NOVA ACADEMIA -->
+<div class="modal-bg" id="modalAcad">
+  <div class="modal">
+    <div class="modal-title">Nova Academia</div>
+    <div class="modal-field"><label>Nome *</label><input type="text" id="maNome" placeholder="Academia Força Total"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="modal-field"><label>Cidade *</label><input type="text" id="maCidade"></div>
+      <div class="modal-field"><label>Estado</label>
+        <select id="maEstado">
+          <option>SP</option><option>RJ</option><option>MG</option><option>RS</option>
+          <option>PR</option><option>SC</option><option>BA</option><option>GO</option>
+          <option>DF</option><option>PE</option><option>CE</option><option>MA</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-field"><label>Plano</label>
+      <select id="maPlano">
+        <option value="piloto">Piloto (gratuito)</option>
+        <option value="basico">Básico — R$ 150/mês</option>
+        <option value="pro">Pro — R$ 300/mês</option>
+      </select>
+    </div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="fecharModal('modalAcad')">Cancelar</button>
+      <button class="btn-save" onclick="salvarNovaAcademia()">Criar academia</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EDITAR PLANO -->
+<div class="modal-bg" id="modalPlano">
+  <div class="modal">
+    <div class="modal-title">Alterar Plano</div>
+    <input type="hidden" id="mpAcadId">
+    <div class="modal-field"><label>Academia</label><input type="text" id="mpAcadNome" readonly style="color:var(--muted)"></div>
+    <div class="modal-field"><label>Plano</label>
+      <select id="mpPlano">
+        <option value="piloto">Piloto (gratuito)</option>
+        <option value="basico">Básico — R$ 150/mês</option>
+        <option value="pro">Pro — R$ 300/mês</option>
+      </select>
+    </div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="fecharModal('modalPlano')">Cancelar</button>
+      <button class="btn-save" onclick="salvarPlano()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// ── CREDENCIAIS ADMIN ─────────────────────────────────────────
+// ALTERE AQUI para definir usuário e senha do painel admin
+const ADMIN_USER = 'nelson';
+const ADMIN_PASS = 'QG90admin2026';
+
+const SUPABASE_URL  = 'https://xpvedihpejivnkssryhc.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhwdmVkaWhwZWppdm5rc3NyeWhjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MzM2OTEsImV4cCI6MjA5NTMwOTY5MX0.23eRl7PSoak-YGS91N8lBLIRC0MqHRh5Su1r1Zr6CC4';
+
+const PLANOS = {
+  piloto: { label:'Piloto', valor: 0 },
+  basico: { label:'Básico', valor: 150 },
+  pro:    { label:'Pro',    valor: 300 },
+};
+
+let sb = null;
+let allAcademias = [];
+let allTreinadores = [];
+let allGestores = [];
+let allAlunos = [];
+let allPlanners = [];
+let filtroPlanoAtual = 'todos';
+let filtroTipoUserAtual = 'todos';
+let filtroAlunoStatusAtual = 'todos';
+
+// ── LOGIN ─────────────────────────────────────────────────────
+function fazerLogin(){
+  const user = document.getElementById('loginUser').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  const errEl = document.getElementById('loginError');
+
+  if(user === ADMIN_USER && pass === ADMIN_PASS){
+    sessionStorage.setItem('qg90_admin', '1');
+    document.getElementById('loginWrap').style.display = 'none';
+    document.getElementById('appWrap').style.display = 'block';
+    errEl.style.display = 'none';
+    iniciarApp();
+  } else {
+    errEl.style.display = 'block';
+    document.getElementById('loginPass').value = '';
+  }
+}
+
+function fazerLogout(){
+  sessionStorage.removeItem('qg90_admin');
+  document.getElementById('loginWrap').style.display = 'flex';
+  document.getElementById('appWrap').style.display = 'none';
+}
+
+// Verificar sessão ao carregar
+window.addEventListener('DOMContentLoaded', () => {
+  if(sessionStorage.getItem('qg90_admin') === '1'){
+    document.getElementById('loginWrap').style.display = 'none';
+    document.getElementById('appWrap').style.display = 'block';
+    iniciarApp();
+  }
+});
+
+// ── INIT ──────────────────────────────────────────────────────
+async function iniciarApp(){
+  sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+  await carregarTudo();
+}
+
+async function carregarTudo(){
+  try {
+    const [acadRes, treinRes, gestRes, alunoRes, plannerRes] = await Promise.all([
+      sb.from('academias').select('*').order('criado_em', {ascending:false}),
+      sb.from('treinadores').select('*').order('nome'),
+      sb.from('gestores').select('*').order('nome'),
+      sb.from('alunos').select('*').order('nome'),
+      sb.from('planners').select('id,academia_id,aluno_id,treinador_resp_id,status,criado_em').order('criado_em',{ascending:false}),
+    ]);
+
+    allAcademias  = acadRes.data   || [];
+    allTreinadores= treinRes.data  || [];
+    allGestores   = gestRes.data   || [];
+    allAlunos     = alunoRes.data  || [];
+    allPlanners   = plannerRes.data|| [];
+
+    renderKPIs();
+    renderAcademias();
+    renderUsuarios();
+    renderAlunos();
+    renderReceita();
+
+  } catch(err){
+    console.error('Erro ao carregar dados:', err);
+    showToast('Erro ao carregar dados do banco');
+  }
+}
+
+// ── KPIs ──────────────────────────────────────────────────────
+function renderKPIs(){
+  const receitaMensal = allAcademias.reduce((sum, a) => sum + (PLANOS[a.plano]?.valor || 0), 0);
+  const kpis = [
+    {icon:'🏢', val:allAcademias.length,   label:'Academias ativas', cls:'orange'},
+    {icon:'👤', val:allTreinadores.length,  label:'Treinadores',      cls:'blue'},
+    {icon:'🎓', val:allAlunos.length,       label:'Alunos cadastrados',cls:'green'},
+    {icon:'📋', val:allPlanners.length,     label:'Planners gerados', cls:'purple'},
+    {icon:'💰', val:`R$ ${receitaMensal}`,  label:'Receita mensal',   cls:'yellow'},
+  ];
+
+  document.getElementById('kpiRow').innerHTML = kpis.map(k=>`
+    <div class="kpi ${k.cls}">
+      <div class="kpi-icon">${k.icon}</div>
+      <div class="kpi-val">${k.val}</div>
+      <div class="kpi-label">${k.label}</div>
+    </div>`).join('');
+}
+
+// ── ACADEMIAS ─────────────────────────────────────────────────
+function renderAcademias(){
+  const search = (document.getElementById('searchAcad')?.value||'').toLowerCase();
+  const filtered = allAcademias.filter(a => {
+    const matchSearch = !search || a.nome.toLowerCase().includes(search) || (a.cidade||'').toLowerCase().includes(search);
+    const matchPlano = filtroPlanoAtual === 'todos' || a.plano === filtroPlanoAtual;
+    return matchSearch && matchPlano;
+  });
+
+  const tbody = document.getElementById('tbAcademias');
+  if(!filtered.length){ tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:24px;color:var(--muted)">Nenhuma academia encontrada</td></tr>'; return; }
+
+  tbody.innerHTML = filtered.map(a => {
+    const treinadores = allTreinadores.filter(t => t.academia_id === a.id);
+    const alunos = allAlunos.filter(al => al.academia_id === a.id);
+    const planners = allPlanners.filter(p => p.academia_id === a.id);
+    const plano = PLANOS[a.plano] || {label:a.plano, valor:0};
+    const data = new Date(a.criado_em).toLocaleDateString('pt-BR');
+
+    return `
+    <tr>
+      <td><div style="font-weight:600">${a.nome}</div></td>
+      <td style="color:var(--muted)">${a.cidade||'—'}${a.estado?' / '+a.estado:''}</td>
+      <td><span class="badge ${a.plano||'piloto'}">${plano.label}</span></td>
+      <td style="font-family:'DM Mono',monospace">${treinadores.length}</td>
+      <td style="font-family:'DM Mono',monospace">${alunos.length}</td>
+      <td style="font-family:'DM Mono',monospace">${planners.length}</td>
+      <td><span class="badge ativo">Ativa</span></td>
+      <td style="color:var(--muted);font-size:11px">${data}</td>
+      <td>
+        <button class="btn-action" onclick="abrirModalPlano('${a.id}','${a.nome}','${a.plano||'piloto'}')">Plano</button>
+        <button class="btn-action" onclick="verDetalhesAcademia('${a.id}')">Ver</button>
+      </td>
+    </tr>
+    <tr class="detail-row" id="detail-${a.id}">
+      <td colspan="9">
+        <div class="detail-inner">
+          <div class="mini-stats">
+            <div class="mini-stat">Treinadores: <strong>${treinadores.map(t=>t.nome).join(', ')||'—'}</strong></div>
+          </div>
+          <div class="mini-stats">
+            <div class="mini-stat">Receita mensal: <strong style="color:var(--green)">R$ ${plano.valor}/mês</strong></div>
+            <div class="mini-stat">Academia ID: <strong style="font-family:'DM Mono',monospace;font-size:11px">${a.id}</strong></div>
+          </div>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function verDetalhesAcademia(id){
+  const row = document.getElementById('detail-'+id);
+  if(row) row.classList.toggle('open');
+}
+
+function filtrarAcademias(){ renderAcademias(); }
+
+function filtroPlano(p, btn){
+  filtroPlanoAtual = p;
+  document.querySelectorAll('#panel-academias .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderAcademias();
+}
+
+// ── USUÁRIOS ──────────────────────────────────────────────────
+function renderUsuarios(){
+  const search = (document.getElementById('searchUser')?.value||'').toLowerCase();
+
+  // Combinar treinadores e gestores sem duplicar
+  const todos = [];
+  allTreinadores.forEach(t => {
+    const acad = allAcademias.find(a=>a.id===t.academia_id);
+    todos.push({...t, perfil:'treinador', acadNome:acad?.nome||'—'});
+  });
+  // Adicionar gestores que não são treinadores
+  allGestores.forEach(g => {
+    const jaExiste = todos.find(t=>t.user_id===g.user_id&&t.academia_id===g.academia_id&&t.perfil==='treinador');
+    if(!jaExiste){
+      const acad = allAcademias.find(a=>a.id===g.academia_id);
+      todos.push({...g, perfil:'gestor', tipo:'—', acadNome:acad?.nome||'—'});
+    } else {
+      jaExiste.temGestor = true;
+    }
+  });
+
+  const filtered = todos.filter(u => {
+    const matchSearch = !search || (u.nome||'').toLowerCase().includes(search) || (u.email||'').toLowerCase().includes(search) || u.acadNome.toLowerCase().includes(search);
+    const matchTipo = filtroTipoUserAtual === 'todos' || u.perfil === filtroTipoUserAtual;
+    return matchSearch && matchTipo;
+  });
+
+  const tbody = document.getElementById('tbUsuarios');
+  if(!filtered.length){ tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--muted)">Nenhum usuário encontrado</td></tr>'; return; }
+
+  tbody.innerHTML = filtered.map(u => `
+    <tr>
+      <td><div style="font-weight:600">${u.nome||'—'}</div></td>
+      <td style="color:var(--muted);font-size:12px;font-family:'DM Mono',monospace">${u.email||'—'}</td>
+      <td style="font-size:12px">${u.acadNome}</td>
+      <td>
+        <span class="badge treinador" style="margin-right:4px">Treinador</span>
+        ${u.temGestor||u.perfil==='gestor'?'<span class="badge gestor">Gestor</span>':''}
+      </td>
+      <td><span class="badge ${u.tipo||'interno'}">${u.tipo||'—'}</span></td>
+      <td>
+        <button class="btn-action" onclick="copiarEmail('${u.email}')">Copiar e-mail</button>
+      </td>
+    </tr>`).join('');
+}
+
+function filtrarUsuarios(){ renderUsuarios(); }
+
+function filtroTipoUser(t, btn){
+  filtroTipoUserAtual = t;
+  document.querySelectorAll('#panel-usuarios .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderUsuarios();
+}
+
+// ── ALUNOS ────────────────────────────────────────────────────
+function renderAlunos(){
+  const search = (document.getElementById('searchAluno')?.value||'').toLowerCase();
+  const filtered = allAlunos.filter(al => {
+    const matchSearch = !search || (al.nome||'').toLowerCase().includes(search) || (al.matricula||'').includes(search);
+    const matchStatus = filtroAlunoStatusAtual === 'todos' || (filtroAlunoStatusAtual==='ativo'?al.ativo:!al.ativo);
+    return matchSearch && matchStatus;
+  });
+
+  const tbody = document.getElementById('tbAlunos');
+  if(!filtered.length){ tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--muted)">Nenhum aluno encontrado</td></tr>'; return; }
+
+  tbody.innerHTML = filtered.map(al => {
+    const acad = allAcademias.find(a=>a.id===al.academia_id);
+    const planners = allPlanners.filter(p=>p.aluno_id===al.id);
+    // Buscar treinador responsável do último planner
+    const ultimoPlanner = planners[0];
+    const treinador = ultimoPlanner ? allTreinadores.find(t=>t.id===ultimoPlanner.treinador_resp_id) : null;
+
+    return `
+    <tr>
+      <td><div style="font-weight:600">${al.nome||'—'}</div></td>
+      <td style="font-family:'DM Mono',monospace;color:var(--muted)">${al.matricula||'—'}</td>
+      <td style="color:var(--muted)">${al.idade?al.idade+' anos':'—'}</td>
+      <td style="font-size:12px">${acad?.nome||'—'}</td>
+      <td style="font-size:12px;color:var(--muted)">${treinador?.nome||'—'}</td>
+      <td style="font-family:'DM Mono',monospace">${planners.length}</td>
+      <td><span class="badge ${al.ativo?'ativo':'inativo'}">${al.ativo?'Ativo':'Inativo'}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+function filtrarAlunos(){ renderAlunos(); }
+
+function filtroAlunoStatus(s, btn){
+  filtroAlunoStatusAtual = s;
+  document.querySelectorAll('#panel-alunos .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderAlunos();
+}
+
+// ── RECEITA ───────────────────────────────────────────────────
+function renderReceita(){
+  const por_plano = {piloto:[], basico:[], pro:[]};
+  allAcademias.forEach(a => {
+    const p = a.plano || 'piloto';
+    if(por_plano[p]) por_plano[p].push(a);
+  });
+
+  const totalMensal = allAcademias.reduce((s,a)=>s+(PLANOS[a.plano]?.valor||0),0);
+  const totalAnual = totalMensal * 12;
+
+  document.getElementById('receitaCard').innerHTML = `
+    <div class="receita-row">
+      <div><span class="badge piloto">Piloto</span> — ${por_plano.piloto.length} academia(s)</div>
+      <div style="color:var(--muted)">R$ 0/mês</div>
+    </div>
+    <div class="receita-row">
+      <div><span class="badge basico">Básico</span> — ${por_plano.basico.length} academia(s) × R$ 150</div>
+      <div style="color:var(--green);font-weight:600">R$ ${por_plano.basico.length * 150}/mês</div>
+    </div>
+    <div class="receita-row">
+      <div><span class="badge pro">Pro</span> — ${por_plano.pro.length} academia(s) × R$ 300</div>
+      <div style="color:var(--green);font-weight:600">R$ ${por_plano.pro.length * 300}/mês</div>
+    </div>
+    <div style="border-top:1px solid var(--border);margin-top:12px;padding-top:12px">
+      <div style="font-size:12px;color:var(--muted);margin-bottom:4px">Receita mensal total</div>
+      <div class="receita-total">R$ ${totalMensal.toLocaleString('pt-BR')}/mês</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:4px">Projeção anual: <strong style="color:var(--text)">R$ ${totalAnual.toLocaleString('pt-BR')}</strong></div>
+    </div>
+    <div style="margin-top:16px;padding:12px;background:var(--card2);border-radius:10px;font-size:12px;color:var(--muted);line-height:1.6">
+      💡 <strong style="color:var(--text)">Custo da plataforma:</strong> R$ 0/mês (Supabase free + GitHub Pages free)<br>
+      Break-even: com 1 academia Básico o custo já está coberto.<br>
+      Migrar para Supabase Pro (R$140/mês) quando atingir 3+ academias pagantes.
+    </div>`;
+}
+
+// ── MODAIS ────────────────────────────────────────────────────
+function abrirModalNovaAcademia(){
+  document.getElementById('modalAcad').classList.add('open');
+}
+
+function abrirModalPlano(id, nome, planoAtual){
+  document.getElementById('mpAcadId').value = id;
+  document.getElementById('mpAcadNome').value = nome;
+  document.getElementById('mpPlano').value = planoAtual;
+  document.getElementById('modalPlano').classList.add('open');
+}
+
+function fecharModal(id){
+  document.getElementById(id).classList.remove('open');
+}
+
+async function salvarNovaAcademia(){
+  const nome = document.getElementById('maNome').value.trim();
+  const cidade = document.getElementById('maCidade').value.trim();
+  const estado = document.getElementById('maEstado').value;
+  const plano = document.getElementById('maPlano').value;
+
+  if(!nome||!cidade){ showToast('Preencha nome e cidade'); return; }
+
+  const {error} = await sb.from('academias').insert([{nome,cidade,estado,plano}]);
+  if(error){ showToast('Erro: '+error.message); return; }
+
+  showToast('✅ Academia criada!');
+  fecharModal('modalAcad');
+  await carregarTudo();
+}
+
+async function salvarPlano(){
+  const id = document.getElementById('mpAcadId').value;
+  const plano = document.getElementById('mpPlano').value;
+
+  const {error} = await sb.from('academias').update({plano}).eq('id',id);
+  if(error){ showToast('Erro: '+error.message); return; }
+
+  showToast('✅ Plano atualizado!');
+  fecharModal('modalPlano');
+  await carregarTudo();
+}
+
+// ── TABS ──────────────────────────────────────────────────────
+function showTab(id, btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── UTILS ─────────────────────────────────────────────────────
+function copiarEmail(email){
+  navigator.clipboard.writeText(email);
+  showToast('✅ E-mail copiado!');
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+</script>
+</body>
+</html>
