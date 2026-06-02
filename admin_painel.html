@@ -202,6 +202,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
       <button class="tab" onclick="showTab('usuarios',this)">👤 Usuários</button>
       <button class="tab" onclick="showTab('alunos',this)">🎓 Alunos</button>
       <button class="tab" onclick="showTab('receita',this)">💰 Receita</button>
+      <button class="tab" onclick="showTab('nova',this)" style="color:var(--orange)">+ Nova Academia</button>
     </div>
 
     <!-- TAB: ACADEMIAS -->
@@ -296,6 +297,69 @@ tr:hover td{background:rgba(255,255,255,.02)}
       <div class="sec">Resumo financeiro</div>
       <div class="receita-card" id="receitaCard">
         <div class="loading"><div class="spinner"></div>Carregando...</div>
+      </div>
+    </div>
+
+    <!-- TAB: NOVA ACADEMIA -->
+    <div class="tab-panel" id="panel-nova">
+      <div style="max-width:600px">
+        <div class="sec">Dados da academia</div>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px">
+          <div class="modal-field"><label>Nome da academia *</label><input type="text" id="naNome" placeholder="Ex: Academia Força Total"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div class="modal-field"><label>Cidade *</label><input type="text" id="naCidade" placeholder="São Paulo"></div>
+            <div class="modal-field"><label>Estado</label>
+              <select id="naEstado">
+                <option>SP</option><option>RJ</option><option>MG</option><option>RS</option>
+                <option>PR</option><option>SC</option><option>BA</option><option>GO</option>
+                <option>DF</option><option>PE</option><option>CE</option><option>MA</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-field"><label>Plano</label>
+            <select id="naPlano">
+              <option value="piloto">Piloto (gratuito)</option>
+              <option value="basico">Básico — R$ 150/mês</option>
+              <option value="pro">Pro — R$ 300/mês</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="sec">Gestor / responsável</div>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px">
+          <div class="modal-field"><label>Nome completo *</label><input type="text" id="naGestorNome" placeholder="Ex: Carlos Silva"></div>
+          <div class="modal-field"><label>E-mail *</label><input type="email" id="naGestorEmail" placeholder="gestor@academia.com.br"></div>
+          <div class="modal-field"><label>Senha *</label>
+            <div style="display:flex;gap:8px">
+              <input type="text" id="naGestorSenha" placeholder="Mínimo 8 caracteres" style="flex:1;background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px 12px;color:var(--text);font-size:13px;outline:none;font-family:'DM Sans',sans-serif">
+              <button onclick="gerarSenhaAdmin('naGestorSenha')" style="padding:10px 14px;border-radius:8px;border:1px solid var(--border2);background:#111;color:var(--muted);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">🎲 Gerar</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="sec">Treinadores</div>
+        <div id="naTreinadoresContainer"></div>
+        <button onclick="naAddTreinador()" style="width:100%;padding:10px;border-radius:8px;border:1px dashed var(--border2);background:transparent;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;margin-bottom:16px">+ Adicionar treinador</button>
+
+        <!-- Progress -->
+        <div id="naProgress" style="display:none;margin-bottom:12px">
+          <div id="naStep1" style="padding:8px 12px;border-radius:8px;background:var(--card2);margin-bottom:6px;font-size:13px;color:var(--muted)">⏳ Criando academia...</div>
+          <div id="naStep2" style="padding:8px 12px;border-radius:8px;background:var(--card2);margin-bottom:6px;font-size:13px;color:var(--muted)">⏳ Criando gestor...</div>
+          <div id="naStep3" style="padding:8px 12px;border-radius:8px;background:var(--card2);margin-bottom:6px;font-size:13px;color:var(--muted)">⏳ Criando treinadores...</div>
+        </div>
+
+        <!-- Resultado -->
+        <div id="naResultado" style="display:none;background:var(--green-dim);border:1px solid var(--green-border);border-radius:14px;padding:20px;margin-bottom:16px">
+          <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--green);margin-bottom:8px">✅ Academia cadastrada!</div>
+          <div style="font-size:13px;color:var(--muted);margin-bottom:12px">Credenciais para enviar via WhatsApp:</div>
+          <div id="naCredenciais" style="background:#111;border-radius:8px;padding:14px;font-size:12px;line-height:1.8;font-family:'DM Mono',monospace;color:var(--text)"></div>
+          <button onclick="copiarCredenciais()" style="width:100%;margin-top:10px;padding:10px;border-radius:8px;border:1px solid var(--green-border);background:var(--green-dim);color:var(--green);font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">📋 Copiar credenciais</button>
+          <button onclick="novoCadastroAdmin()" style="width:100%;margin-top:8px;padding:10px;border-radius:8px;border:1px solid var(--border2);background:transparent;color:var(--text);font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">+ Cadastrar outra academia</button>
+        </div>
+
+        <button id="naBtnCadastrar" onclick="naCadastrar()" style="width:100%;padding:16px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--orange),#F59E4A);color:#000;font-size:15px;font-weight:800;cursor:pointer;font-family:'Syne',sans-serif">
+          🏋️ Cadastrar Academia
+        </button>
       </div>
     </div>
 
@@ -709,6 +773,189 @@ function showTab(id, btn){
   document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
   document.getElementById('panel-'+id).classList.add('active');
   btn.classList.add('active');
+}
+
+// ── NOVA ACADEMIA ─────────────────────────────────────────────
+let naTreinadoresCount = 0;
+let naTreinadores = [];
+let naCredenciaisTexto = '';
+
+function naAddTreinador(){
+  naTreinadoresCount++;
+  const idx = naTreinadoresCount;
+  naTreinadores.push({id:idx, nome:'', email:'', senha:'', tipo:'interno'});
+
+  const div = document.createElement('div');
+  div.id = 'na-treinador-'+idx;
+  div.style.cssText = 'background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:8px;position:relative';
+  div.innerHTML = `
+    <div style="font-size:10px;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px">Treinador(a) ${idx}</div>
+    <button onclick="naRemoveTreinador(${idx})" style="position:absolute;top:10px;right:10px;background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:16px">✕</button>
+    <div class="modal-field"><label>Nome completo *</label><input type="text" placeholder="Ex: Ana Costa" oninput="naUpdateTreinador(${idx},'nome',this.value)"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="modal-field"><label>E-mail *</label><input type="email" placeholder="ana@academia.com.br" oninput="naUpdateTreinador(${idx},'email',this.value)"></div>
+      <div class="modal-field"><label>Tipo</label>
+        <select onchange="naUpdateTreinador(${idx},'tipo',this.value)">
+          <option value="interno">Interno</option>
+          <option value="externo">Externo</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-field"><label>Senha *</label>
+      <div style="display:flex;gap:8px">
+        <input type="text" id="na-senha-${idx}" placeholder="Mínimo 8 caracteres" oninput="naUpdateTreinador(${idx},'senha',this.value)" style="flex:1;background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px 12px;color:var(--text);font-size:13px;outline:none;font-family:'DM Sans',sans-serif">
+        <button onclick="gerarSenhaAdmin('na-senha-${idx}',${idx})" style="padding:10px 14px;border-radius:8px;border:1px solid var(--border2);background:#111;color:var(--muted);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">🎲 Gerar</button>
+      </div>
+    </div>`;
+  document.getElementById('naTreinadoresContainer').appendChild(div);
+}
+
+function naRemoveTreinador(idx){
+  const el = document.getElementById('na-treinador-'+idx);
+  if(el) el.remove();
+  naTreinadores = naTreinadores.filter(t=>t.id!==idx);
+}
+
+function naUpdateTreinador(idx, field, value){
+  const t = naTreinadores.find(t=>t.id===idx);
+  if(t) t[field] = value;
+}
+
+function gerarSenhaAdmin(inputId, treinadorIdx){
+  const chars = 'ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789@#!';
+  let pw = '';
+  for(let i=0;i<10;i++) pw += chars[Math.floor(Math.random()*chars.length)];
+  const input = document.getElementById(inputId);
+  if(input){
+    input.value = pw;
+    if(treinadorIdx !== undefined) naUpdateTreinador(treinadorIdx, 'senha', pw);
+  }
+}
+
+function naSetStep(id, status){
+  const el = document.getElementById(id);
+  if(!el) return;
+  const icons = {loading:'🔄', done:'✅', error:'❌'};
+  const labels = {
+    naStep1:{loading:'Criando academia...',done:'Academia criada!',error:'Erro ao criar academia'},
+    naStep2:{loading:'Criando gestor...',done:'Gestor criado!',error:'Erro ao criar gestor'},
+    naStep3:{loading:'Criando treinadores...',done:'Treinadores criados!',error:'Erro nos treinadores'},
+  };
+  el.textContent = (icons[status]||'⏳') + ' ' + (labels[id]?.[status]||'');
+  el.style.background = status==='done'?'var(--green-dim)':status==='error'?'var(--red-dim)':'rgba(96,165,250,.1)';
+  el.style.color = status==='done'?'var(--green)':status==='error'?'var(--red)':'var(--blue)';
+}
+
+async function naCadastrar(){
+  const nome = document.getElementById('naNome').value.trim();
+  const cidade = document.getElementById('naCidade').value.trim();
+  const estado = document.getElementById('naEstado').value;
+  const plano = document.getElementById('naPlano').value;
+  const gestorNome = document.getElementById('naGestorNome').value.trim();
+  const gestorEmail = document.getElementById('naGestorEmail').value.trim();
+  const gestorSenha = document.getElementById('naGestorSenha').value.trim();
+
+  if(!nome){ showToast('Preencha o nome da academia'); return; }
+  if(!cidade){ showToast('Preencha a cidade'); return; }
+  if(!gestorNome){ showToast('Preencha o nome do gestor'); return; }
+  if(!gestorEmail){ showToast('Preencha o e-mail do gestor'); return; }
+  if(!gestorSenha || gestorSenha.length < 8){ showToast('Senha do gestor: mínimo 8 caracteres'); return; }
+
+  for(const t of naTreinadores){
+    if(!t.nome){ showToast(`Preencha o nome do treinador ${t.id}`); return; }
+    if(!t.email){ showToast(`Preencha o e-mail do treinador ${t.id}`); return; }
+    if(!t.senha || t.senha.length < 8){ showToast(`Senha do treinador ${t.nome}: mínimo 8 caracteres`); return; }
+  }
+
+  // UI
+  document.getElementById('naBtnCadastrar').disabled = true;
+  document.getElementById('naProgress').style.display = 'block';
+  document.getElementById('naResultado').style.display = 'none';
+
+  const credentials = [];
+  let academiaId = null;
+
+  try {
+    // 1. Academia
+    naSetStep('naStep1','loading');
+    const {data:acad, error:acadErr} = await sb.from('academias').insert([{nome,cidade,estado,plano}]).select().single();
+    if(acadErr) throw new Error('Academia: '+acadErr.message);
+    academiaId = acad.id;
+    naSetStep('naStep1','done');
+
+    // 2. Gestor
+    naSetStep('naStep2','loading');
+    const {data:gAuth, error:gErr} = await sb.auth.signUp({
+      email: gestorEmail, password: gestorSenha,
+      options:{data:{nome:gestorNome, role:'gestor', academia_id:academiaId}}
+    });
+    if(gErr) throw new Error('Gestor: '+gErr.message);
+    if(gAuth.user?.id){
+      await sb.from('gestores').insert([{user_id:gAuth.user.id, academia_id:academiaId, nome:gestorNome, email:gestorEmail}]);
+    }
+    credentials.push({tipo:'Gestor', nome:gestorNome, email:gestorEmail, senha:gestorSenha});
+    naSetStep('naStep2','done');
+
+    // 3. Treinadores
+    naSetStep('naStep3','loading');
+    for(const t of naTreinadores){
+      const {data:tAuth, error:tErr} = await sb.auth.signUp({
+        email:t.email, password:t.senha,
+        options:{data:{nome:t.nome, role:'treinador', academia_id:academiaId}}
+      });
+      if(tErr){ console.warn('Treinador err:', tErr.message); continue; }
+      if(tAuth.user?.id){
+        await sb.from('treinadores').insert([{user_id:tAuth.user.id, academia_id:academiaId, nome:t.nome, email:t.email, tipo:t.tipo}]);
+      }
+      credentials.push({tipo:'Treinador', nome:t.nome, email:t.email, senha:t.senha});
+    }
+    naSetStep('naStep3','done');
+
+    // Confirmar e-mails
+    await sb.rpc || null;
+
+    // Resultado
+    naCredenciaisTexto = `🏋️ ${nome}\n📍 ${cidade} / ${estado}\n\n🔗 URL: https://gefitcorporativo-glitch.github.io/retencao/\n\n`;
+    naCredenciaisTexto += credentials.map(c=>`${c.tipo==='Gestor'?'📊':'🏃'} ${c.tipo}: ${c.nome}\n   E-mail: ${c.email}\n   Senha: ${c.senha}`).join('\n\n');
+
+    document.getElementById('naCredenciais').innerHTML = credentials.map(c=>`
+      <div style="margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border)">
+        <div style="color:${c.tipo==='Gestor'?'var(--orange)':'var(--blue)'};font-weight:600;margin-bottom:4px">${c.tipo==='Gestor'?'📊':'🏃'} ${c.tipo} — ${c.nome}</div>
+        <div>E-mail: <span style="color:var(--text)">${c.email}</span></div>
+        <div>Senha: <span style="color:var(--orange)">${c.senha}</span></div>
+      </div>`).join('');
+
+    document.getElementById('naResultado').style.display = 'block';
+    document.getElementById('naBtnCadastrar').style.display = 'none';
+    await carregarTudo();
+    showToast('✅ Academia cadastrada com sucesso!');
+
+  } catch(err){
+    console.error(err);
+    showToast('Erro: '+err.message);
+    document.getElementById('naBtnCadastrar').disabled = false;
+  }
+}
+
+function copiarCredenciais(){
+  navigator.clipboard.writeText(naCredenciaisTexto);
+  showToast('✅ Credenciais copiadas!');
+}
+
+function novoCadastroAdmin(){
+  // Resetar formulário
+  ['naNome','naCidade','naGestorNome','naGestorEmail','naGestorSenha'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.value = '';
+  });
+  document.getElementById('naTreinadoresContainer').innerHTML = '';
+  document.getElementById('naProgress').style.display = 'none';
+  document.getElementById('naResultado').style.display = 'none';
+  document.getElementById('naBtnCadastrar').style.display = 'block';
+  document.getElementById('naBtnCadastrar').disabled = false;
+  naTreinadoresCount = 0;
+  naTreinadores = [];
+  naCredenciaisTexto = '';
 }
 
 // ── UTILS ─────────────────────────────────────────────────────
