@@ -465,6 +465,15 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
           <div class="field" style="flex:1;min-width:80px"><label>Nº Matrícula</label><input type="text" id="f-matricula" placeholder="Ex: 2847" oninput="pState.matricula=this.value;updateResumo()"></div>
           <div class="field" style="flex:1;min-width:70px"><label>Idade</label><input type="number" id="f-idade" placeholder="Ex: 38" oninput="pState.idade=this.value"></div>
         </div>
+        <div class="field-group" style="margin-top:10px">
+          <div class="field" style="flex:1">
+            <label>Sexo biológico</label>
+            <div style="display:flex;gap:8px;margin-top:4px">
+              <button class="chip-btn" id="sexo-m" onclick="selectSexo('M')" style="flex:1;padding:8px;border-radius:8px;border:1px solid var(--border);background:#111;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s">♂ Masculino</button>
+              <button class="chip-btn" id="sexo-f" onclick="selectSexo('F')" style="flex:1;padding:8px;border-radius:8px;border:1px solid var(--border);background:#111;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s">♀ Feminino</button>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="card">
         <div class="card-label">Perfil / Estágio</div>
@@ -946,7 +955,7 @@ const AREAS = [
   {id:6,name:"Saúde Nasal",icon:"👃",score:2,habitos:["Lave o nariz com solução salina 1x ao dia","Umidifique o ambiente do quarto","Respire pelo nariz durante treinos leves","Evite ar-condicionado direto no rosto"],orientacoes:"Congestão e sinusite recorrente. Foco: umidificação do ambiente e fortalecimento imunológico geral.",pesquisa:"Exercício moderado aumenta atividade de células NK em até 50%, reduzindo inflamações crônicas nas vias aéreas superiores."},
   {id:7,name:"Saúde da Pele",icon:"✨",score:4,habitos:["Hidratante após o banho com a pele ainda úmida","Protetor solar FPS 30+ todo dia","Beba no mínimo 2L de água","Limpe o rosto com sabonete suave após o treino"],orientacoes:"Acne, ressecamento e inflamações. Foco: treino melhora circulação, reduz cortisol e aumenta colágeno.",pesquisa:"Exercício físico regular aumenta o fluxo sanguíneo cutâneo e estimula fibroblastos produtores de colágeno (British Journal of Dermatology, 2021)."},
   {id:8,name:"Boca & Garganta",icon:"👄",score:1,habitos:["Escove os dentes após cada refeição principal","Beba água durante o treino","Evite falar em voz alta em ar seco","Gargarejos com água morna e sal se necessário"],orientacoes:"Saúde bucal e garganta. Foco: hidratação durante treino e fortalecimento imunológico.",pesquisa:"Atletas com hidratação adequada têm incidência 30% menor de faringites e infecções respiratórias superiores."},
-  {id:9,name:"Hormônios",icon:"🔬",score:5,habitos:["Priorize 7–8h de sono por noite","Reduza o açúcar refinado","Inclua proteína em todas as refeições","20 min de atividade ao ar livre durante o dia"],orientacoes:"Equilíbrio hormonal e saúde feminina. Foco: treino resistido e cardio moderado regulam cortisol e estrogênio.",pesquisa:"Treinamento de força 3x/semana eleva testosterona livre em 20-25% e reduz cortisol crônico (JCEM, 2020)."},
+  {id:9,name:"Hormônios",icon:"🔬",score:5,habitos:["Priorize 7–8h de sono por noite","Reduza o açúcar refinado","Inclua proteína em todas as refeições","20 min de atividade ao ar livre durante o dia"],orientacoes:"Equilíbrio hormonal. Foco: treino resistido e cardio moderado regulam cortisol e hormônios em geral.",pesquisa:"Treinamento de força 3x/semana eleva testosterona livre em 20-25% e reduz cortisol crônico (JCEM, 2020)."},
   {id:10,name:"Sono",icon:"🌙",score:8,habitos:["Desligue telas 30 min antes de dormir","Durma e acorde no mesmo horário","Tome sol pela manhã por 10–15 min","Evite cafeína após 14h"],orientacoes:"Insônia, sono não reparador e cansaço ao acordar. Foco: rotina de sono consistente e exposição solar matinal.",pesquisa:"Exercício físico regular melhora qualidade do sono em 65% dos casos de insônia moderada (Sleep Medicine Reviews, 2021)."},
   {id:11,name:"Equilíbrio Emocional",icon:"🧠",score:6,habitos:["Escreva 3 gratidões antes de dormir","5–10 min de respiração lenta se ansioso","Evite redes sociais na primeira hora ao acordar","Pausa de 10 min no meio do dia sem tela"],orientacoes:"Ansiedade, irritabilidade e estresse crônico. Foco: exercício aeróbico e resistido liberam serotonina e endorfinas.",pesquisa:"30 min de exercício moderado reduzem marcadores de ansiedade em até 48% por até 24h após a sessão (ADAA, 2022)."},
   {id:12,name:"Ouvidos",icon:"👂",score:1,habitos:["Use proteção auditiva em ambientes barulhentos","Limite fone de ouvido a 60% do volume","Fique 30s em pé em 1 perna — cada lado","Mantenha a hidratação ao longo do dia"],orientacoes:"Sensibilidade auditiva e equilíbrio. Foco: exercícios de propriocepção e proteção auditiva.",pesquisa:"Treino de equilíbrio reduz riscos de quedas em 35% e melhora função vestibular."},
@@ -995,7 +1004,7 @@ const RESTRICOES_OPTS = [
 // ════════════════════════════════════════════════
 const pState = {
   step:0, showScript:true, tipo:"academia", profile:"",
-  nome:"", matricula:"", idade:"", restricoesSel:[], restricoesObs:"",
+  nome:"", matricula:"", idade:"", sexo:"", restricoesSel:[], restricoesObs:"",
   treinadorResp:"", treinadorPlanner:"",
   academiaLogo:"", academiaNome:"",
   programa:"", areaFoco:null, areasAtencao:[],
@@ -1170,7 +1179,7 @@ function renderAreaList(){
     const area=AREAS.find(a=>a.id===pState.areaFoco);
     focoPanel.style.display='block';
     document.getElementById('areaFocoName').textContent=area.icon+' '+area.name;
-    document.getElementById('areaOrientacao').textContent=area.orientacoes;
+    document.getElementById('areaOrientacao').textContent=getOrientacaoArea(area);
     document.getElementById('areaPesquisa').textContent='📚 '+area.pesquisa;
   } else {
     focoPanel.style.display='none';
@@ -1335,6 +1344,33 @@ function updateResumo(){
 }
 
 function selectType(t){pState.tipo=t;['academia','personal'].forEach(id=>{document.getElementById('type-'+id).classList.toggle('active',id===t);});}
+// ── SEXO ─────────────────────────────────────────────────────
+function selectSexo(s){
+  pState.sexo = s;
+  ['m','f'].forEach(v=>{
+    const btn = document.getElementById('sexo-'+v);
+    if(!btn) return;
+    if(v===s.toLowerCase()){
+      btn.style.background = 'var(--orange-dim)';
+      btn.style.borderColor = 'var(--orange)';
+      btn.style.color = 'var(--orange)';
+    } else {
+      btn.style.background = '#111';
+      btn.style.borderColor = 'var(--border)';
+      btn.style.color = 'var(--muted)';
+    }
+  });
+}
+
+function getOrientacaoArea(area){
+  if(area.id === 9){
+    if(pState.sexo === 'M') return 'Equilíbrio hormonal masculino. Foco: treino resistido e cardio moderado regulam cortisol e testosterona livre.';
+    if(pState.sexo === 'F') return 'Equilíbrio hormonal e saúde feminina. Foco: treino resistido e cardio moderado regulam cortisol e estrogênio.';
+    return 'Equilíbrio hormonal. Foco: treino resistido e cardio moderado regulam cortisol e hormônios em geral.';
+  }
+  return area.orientacoes;
+}
+
 function selectProfile(p){pState.profile=p;['iniciante','destreinado','treinado','avancado'].forEach(id=>{document.getElementById('profile-'+id).classList.toggle('active',id===p);});}
 
 function toggleScript(){
@@ -1466,7 +1502,7 @@ function initApp(){
   document.getElementById('areaEmojiApp').textContent=area?area.icon:'—';
   document.getElementById('areaNameApp').textContent=area?area.name:'—';
   document.getElementById('orientAreaNameA').textContent=area?area.name:'—';
-  document.getElementById('orientTextA').textContent=area?area.orientacoes:'—';
+  document.getElementById('orientTextA').textContent=area?getOrientacaoArea(area):'—';
   document.getElementById('pesquisaTextA').textContent=area?'📚 '+area.pesquisa:'—';
 
   // Habitos
@@ -2131,7 +2167,8 @@ function gerarQRCodeReal(plannerId){
   const qrContainer = document.getElementById('qrCodeContainer');
   if(!qrContainer) return;
 
-  const appUrl = `${window.location.origin}/sistema_integrado_v3.html?planner=${plannerId}`;
+  const base = window.location.href.split('/').slice(0,-1).join('/');
+  const appUrl = `${base}/sistema_integrado_v3.html?planner=${plannerId}`;
 
   // Usar QR Code API gratuita
   const qrImg = document.createElement('img');
