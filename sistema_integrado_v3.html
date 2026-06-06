@@ -436,47 +436,137 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 ════════════════════════════════════════════════ -->
 <!-- ── HOME DO TREINADOR ── -->
 <div id="home-view">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+  <!-- Header -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
     <div>
-      <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800" id="homeNomeTreinador">Olá!</div>
-      <div style="font-size:12px;color:var(--muted);margin-top:2px" id="homeNomeAcademia">Departamento Técnico</div>
+      <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800" id="homeNomeTreinador">Olá!</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:2px" id="homeNomeAcademia">Departamento Técnico</div>
     </div>
-    <button onclick="irParaPlanner()" style="padding:10px 16px;border-radius:10px;border:none;background:var(--orange);color:#000;font-size:13px;font-weight:800;cursor:pointer;font-family:'Syne',sans-serif">+ Novo Planner</button>
+    <div style="display:flex;gap:6px">
+      <button onclick="abrirModalAddAluno()" style="padding:8px 12px;border-radius:8px;border:1px solid var(--orange-border);background:var(--orange-dim);color:var(--orange);font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">+ Aluno</button>
+      <button onclick="irParaPlanner()" style="padding:8px 12px;border-radius:8px;border:none;background:var(--orange);color:#000;font-size:12px;font-weight:800;cursor:pointer;font-family:'Syne',sans-serif;white-space:nowrap">+ Planner</button>
+    </div>
   </div>
 
-  <!-- KPIs -->
-  <div class="home-kpis">
-    <div class="home-kpi"><div class="home-kpi-val" id="hKpiCarteira">—</div><div class="home-kpi-label">Carteira</div></div>
-    <div class="home-kpi"><div class="home-kpi-val" id="hKpiAtivos">—</div><div class="home-kpi-label">Desafios ativos</div></div>
-    <div class="home-kpi"><div class="home-kpi-val" id="hKpiRevisoes">—</div><div class="home-kpi-label">Revisões semana</div></div>
+  <!-- KPIs - 2 rows: carteira + experiências -->
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px">
+    <div class="home-kpi" style="border-top:2px solid var(--blue)"><div class="home-kpi-val" id="hKpiCarteira" style="color:var(--blue)">—</div><div class="home-kpi-label">Carteira</div></div>
+    <div class="home-kpi" style="border-top:2px solid var(--green)"><div class="home-kpi-val" id="hKpiAtivos" style="color:var(--green)">—</div><div class="home-kpi-label">Desafios ativos</div></div>
+    <div class="home-kpi" style="border-top:2px solid var(--orange)"><div class="home-kpi-val" id="hKpiRevisoes" style="color:var(--orange)">—</div><div class="home-kpi-label">Revisões semana</div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:16px">
+    <div class="home-kpi" style="border-top:2px solid var(--yellow)"><div class="home-kpi-val" id="hKpiExpAndamento" style="color:var(--yellow)">—</div><div class="home-kpi-label">Exp. andamento</div></div>
+    <div class="home-kpi" style="border-top:2px solid var(--green)"><div class="home-kpi-val" id="hKpiExpConvertidas" style="color:var(--green)">—</div><div class="home-kpi-label">Convertidas</div></div>
+    <div class="home-kpi"><div class="home-kpi-val" id="hKpiExpPct">—</div><div class="home-kpi-label">% Conversão</div></div>
   </div>
 
-  <!-- Revisões da semana -->
-  <div class="home-sec">📅 Revisões agendadas esta semana</div>
-  <div id="hListaRevisoes"><div class="home-empty">Carregando...</div></div>
+  <!-- Ações rápidas -->
+  <div style="display:flex;gap:8px;margin-bottom:16px">
+    <button onclick="abrirModalNovaExp()" style="flex:1;padding:10px;border-radius:8px;border:1px solid var(--orange-border);background:var(--orange-dim);color:var(--orange);font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">⚡ Nova Experiência</button>
+    <button onclick="abrirUploadCSV()" style="flex:1;padding:10px;border-radius:8px;border:1px solid var(--border2);background:var(--card);color:var(--muted);font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">📤 Importar CSV</button>
+    <button onclick="window.open('revisao_treino.html','_blank')" style="flex:1;padding:10px;border-radius:8px;border:1px solid var(--border2);background:var(--card);color:var(--muted);font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">📋 Revisão</button>
+  </div>
 
   <!-- Tarefas pendentes -->
   <div class="home-sec">⚠️ Tarefas pendentes — ajustes no sistema da academia</div>
   <div id="hListaTarefas"><div class="home-empty">Carregando...</div></div>
 
+  <!-- Revisões da semana -->
+  <div class="home-sec">📅 Revisões agendadas esta semana</div>
+  <div id="hListaRevisoes"><div class="home-empty">Carregando...</div></div>
+
+  <!-- Experiências em andamento -->
+  <div class="home-sec">⚡ Experiências em andamento</div>
+  <div id="hListaExp"><div class="home-empty">Carregando...</div></div>
+
   <!-- Desafios ativos -->
-  <div class="home-sec">⚡ Alunos com desafio ativo (21 dias)</div>
+  <div class="home-sec">🏃 Desafios ativos (21 dias)</div>
   <div id="hListaAtivos"><div class="home-empty">Carregando...</div></div>
 
-  <!-- Toda a carteira -->
-  <div class="home-sec">👥 Carteira completa</div>
-  <div id="hListaCarteira"><div class="home-empty">Carregando...</div></div>
+  <!-- Carteira ativa -->
+  <div class="home-sec" style="cursor:pointer" onclick="toggleCarteira()">
+    👥 Carteira ativa 
+    <span id="carteiraToggleIcon" style="font-size:12px;font-weight:normal">▾ ver todos</span>
+  </div>
+  <div id="hListaCarteira" style="display:none"><div class="home-empty">Carregando...</div></div>
 
-  <!-- Ir para revisão -->
-  <div style="margin-top:20px;padding:14px;background:var(--card);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;justify-content:space-between">
-    <div>
-      <div style="font-size:13px;font-weight:600">Revisão de Treino</div>
-      <div style="font-size:11px;color:var(--muted);margin-top:2px">Registrar revisão de um aluno</div>
+</div>
+
+<!-- MODAL: ADICIONAR ALUNO -->
+<div id="modalAddAluno" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;align-items:center;justify-content:center;padding:20px;overflow-y:auto">
+  <div style="background:var(--card);border:1px solid var(--border2);border-radius:16px;padding:24px;width:100%;max-width:440px;margin:auto">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800">Adicionar Aluno</div>
+      <button onclick="fecharModalHome('modalAddAluno')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:20px">✕</button>
     </div>
-    <button onclick="window.open('revisao_treino.html','_blank')" style="padding:8px 14px;border-radius:8px;border:1px solid var(--orange-border);background:var(--orange-dim);color:var(--orange);font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">Abrir →</button>
+    <div style="display:flex;gap:8px;margin-bottom:12px">
+      <button class="chip-opt active" id="addAlunoTipo-manual" onclick="selectAddAlunoTipo('manual')">✏️ Manual</button>
+      <button class="chip-opt" id="addAlunoTipo-csv" onclick="selectAddAlunoTipo('csv')">📤 CSV</button>
+    </div>
+    <!-- Manual -->
+    <div id="addAlunoManual">
+      <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:10px"><label style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em">Nome *</label><input type="text" id="aaaNome" placeholder="Nome completo" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px;color:var(--text);font-size:13px;outline:none;font-family:'DM Sans',sans-serif"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div style="display:flex;flex-direction:column;gap:5px"><label style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em">Matrícula</label><input type="text" id="aaaMatricula" placeholder="Ex: 2847" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px;color:var(--text);font-size:13px;outline:none;font-family:'DM Sans',sans-serif"></div>
+        <div style="display:flex;flex-direction:column;gap:5px"><label style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em">Idade</label><input type="number" id="aaaIdade" placeholder="Ex: 35" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px;color:var(--text);font-size:13px;outline:none;font-family:'DM Sans',sans-serif"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">
+        <div style="display:flex;flex-direction:column;gap:5px"><label style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em">Plano</label>
+          <select id="aaaPlano" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px;color:var(--text);font-size:13px;outline:none;font-family:'DM Sans',sans-serif">
+            <option value="anual">Anual</option><option value="mensal">Mensal</option><option value="recorrencia">Recorrência</option>
+          </select>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:5px"><label style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em">Vencimento</label><input type="date" id="aaaVencimento" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px;color:var(--text);font-size:13px;outline:none;font-family:'DM Sans',sans-serif"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px;margin-top:10px"><label style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em">Telefone / WhatsApp</label><input type="text" id="aaaTelefone" placeholder="(11) 99999-9999" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px;color:var(--text);font-size:13px;outline:none;font-family:'DM Sans',sans-serif"></div>
+      <button onclick="salvarNovoAluno()" style="width:100%;margin-top:14px;padding:13px;border-radius:10px;border:none;background:var(--orange);color:#000;font-size:14px;font-weight:800;cursor:pointer;font-family:'Syne',sans-serif">Adicionar à carteira</button>
+    </div>
+    <!-- CSV -->
+    <div id="addAlunoCSV" style="display:none">
+      <div style="background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:12px;font-size:12px;color:var(--muted);line-height:1.7">
+        <div style="font-weight:700;color:var(--text);margin-bottom:6px">Formato do CSV:</div>
+        <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--orange)">nome,matricula,plano,vencimento,idade,telefone</div>
+        <div style="margin-top:6px;font-size:11px">• Separador: vírgula<br>• Vencimento: dd/mm/aaaa<br>• Plano: anual / mensal / recorrencia<br>• Primeira linha = cabeçalho (ignorada)</div>
+      </div>
+      <div style="border:2px dashed var(--border2);border-radius:10px;padding:24px;text-align:center;cursor:pointer" onclick="document.getElementById('csvFileInput').click()">
+        <div style="font-size:24px;margin-bottom:8px">📤</div>
+        <div style="font-size:13px;font-weight:600">Clique para selecionar o arquivo CSV</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px">ou arraste aqui</div>
+        <input type="file" id="csvFileInput" accept=".csv" style="display:none" onchange="processarCSV(this)">
+      </div>
+      <div id="csvPreview" style="margin-top:10px;display:none"></div>
+      <button id="btnImportarCSV" onclick="importarCSV()" style="display:none;width:100%;margin-top:10px;padding:13px;border-radius:10px;border:none;background:var(--orange);color:#000;font-size:14px;font-weight:800;cursor:pointer;font-family:'Syne',sans-serif">Importar alunos</button>
+    </div>
   </div>
 </div>
 
+<!-- MODAL: NOVA EXPERIÊNCIA -->
+<div id="modalNovaExp" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;align-items:center;justify-content:center;padding:20px">
+  <div style="background:var(--card);border:1px solid var(--border2);border-radius:16px;padding:24px;width:100%;max-width:440px;margin:auto">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800">Nova Experiência</div>
+      <button onclick="fecharModalHome('modalNovaExp')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:20px">✕</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:10px"><label style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em">Nome do lead *</label><input type="text" id="expNome" placeholder="Nome completo" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px;color:var(--text);font-size:13px;outline:none;font-family:'DM Sans',sans-serif"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div style="display:flex;flex-direction:column;gap:5px"><label style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em">Duração</label>
+        <select id="expDuracao" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px;color:var(--text);font-size:13px;outline:none;font-family:'DM Sans',sans-serif">
+          <option value="5">5 dias (perfil 5%)</option><option value="10" selected>10 dias (perfil 95%)</option><option value="12">12 dias (perfil 95%)</option>
+        </select>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px"><label style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em">Data início *</label><input type="date" id="expInicio" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px;color:var(--text);font-size:13px;outline:none;font-family:'DM Sans',sans-serif"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">
+      <div style="display:flex;flex-direction:column;gap:5px"><label style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em">Perfil</label>
+        <select id="expPerfil" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px;color:var(--text);font-size:13px;outline:none;font-family:'DM Sans',sans-serif">
+          <option value="95">95% — Iniciante/sedentário</option><option value="5">5% — Treinado/autônomo</option>
+        </select>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px"><label style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em">Telefone</label><input type="text" id="expTelefone" placeholder="(11) 99999-9999" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px;color:var(--text);font-size:13px;outline:none;font-family:'DM Sans',sans-serif"></div>
+    </div>
+    <button onclick="salvarNovaExp()" style="width:100%;margin-top:14px;padding:13px;border-radius:10px;border:none;background:var(--orange);color:#000;font-size:14px;font-weight:800;cursor:pointer;font-family:'Syne',sans-serif">Iniciar experiência</button>
+  </div>
+</div>
 <!-- Botão flutuante home -->
 <button class="btn-home" id="btnHomeFixed" onclick="mostrarHome()">🏠 Home</button>
 
@@ -2011,6 +2101,210 @@ async function checkTarefa(id){
   }
 }
 
+// ── MODAIS HOME ───────────────────────────────────────────────
+function abrirModalAddAluno(){
+  document.getElementById('modalAddAluno').style.display='flex';
+  selectAddAlunoTipo('manual');
+}
+function abrirModalNovaExp(){
+  document.getElementById('modalNovaExp').style.display='flex';
+  document.getElementById('expInicio').value = new Date().toISOString().slice(0,10);
+}
+function fecharModalHome(id){ document.getElementById(id).style.display='none'; }
+function abrirUploadCSV(){ abrirModalAddAluno(); selectAddAlunoTipo('csv'); }
+
+function selectAddAlunoTipo(tipo){
+  document.getElementById('addAlunoManual').style.display = tipo==='manual'?'block':'none';
+  document.getElementById('addAlunoCSV').style.display = tipo==='csv'?'block':'none';
+  ['manual','csv'].forEach(t=>{
+    const btn = document.getElementById('addAlunoTipo-'+t);
+    if(btn) btn.classList.toggle('active', t===tipo);
+  });
+}
+
+// ── SALVAR NOVO ALUNO ─────────────────────────────────────────
+async function salvarNovoAluno(){
+  const nome = document.getElementById('aaaNome').value.trim();
+  const matricula = document.getElementById('aaaMatricula').value.trim();
+  const idade = parseInt(document.getElementById('aaaIdade').value)||null;
+  const plano = document.getElementById('aaaPlano').value;
+  const vencimento = document.getElementById('aaaVencimento').value||null;
+  const telefone = document.getElementById('aaaTelefone').value.trim()||null;
+
+  if(!nome){ showToast('Preencha o nome do aluno'); return; }
+  if(!sbSys || !currentAcademiaId){ showToast('Erro: não conectado'); return; }
+
+  const treinadorLocal = JSON.parse(localStorage.getItem('qg90_treinador')||'{}');
+
+  try {
+    const { data, error } = await sbSys.from('alunos').insert([{
+      academia_id: currentAcademiaId,
+      nome, matricula, idade, plano, vencimento, telefone,
+      treinador_id: treinadorLocal.id || null,
+      ativo: true,
+    }]).select().single();
+
+    if(error) throw new Error(error.message);
+    showToast('✅ Aluno adicionado à carteira!');
+    fecharModalHome('modalAddAluno');
+    // Limpar form
+    ['aaaNome','aaaMatricula','aaaIdade','aaaTelefone','aaaVencimento'].forEach(id=>{
+      const el=document.getElementById(id); if(el) el.value='';
+    });
+    await carregarDadosHome();
+  } catch(err){
+    showToast('Erro: '+err.message);
+  }
+}
+
+// ── IMPORTAR CSV ──────────────────────────────────────────────
+let csvDados = [];
+function processarCSV(input){
+  const file = input.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const lines = e.target.result.split('\n').filter(l=>l.trim());
+    csvDados = [];
+    // Pular header (primeira linha)
+    for(let i=1; i<lines.length; i++){
+      const cols = lines[i].split(',').map(c=>c.trim().replace(/^"|"$/g,''));
+      if(!cols[0]) continue;
+      // Converter data dd/mm/aaaa para aaaa-mm-dd
+      let venc = null;
+      if(cols[3]){
+        const parts = cols[3].split('/');
+        if(parts.length===3) venc = `${parts[2]}-${parts[1]}-${parts[0]}`;
+      }
+      csvDados.push({
+        nome: cols[0]||'',
+        matricula: cols[1]||null,
+        plano: cols[2]||'mensal',
+        vencimento: venc,
+        idade: parseInt(cols[4])||null,
+        telefone: cols[5]||null,
+      });
+    }
+    // Preview
+    const preview = document.getElementById('csvPreview');
+    preview.style.display = 'block';
+    preview.innerHTML = `
+      <div style="background:var(--green-dim);border:1px solid var(--green-border);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--green);margin-bottom:8px">
+        ✅ ${csvDados.length} aluno(s) identificado(s) no arquivo
+      </div>
+      <div style="max-height:150px;overflow-y:auto;font-size:11px;font-family:'DM Mono',monospace;color:var(--muted)">
+        ${csvDados.slice(0,5).map(a=>`<div style="padding:3px 0;border-bottom:1px solid var(--border)">${a.nome} · ${a.matricula||'—'} · ${a.plano} · ${a.vencimento||'—'}</div>`).join('')}
+        ${csvDados.length>5?`<div style="padding:4px 0;color:var(--muted)">... e mais ${csvDados.length-5} alunos</div>`:''}
+      </div>`;
+    document.getElementById('btnImportarCSV').style.display = 'block';
+  };
+  reader.readAsText(file, 'UTF-8');
+}
+
+async function importarCSV(){
+  if(!csvDados.length){ showToast('Nenhum dado para importar'); return; }
+  if(!sbSys || !currentAcademiaId){ showToast('Erro: não conectado'); return; }
+
+  const treinadorLocal = JSON.parse(localStorage.getItem('qg90_treinador')||'{}');
+  const btn = document.getElementById('btnImportarCSV');
+  btn.disabled = true;
+  btn.textContent = `Importando ${csvDados.length} alunos...`;
+
+  try {
+    const inserts = csvDados.map(a => ({
+      ...a,
+      academia_id: currentAcademiaId,
+      treinador_id: treinadorLocal.id || null,
+      ativo: true,
+    }));
+
+    const { error } = await sbSys.from('alunos').insert(inserts);
+    if(error) throw new Error(error.message);
+
+    showToast(`✅ ${csvDados.length} alunos importados!`);
+    fecharModalHome('modalAddAluno');
+    csvDados = [];
+    await carregarDadosHome();
+  } catch(err){
+    showToast('Erro: '+err.message);
+    btn.disabled = false;
+    btn.textContent = 'Importar alunos';
+  }
+}
+
+// ── SALVAR NOVA EXPERIÊNCIA ───────────────────────────────────
+async function salvarNovaExp(){
+  const nome = document.getElementById('expNome').value.trim();
+  const duracao = parseInt(document.getElementById('expDuracao').value);
+  const inicio = document.getElementById('expInicio').value;
+  const perfil = document.getElementById('expPerfil').value;
+  const telefone = document.getElementById('expTelefone').value.trim()||null;
+
+  if(!nome){ showToast('Preencha o nome do lead'); return; }
+  if(!inicio){ showToast('Preencha a data de início'); return; }
+  if(!sbSys || !currentAcademiaId){ showToast('Erro: não conectado'); return; }
+
+  const treinadorLocal = JSON.parse(localStorage.getItem('qg90_treinador')||'{}');
+  const dataFim = new Date(inicio+'T00:00:00');
+  dataFim.setDate(dataFim.getDate() + duracao);
+
+  try {
+    const { error } = await sbSys.from('experiencias').insert([{
+      academia_id: currentAcademiaId,
+      treinador_id: treinadorLocal.id || null,
+      nome, duracao, perfil, telefone,
+      data_inicio: inicio,
+      data_fim: dataFim.toISOString().slice(0,10),
+      status: 'andamento',
+      convertido: false,
+    }]);
+
+    if(error) throw new Error(error.message);
+    showToast('✅ Experiência iniciada!');
+    fecharModalHome('modalNovaExp');
+    document.getElementById('expNome').value='';
+    document.getElementById('expTelefone').value='';
+    await carregarDadosHome();
+  } catch(err){
+    showToast('Erro: '+err.message);
+  }
+}
+
+// ── TOGGLE CARTEIRA ───────────────────────────────────────────
+let carteiraVisivel = false;
+function toggleCarteira(){
+  carteiraVisivel = !carteiraVisivel;
+  const el = document.getElementById('hListaCarteira');
+  const icon = document.getElementById('carteiraToggleIcon');
+  if(el) el.style.display = carteiraVisivel ? 'block' : 'none';
+  if(icon) icon.textContent = carteiraVisivel ? '▴ ocultar' : '▾ ver todos';
+}
+
+// ── CONVERTER EXPERIÊNCIA ─────────────────────────────────────
+async function converterExp(id, nome){
+  if(!confirm(`Converter "${nome}" para aluno ativo?`)) return;
+  try {
+    await sbSys.from('experiencias').update({status:'convertida', convertido:true}).eq('id',id);
+    // Criar aluno na carteira
+    const treinadorLocal = JSON.parse(localStorage.getItem('qg90_treinador')||'{}');
+    await sbSys.from('alunos').insert([{
+      academia_id: currentAcademiaId,
+      treinador_id: treinadorLocal.id||null,
+      nome, ativo: true, plano:'anual',
+    }]);
+    showToast('✅ Lead convertido e adicionado à carteira!');
+    await carregarDadosHome();
+  } catch(err){ showToast('Erro: '+err.message); }
+}
+
+async function naoConverterExp(id){
+  try {
+    await sbSys.from('experiencias').update({status:'nao_convertida'}).eq('id',id);
+    showToast('Experiência encerrada sem conversão');
+    await carregarDadosHome();
+  } catch(err){ showToast('Erro: '+err.message); }
+}
+
 // ── HOME DO TREINADOR ─────────────────────────────────────────
 async function mostrarHome(){
   document.getElementById('home-view').classList.add('active');
@@ -2030,49 +2324,76 @@ async function carregarDadosHome(){
   if(!sbSys || !currentAcademiaId) return;
 
   try {
-    // Buscar treinador logado
     const treinadorLocal = JSON.parse(localStorage.getItem('qg90_treinador')||'{}');
     const treinadorId = treinadorLocal.id;
 
-    // Nome e academia
     document.getElementById('homeNomeTreinador').textContent = 'Olá, ' + (treinadorLocal.nome||'Treinador') + '!';
 
-    // Buscar planners do treinador
+    const hoje = new Date(); hoje.setHours(0,0,0,0);
+
+    // Buscar ALUNOS da carteira (tabela alunos, filtrado por treinador)
+    const { data: alunosCarteira } = await sbSys
+      .from('alunos')
+      .select('*')
+      .eq('academia_id', currentAcademiaId)
+      .eq('ativo', true)
+      .order('nome');
+
+    // Filtrar apenas alunos do treinador logado
+    const meusAlunos = (alunosCarteira||[]).filter(a => !treinadorId || a.treinador_id === treinadorId || !a.treinador_id);
+
+    // Buscar planners do treinador (para desafios e revisões)
     const { data: planners } = await sbSys
       .from('planners')
       .select('*, alunos(nome, matricula)')
       .eq('treinador_resp_id', treinadorId)
       .order('criado_em', {ascending: false});
 
-    const lista = planners || [];
-    const hoje = new Date();
-    hoje.setHours(0,0,0,0);
+    const listaPlanners = planners || [];
 
-    // Calcular KPIs
-    const carteira = lista.length;
-    const ativos = lista.filter(p => {
+    // Desafios ativos (planners com inicio_desafio nos últimos 21 dias)
+    const ativos = listaPlanners.filter(p => {
       if(!p.inicio_desafio) return false;
       const inicio = new Date(p.inicio_desafio + 'T00:00:00');
       const diff = Math.floor((hoje - inicio) / (1000*60*60*24));
       return diff >= 0 && diff <= 21;
     });
 
-    // Revisões desta semana (seg a dom)
+    // Revisões desta semana
     const diaSemana = hoje.getDay();
-    const seg = new Date(hoje); seg.setDate(hoje.getDate() - (diaSemana === 0 ? 6 : diaSemana - 1));
-    const dom = new Date(seg); dom.setDate(seg.getDate() + 6);
-    const revisoesSemana = lista.filter(p => {
+    const seg = new Date(hoje); seg.setDate(hoje.getDate() - (diaSemana===0?6:diaSemana-1));
+    const dom = new Date(seg); dom.setDate(seg.getDate()+6);
+    const revisoesSemana = listaPlanners.filter(p => {
       if(!p.revisao_treino_data) return false;
       const rev = new Date(p.revisao_treino_data + 'T00:00:00');
       return rev >= seg && rev <= dom;
     });
 
-    // KPIs
-    document.getElementById('hKpiCarteira').textContent = carteira || '0';
+    // Buscar EXPERIÊNCIAS do treinador
+    const { data: exps } = await sbSys
+      .from('experiencias')
+      .select('*')
+      .eq('academia_id', currentAcademiaId)
+      .eq('treinador_id', treinadorId)
+      .order('data_inicio', {ascending: false});
+
+    const listaExps = exps || [];
+    const expAndamento = listaExps.filter(e => e.status === 'andamento');
+    const expConvertidas = listaExps.filter(e => e.status === 'convertida');
+    const expFinalizadas = listaExps.filter(e => e.status !== 'andamento');
+    const pctConv = expFinalizadas.length > 0
+      ? Math.round((expConvertidas.length / expFinalizadas.length) * 100)
+      : 0;
+
+    // ── KPIs ──
+    document.getElementById('hKpiCarteira').textContent = meusAlunos.length || '0';
     document.getElementById('hKpiAtivos').textContent = ativos.length || '0';
     document.getElementById('hKpiRevisoes').textContent = revisoesSemana.length || '0';
+    document.getElementById('hKpiExpAndamento').textContent = expAndamento.length || '0';
+    document.getElementById('hKpiExpConvertidas').textContent = expConvertidas.length || '0';
+    document.getElementById('hKpiExpPct').textContent = listaExps.length > 0 ? pctConv+'%' : '—';
 
-    // Tarefas pendentes de ajuste no sistema
+    // ── TAREFAS PENDENTES ──
     const tarefasEl = document.getElementById('hListaTarefas');
     try {
       const { data: tarefas } = await sbSys
@@ -2089,85 +2410,98 @@ async function carregarDadosHome(){
           <div class="aluno-row" id="tarefa-${t.id}" style="flex-direction:column;align-items:flex-start;gap:8px;border-left:3px solid var(--yellow)">
             <div style="display:flex;align-items:center;justify-content:space-between;width:100%">
               <div>
-                <div class="aluno-nome">📋 ${t.aluno_nome || '—'}</div>
-                <div class="aluno-sub">Revisão: ${t.data_revisao ? new Date(t.data_revisao+'T00:00:00').toLocaleDateString('pt-BR') : '—'} · Por: ${t.treinador_revisao||'—'}</div>
+                <div class="aluno-nome">📋 ${t.aluno_nome||'—'}</div>
+                <div class="aluno-sub">Revisão: ${t.data_revisao?new Date(t.data_revisao+'T00:00:00').toLocaleDateString('pt-BR'):'—'} · Por: ${t.treinador_revisao||'—'}</div>
               </div>
               <button onclick="checkTarefa('${t.id}')" style="padding:6px 12px;border-radius:8px;border:1px solid var(--green-border);background:var(--green-dim);color:var(--green);font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;flex-shrink:0">✓ Feito</button>
             </div>
             <div style="width:100%">
-              ${(t.tarefas||[]).map(task=>`
-                <div style="font-size:12px;padding:5px 8px;background:#111;border-radius:6px;margin-bottom:4px;border-left:2px solid var(--yellow);color:var(--text)">
-                  ${task}
-                </div>`).join('')}
+              ${(t.tarefas||[]).map(task=>`<div style="font-size:12px;padding:5px 8px;background:#111;border-radius:6px;margin-bottom:4px;border-left:2px solid var(--yellow);color:var(--text)">${task}</div>`).join('')}
             </div>
             ${t.obs?`<div style="font-size:11px;color:var(--muted);font-style:italic">Obs: ${t.obs}</div>`:''}
           </div>`).join('');
       }
-    } catch(err){
-      tarefasEl.innerHTML = '<div class="home-empty">Crie a tabela tarefas_treinador no Supabase para ativar</div>';
-    }
+    } catch(e){ tarefasEl.innerHTML = '<div class="home-empty">✅ Sem tarefas pendentes</div>'; }
 
-    // Revisões da semana
+    // ── REVISÕES DA SEMANA ──
     const revEl = document.getElementById('hListaRevisoes');
-    if(revisoesSemana.length === 0){
-      revEl.innerHTML = '<div class="home-empty">Nenhuma revisão agendada esta semana</div>';
-    } else {
-      revEl.innerHTML = revisoesSemana.map(p => {
-        const nome = p.alunos?.nome || '—';
-        const data = new Date(p.revisao_treino_data + 'T00:00:00');
-        const diasSemana = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
-        const dataStr = diasSemana[data.getDay()] + ' ' + data.toLocaleDateString('pt-BR',{day:'numeric',month:'short'});
-        return `<div class="aluno-row">
-          <div class="aluno-av">${nome.charAt(0)}</div>
-          <div class="aluno-info">
-            <div class="aluno-nome">${nome}</div>
-            <div class="aluno-sub">Revisão: ${dataStr}</div>
-          </div>
-          <span class="abadge abadge-revisao">📅 ${dataStr}</span>
-        </div>`;
-      }).join('');
-    }
+    revEl.innerHTML = revisoesSemana.length === 0
+      ? '<div class="home-empty">Nenhuma revisão agendada esta semana</div>'
+      : revisoesSemana.map(p => {
+          const nome = p.alunos?.nome || '—';
+          const data = new Date(p.revisao_treino_data+'T00:00:00');
+          const ds = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+          const dataStr = ds[data.getDay()]+' '+data.toLocaleDateString('pt-BR',{day:'numeric',month:'short'});
+          return `<div class="aluno-row">
+            <div class="aluno-av">${nome.charAt(0)}</div>
+            <div class="aluno-info"><div class="aluno-nome">${nome}</div><div class="aluno-sub">Revisão: ${dataStr}</div></div>
+            <span class="abadge abadge-revisao">📅 ${dataStr}</span>
+          </div>`;
+        }).join('');
 
-    // Desafios ativos
-    const ativosEl = document.getElementById('hListaAtivos');
-    if(ativos.length === 0){
-      ativosEl.innerHTML = '<div class="home-empty">Nenhum aluno com desafio ativo</div>';
+    // ── EXPERIÊNCIAS EM ANDAMENTO ──
+    const expEl = document.getElementById('hListaExp');
+    if(expAndamento.length === 0){
+      expEl.innerHTML = '<div class="home-empty">Nenhuma experiência em andamento</div>';
     } else {
-      ativosEl.innerHTML = ativos.map(p => {
-        const nome = p.alunos?.nome || '—';
-        const inicio = new Date(p.inicio_desafio + 'T00:00:00');
+      expEl.innerHTML = expAndamento.map(e => {
+        const inicio = new Date(e.data_inicio+'T00:00:00');
         const dia = Math.floor((hoje - inicio) / (1000*60*60*24)) + 1;
-        return `<div class="aluno-row">
-          <div class="aluno-av">${nome.charAt(0)}</div>
+        const fim = new Date(e.data_fim+'T00:00:00');
+        const restam = Math.ceil((fim - hoje) / (1000*60*60*24));
+        return `<div class="aluno-row" style="border-left:3px solid var(--yellow)">
+          <div class="aluno-av" style="background:var(--yellow-dim);border-color:var(--yellow);color:var(--yellow)">${e.nome.charAt(0)}</div>
           <div class="aluno-info">
-            <div class="aluno-nome">${nome}</div>
-            <div class="aluno-sub">Dia ${dia} de 21 · Iniciou ${inicio.toLocaleDateString('pt-BR')}</div>
+            <div class="aluno-nome">${e.nome}</div>
+            <div class="aluno-sub">Dia ${dia} de ${e.duracao} · Perfil ${e.perfil}% · ${restam>0?restam+' dias restantes':'Finalizada'}</div>
           </div>
-          <span class="abadge abadge-ativo">⚡ Dia ${dia}</span>
+          <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0">
+            <button onclick="converterExp('${e.id}','${e.nome}')" style="padding:4px 8px;border-radius:6px;border:1px solid var(--green-border);background:var(--green-dim);color:var(--green);font-size:10px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">✅ Converteu</button>
+            <button onclick="naoConverterExp('${e.id}')" style="padding:4px 8px;border-radius:6px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-size:10px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">❌ Não conv.</button>
+          </div>
         </div>`;
       }).join('');
     }
 
-    // Carteira completa
+    // ── DESAFIOS ATIVOS ──
+    const ativosEl = document.getElementById('hListaAtivos');
+    ativosEl.innerHTML = ativos.length === 0
+      ? '<div class="home-empty">Nenhum aluno com desafio ativo</div>'
+      : ativos.map(p => {
+          const nome = p.alunos?.nome || '—';
+          const inicio = new Date(p.inicio_desafio+'T00:00:00');
+          const dia = Math.floor((hoje - inicio) / (1000*60*60*24)) + 1;
+          return `<div class="aluno-row">
+            <div class="aluno-av">${nome.charAt(0)}</div>
+            <div class="aluno-info"><div class="aluno-nome">${nome}</div><div class="aluno-sub">Dia ${dia} de 21 · Iniciou ${inicio.toLocaleDateString('pt-BR')}</div></div>
+            <span class="abadge abadge-ativo">⚡ Dia ${dia}</span>
+          </div>`;
+        }).join('');
+
+    // ── CARTEIRA COMPLETA (alunos da tabela alunos) ──
     const carteiraEl = document.getElementById('hListaCarteira');
-    if(lista.length === 0){
-      carteiraEl.innerHTML = '<div class="home-empty">Nenhum aluno cadastrado ainda.<br>Clique em "+ Novo Planner" para começar.</div>';
+    if(meusAlunos.length === 0){
+      carteiraEl.innerHTML = '<div class="home-empty">Carteira vazia. Clique em "+ Aluno" para adicionar.</div>';
     } else {
-      carteiraEl.innerHTML = lista.map(p => {
-        const nome = p.alunos?.nome || '—';
-        const isAtivo = ativos.some(a => a.id === p.id);
-        const temRevisao = revisoesSemana.some(r => r.id === p.id);
-        const badge = temRevisao
-          ? '<span class="abadge abadge-revisao">📅 Revisão</span>'
-          : isAtivo
-          ? '<span class="abadge abadge-ativo">⚡ Ativo</span>'
-          : '<span class="abadge abadge-sem">Sem desafio</span>';
-        const data = new Date(p.criado_em).toLocaleDateString('pt-BR',{day:'numeric',month:'short',year:'numeric'});
+      const DIAS_AVISO = 30;
+      carteiraEl.innerHTML = meusAlunos.map(a => {
+        const temDesafio = ativos.some(p => p.alunos?.nome === a.nome);
+        const venc = a.vencimento ? new Date(a.vencimento+'T00:00:00') : null;
+        const diasVenc = venc ? Math.ceil((venc - hoje) / (1000*60*60*24)) : null;
+        const aRenovar = diasVenc !== null && diasVenc <= DIAS_AVISO && diasVenc >= 0;
+        const vencido = diasVenc !== null && diasVenc < 0;
+        const badge = vencido
+          ? '<span class="abadge" style="background:var(--red-dim);color:var(--red);border:1px solid rgba(239,68,68,.25)">🔴 Vencido</span>'
+          : aRenovar
+          ? `<span class="abadge" style="background:var(--yellow-dim);color:var(--yellow);border:1px solid rgba(234,179,8,.25)">⚠️ ${diasVenc}d</span>`
+          : temDesafio
+          ? '<span class="abadge abadge-ativo">⚡ Desafio</span>'
+          : '<span class="abadge abadge-sem">'+(a.plano||'—')+'</span>';
         return `<div class="aluno-row">
-          <div class="aluno-av">${nome.charAt(0)}</div>
+          <div class="aluno-av">${a.nome.charAt(0)}</div>
           <div class="aluno-info">
-            <div class="aluno-nome">${nome}</div>
-            <div class="aluno-sub">Planner criado em ${data}</div>
+            <div class="aluno-nome">${a.nome}</div>
+            <div class="aluno-sub">${a.matricula?'#'+a.matricula+' · ':''} ${venc?'Vence: '+venc.toLocaleDateString('pt-BR'):a.plano||''}</div>
           </div>
           ${badge}
         </div>`;
