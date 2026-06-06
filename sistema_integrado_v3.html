@@ -36,6 +36,29 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 ══════════════════════════════════════════════════ */
 #planner-view { min-height:100vh; }
 
+/* ── HOME TREINADOR ── */
+#home-view{display:none;padding:16px;max-width:600px;margin:0 auto}
+#home-view.active{display:block}
+.home-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px}
+.home-kpi{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center}
+.home-kpi-val{font-family:"Syne",sans-serif;font-size:26px;font-weight:800;color:var(--orange)}
+.home-kpi-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:3px}
+.home-sec{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;margin:20px 0 10px;display:flex;align-items:center;gap:8px}
+.home-sec::after{content:"";flex:1;height:1px;background:var(--border)}
+.aluno-row{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:6px;display:flex;align-items:center;gap:12px;transition:all .15s}
+.aluno-row:hover{border-color:var(--orange-border)}
+.aluno-av{width:34px;height:34px;border-radius:50%;background:var(--orange-dim);border:2px solid var(--orange-border);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--orange);flex-shrink:0}
+.aluno-info{flex:1;min-width:0}
+.aluno-nome{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.aluno-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.abadge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;white-space:nowrap;flex-shrink:0}
+.abadge-ativo{background:rgba(34,197,94,.1);color:#22C55E;border:1px solid rgba(34,197,94,.25)}
+.abadge-revisao{background:var(--orange-dim);color:var(--orange);border:1px solid var(--orange-border)}
+.abadge-sem{background:#1A1A1A;color:var(--muted)}
+.home-empty{text-align:center;padding:24px;color:var(--muted);font-size:13px;background:var(--card);border-radius:10px;border:1px solid var(--border)}
+.btn-home{position:fixed;bottom:20px;right:16px;padding:10px 16px;border-radius:24px;background:var(--orange);border:none;color:#000;font-size:12px;font-weight:800;cursor:pointer;font-family:"Syne",sans-serif;box-shadow:0 4px 16px rgba(232,119,34,.4);z-index:90;display:none;align-items:center;gap:6px}
+.btn-home.visible{display:flex}
+
 .p-header{background:#0D0D0D;border-bottom:1px solid var(--border);padding:0 24px;position:sticky;top:0;z-index:50}
 .p-header-inner{max-width:900px;margin:0 auto;height:52px;display:flex;align-items:center;gap:16px}
 .p-logo{width:30px;height:30px;background:var(--orange);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:13px;font-weight:900;color:#000;flex-shrink:0;cursor:pointer;overflow:hidden}
@@ -411,6 +434,48 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 <!-- ════════════════════════════════════════════════
      VIEW: PLANNER
 ════════════════════════════════════════════════ -->
+<!-- ── HOME DO TREINADOR ── -->
+<div id="home-view">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+    <div>
+      <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800" id="homeNomeTreinador">Olá!</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:2px" id="homeNomeAcademia">Departamento Técnico</div>
+    </div>
+    <button onclick="irParaPlanner()" style="padding:10px 16px;border-radius:10px;border:none;background:var(--orange);color:#000;font-size:13px;font-weight:800;cursor:pointer;font-family:'Syne',sans-serif">+ Novo Planner</button>
+  </div>
+
+  <!-- KPIs -->
+  <div class="home-kpis">
+    <div class="home-kpi"><div class="home-kpi-val" id="hKpiCarteira">—</div><div class="home-kpi-label">Carteira</div></div>
+    <div class="home-kpi"><div class="home-kpi-val" id="hKpiAtivos">—</div><div class="home-kpi-label">Desafios ativos</div></div>
+    <div class="home-kpi"><div class="home-kpi-val" id="hKpiRevisoes">—</div><div class="home-kpi-label">Revisões semana</div></div>
+  </div>
+
+  <!-- Revisões da semana -->
+  <div class="home-sec">📅 Revisões agendadas esta semana</div>
+  <div id="hListaRevisoes"><div class="home-empty">Carregando...</div></div>
+
+  <!-- Desafios ativos -->
+  <div class="home-sec">⚡ Alunos com desafio ativo (21 dias)</div>
+  <div id="hListaAtivos"><div class="home-empty">Carregando...</div></div>
+
+  <!-- Toda a carteira -->
+  <div class="home-sec">👥 Carteira completa</div>
+  <div id="hListaCarteira"><div class="home-empty">Carregando...</div></div>
+
+  <!-- Ir para revisão -->
+  <div style="margin-top:20px;padding:14px;background:var(--card);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;justify-content:space-between">
+    <div>
+      <div style="font-size:13px;font-weight:600">Revisão de Treino</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:2px">Registrar revisão de um aluno</div>
+    </div>
+    <button onclick="window.open('revisao_treino.html','_blank')" style="padding:8px 14px;border-radius:8px;border:1px solid var(--orange-border);background:var(--orange-dim);color:var(--orange);font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">Abrir →</button>
+  </div>
+</div>
+
+<!-- Botão flutuante home -->
+<button class="btn-home" id="btnHomeFixed" onclick="mostrarHome()">🏠 Home</button>
+
 <div class="view active" id="planner-view">
 
   <div class="p-header">
@@ -1926,6 +1991,139 @@ function copiarCodigo(codigo){
   navigator.clipboard?.writeText(codigo).then(()=>showToast('Código copiado! ✓')).catch(()=>showToast('Código: '+codigo));
 }
 
+// ── HOME DO TREINADOR ─────────────────────────────────────────
+async function mostrarHome(){
+  document.getElementById('home-view').classList.add('active');
+  document.getElementById('planner-view').classList.remove('active');
+  document.getElementById('btnHomeFixed').classList.remove('visible');
+  await carregarDadosHome();
+}
+
+function irParaPlanner(){
+  document.getElementById('home-view').classList.remove('active');
+  document.getElementById('planner-view').classList.add('active');
+  document.getElementById('btnHomeFixed').classList.add('visible');
+  initPlanner();
+}
+
+async function carregarDadosHome(){
+  if(!sbSys || !currentAcademiaId) return;
+
+  try {
+    // Buscar treinador logado
+    const treinadorLocal = JSON.parse(localStorage.getItem('qg90_treinador')||'{}');
+    const treinadorId = treinadorLocal.id;
+
+    // Nome e academia
+    document.getElementById('homeNomeTreinador').textContent = 'Olá, ' + (treinadorLocal.nome||'Treinador') + '!';
+
+    // Buscar planners do treinador
+    const { data: planners } = await sbSys
+      .from('planners')
+      .select('*, alunos(nome, matricula)')
+      .eq('treinador_resp_id', treinadorId)
+      .order('criado_em', {ascending: false});
+
+    const lista = planners || [];
+    const hoje = new Date();
+    hoje.setHours(0,0,0,0);
+
+    // Calcular KPIs
+    const carteira = lista.length;
+    const ativos = lista.filter(p => {
+      if(!p.inicio_desafio) return false;
+      const inicio = new Date(p.inicio_desafio + 'T00:00:00');
+      const diff = Math.floor((hoje - inicio) / (1000*60*60*24));
+      return diff >= 0 && diff <= 21;
+    });
+
+    // Revisões desta semana (seg a dom)
+    const diaSemana = hoje.getDay();
+    const seg = new Date(hoje); seg.setDate(hoje.getDate() - (diaSemana === 0 ? 6 : diaSemana - 1));
+    const dom = new Date(seg); dom.setDate(seg.getDate() + 6);
+    const revisoesSemana = lista.filter(p => {
+      if(!p.revisao_treino_data) return false;
+      const rev = new Date(p.revisao_treino_data + 'T00:00:00');
+      return rev >= seg && rev <= dom;
+    });
+
+    // KPIs
+    document.getElementById('hKpiCarteira').textContent = carteira || '0';
+    document.getElementById('hKpiAtivos').textContent = ativos.length || '0';
+    document.getElementById('hKpiRevisoes').textContent = revisoesSemana.length || '0';
+
+    // Revisões da semana
+    const revEl = document.getElementById('hListaRevisoes');
+    if(revisoesSemana.length === 0){
+      revEl.innerHTML = '<div class="home-empty">Nenhuma revisão agendada esta semana</div>';
+    } else {
+      revEl.innerHTML = revisoesSemana.map(p => {
+        const nome = p.alunos?.nome || '—';
+        const data = new Date(p.revisao_treino_data + 'T00:00:00');
+        const diasSemana = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+        const dataStr = diasSemana[data.getDay()] + ' ' + data.toLocaleDateString('pt-BR',{day:'numeric',month:'short'});
+        return `<div class="aluno-row">
+          <div class="aluno-av">${nome.charAt(0)}</div>
+          <div class="aluno-info">
+            <div class="aluno-nome">${nome}</div>
+            <div class="aluno-sub">Revisão: ${dataStr}</div>
+          </div>
+          <span class="abadge abadge-revisao">📅 ${dataStr}</span>
+        </div>`;
+      }).join('');
+    }
+
+    // Desafios ativos
+    const ativosEl = document.getElementById('hListaAtivos');
+    if(ativos.length === 0){
+      ativosEl.innerHTML = '<div class="home-empty">Nenhum aluno com desafio ativo</div>';
+    } else {
+      ativosEl.innerHTML = ativos.map(p => {
+        const nome = p.alunos?.nome || '—';
+        const inicio = new Date(p.inicio_desafio + 'T00:00:00');
+        const dia = Math.floor((hoje - inicio) / (1000*60*60*24)) + 1;
+        return `<div class="aluno-row">
+          <div class="aluno-av">${nome.charAt(0)}</div>
+          <div class="aluno-info">
+            <div class="aluno-nome">${nome}</div>
+            <div class="aluno-sub">Dia ${dia} de 21 · Iniciou ${inicio.toLocaleDateString('pt-BR')}</div>
+          </div>
+          <span class="abadge abadge-ativo">⚡ Dia ${dia}</span>
+        </div>`;
+      }).join('');
+    }
+
+    // Carteira completa
+    const carteiraEl = document.getElementById('hListaCarteira');
+    if(lista.length === 0){
+      carteiraEl.innerHTML = '<div class="home-empty">Nenhum aluno cadastrado ainda.<br>Clique em "+ Novo Planner" para começar.</div>';
+    } else {
+      carteiraEl.innerHTML = lista.map(p => {
+        const nome = p.alunos?.nome || '—';
+        const isAtivo = ativos.some(a => a.id === p.id);
+        const temRevisao = revisoesSemana.some(r => r.id === p.id);
+        const badge = temRevisao
+          ? '<span class="abadge abadge-revisao">📅 Revisão</span>'
+          : isAtivo
+          ? '<span class="abadge abadge-ativo">⚡ Ativo</span>'
+          : '<span class="abadge abadge-sem">Sem desafio</span>';
+        const data = new Date(p.criado_em).toLocaleDateString('pt-BR',{day:'numeric',month:'short',year:'numeric'});
+        return `<div class="aluno-row">
+          <div class="aluno-av">${nome.charAt(0)}</div>
+          <div class="aluno-info">
+            <div class="aluno-nome">${nome}</div>
+            <div class="aluno-sub">Planner criado em ${data}</div>
+          </div>
+          ${badge}
+        </div>`;
+      }).join('');
+    }
+
+  } catch(err){
+    console.warn('Erro home:', err);
+  }
+}
+
 // ── LOGOUT ───────────────────────────────────────────────────
 function fazerLogout(){
   localStorage.removeItem('qg90_user');
@@ -1975,12 +2173,12 @@ async function initComSupabase(){
       // 5. Iniciar planner APÓS ter os treinadores do banco
       initPlanner();
 
-      // 6. Forçar populate com dados do banco (sobrescreve simulados)
+      // 5. Forçar populate com dados do banco (sobrescreve simulados)
       if(window.TREINADORES_DB && window.TREINADORES_DB.length > 0){
         populateTreinadoresDB(window.TREINADORES_DB);
       }
 
-      // 7. Pré-selecionar treinador logado
+      // 6. Pré-selecionar treinador logado
       const sel = document.getElementById('sel-treinador-planner');
       if(sel){
         for(let opt of sel.options){
@@ -1991,13 +2189,21 @@ async function initComSupabase(){
           }
         }
       }
-      return; // já chamou initPlanner, não chama de novo
+
+      // 7. Mostrar HOME em vez do planner direto
+      document.getElementById('planner-view').classList.remove('active');
+      document.getElementById('home-view').classList.add('active');
+      document.getElementById('btnHomeFixed').classList.remove('visible');
+      await carregarDadosHome();
+
+      return;
     }
   } catch(err){
     console.warn('Supabase init error:', err);
   }
 
-  initPlanner(); // fallback se não encontrou treinador no banco
+  initPlanner();
+  // Sem banco: mostra planner direto com botão home escondido
 }
 
 // ── CARREGAR TREINADORES DO BANCO ─────────────────────────────
