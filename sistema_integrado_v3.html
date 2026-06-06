@@ -1057,13 +1057,17 @@ function initPlanner(){
 }
 
 function populateTreinadores(){
-  // Try multiple times to ensure DOM is ready
+  // Se já carregou do banco, não sobrescreve com simulados
+  if(window.TREINADORES_DB && window.TREINADORES_DB.length > 0){
+    populateTreinadoresDB(window.TREINADORES_DB);
+    return;
+  }
+  // Fallback: lista simulada (só se banco não retornou nada)
   const tryPopulate = () => {
     let found = false;
     ['sel-treinador-resp','sel-treinador-planner'].forEach(id=>{
       const sel=document.getElementById(id);
       if(!sel) return;
-      // Clear existing options except first
       while(sel.options.length > 1) sel.remove(1);
       TREINADORES.forEach(t=>{
         const o=document.createElement('option');
@@ -1960,7 +1964,6 @@ async function initComSupabase(){
 
     if(treinador){
       currentAcademiaId = treinador.academia_id;
-      // Salvar no localStorage para uso no sistema
       localStorage.setItem('qg90_treinador', JSON.stringify(treinador));
 
       // 3. Carregar treinadores da mesma academia
@@ -1969,7 +1972,15 @@ async function initComSupabase(){
       // 4. Carregar nome/logo da academia
       await carregarAcademia(treinador.academia_id);
 
-      // 5. Pré-selecionar treinador logado como "planner feito por"
+      // 5. Iniciar planner APÓS ter os treinadores do banco
+      initPlanner();
+
+      // 6. Forçar populate com dados do banco (sobrescreve simulados)
+      if(window.TREINADORES_DB && window.TREINADORES_DB.length > 0){
+        populateTreinadoresDB(window.TREINADORES_DB);
+      }
+
+      // 7. Pré-selecionar treinador logado
       const sel = document.getElementById('sel-treinador-planner');
       if(sel){
         for(let opt of sel.options){
@@ -1980,13 +1991,13 @@ async function initComSupabase(){
           }
         }
       }
+      return; // já chamou initPlanner, não chama de novo
     }
   } catch(err){
     console.warn('Supabase init error:', err);
-    // Fallback: usa dados simulados (sistema funciona mesmo offline)
   }
 
-  initPlanner();
+  initPlanner(); // fallback se não encontrou treinador no banco
 }
 
 // ── CARREGAR TREINADORES DO BANCO ─────────────────────────────
@@ -1996,13 +2007,13 @@ async function carregarTreinadores(academiaId){
       .from('treinadores')
       .select('id, nome, tipo')
       .eq('academia_id', academiaId)
-      .eq('ativo', true)
       .order('nome');
 
     if(lista && lista.length > 0){
-      // Substituir lista simulada pelos treinadores reais
       window.TREINADORES_DB = lista;
       populateTreinadoresDB(lista);
+    } else {
+      console.warn('Nenhum treinador encontrado para academia:', academiaId);
     }
   } catch(err){
     console.warn('Erro ao carregar treinadores:', err);
