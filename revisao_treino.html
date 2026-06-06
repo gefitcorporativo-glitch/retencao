@@ -165,25 +165,13 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
       <div class="field">
         <label>Treinador(a) responsável (carteira)</label>
         <select id="f-treinador-resp" oninput="st.treinadorResp=this.value">
-          <option value="">Selecionar...</option>
-          <option>Ana — Treinador(a) 01 - QG.90</option>
-          <option>Caio — Treinador(a) 02 - QG.90</option>
-          <option>Diogo — Treinador(a) 03 - QG.90</option>
-          <option>Fernanda — Treinador(a) 04 - QG.90</option>
-          <option>Lucas — Treinador(a) 05 - QG.90</option>
-          <option>Mariana — Treinador(a) 06 - QG.90</option>
+          <option value="">Carregando treinadores...</option>
         </select>
       </div>
       <div class="field">
         <label>Revisão realizada por</label>
         <select id="f-treinador-revisao" oninput="st.treinadorRevisao=this.value">
-          <option value="">Selecionar (pode ser diferente)...</option>
-          <option>Ana — Treinador(a) 01 - QG.90</option>
-          <option>Caio — Treinador(a) 02 - QG.90</option>
-          <option>Diogo — Treinador(a) 03 - QG.90</option>
-          <option>Fernanda — Treinador(a) 04 - QG.90</option>
-          <option>Lucas — Treinador(a) 05 - QG.90</option>
-          <option>Mariana — Treinador(a) 06 - QG.90</option>
+          <option value="">Carregando treinadores...</option>
         </select>
       </div>
     </div>
@@ -232,15 +220,16 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 
   <!-- ── STEP 1: EXERCÍCIOS ── -->
   <div class="step-panel" id="panel-1">
-    <div class="sec-label">Ajustes de exercícios (máx. 3)</div>
+    <div class="sec-label">Ajustes de exercícios</div>
 
     <div id="exCards"></div>
+    <button onclick="adicionarExercicio()" id="btnAddEx" style="width:100%;padding:10px;border-radius:8px;border:1px dashed var(--border2);background:transparent;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;margin-bottom:10px;transition:all .15s" onmouseover="this.style.borderColor='var(--orange)';this.style.color='var(--orange)'" onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--muted)'">+ Adicionar ajuste de exercício</button>
 
     <div class="script-panel">
       <div style="font-size:10px;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">💬 Script durante os ajustes</div>
-      <div class="script-line">"Vou trocar esse exercício por um que vai trabalhar melhor o que identificamos no seu mapeamento."</div>
+      <div class="script-line">"Vou ajustar esse exercício para trabalhar melhor o que identificamos no seu mapeamento."</div>
       <div class="script-line">"Presta atenção na amplitude — quero que você sinta isso aqui [indicar o músculo]."</div>
-      <div class="script-tip">💡 Máximo 3 trocas. Foque nos exercícios principais dos grupos prioritários. Registre o antes e o depois para o histórico do aluno.</div>
+      <div class="script-tip">💡 Registre cada ajuste — adição, retirada ou modificação. Ao salvar, vira tarefa para você atualizar no sistema da academia.</div>
     </div>
   </div>
 
@@ -465,9 +454,8 @@ const st = {
   treinadorResp:'', treinadorRevisao:'',
   status:'realizada', jornada:'', cicloNum:'',
   exercicios:[
-    {de:'',para:'',motivo:''},
-    {de:'',para:'',motivo:''},
-    {de:'',para:'',motivo:''},
+    {de:'',para:'',motivo:'',tipo:'ajustar'},
+    {de:'',para:'',motivo:'',tipo:'ajustar'},
   ],
   metodosSel:[], metodoObs:'',
   peso:'', supEx:'', supKgI:'', supRepsI:'', supKgA:'', supRepsA:'',
@@ -519,32 +507,71 @@ function renderStepsBar(){
 
 // ── EXERCÍCIOS ───────────────────────────────────────────────
 function renderExCards(){
-  const c = document.getElementById('exCards');
-  c.innerHTML = '';
+  const container = document.getElementById('exCards');
+  container.innerHTML = '';
   st.exercicios.forEach((ex,i)=>{
     const div = document.createElement('div');
     div.className = 'ex-card';
+    div.id = 'ex-card-'+i;
+    const tipoAtual = ex.tipo || 'ajustar';
     div.innerHTML = `
-      <div class="ex-num">Ajuste ${i+1} de 3 ${i===0?'<span style="color:var(--orange)">*</span>':''}</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div class="ex-num" style="margin-bottom:0">Ajuste ${i+1}</div>
+        ${i>=2?`<button onclick="removerExercicio(${i})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:2px 8px">✕</button>`:''}
+      </div>
       <div class="ex-fields">
         <div class="field">
-          <label>Exercício anterior</label>
+          <label>Tipo de ajuste</label>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px">
+            <button class="chip-opt ${tipoAtual==='adicionar'?'active':''}" onclick="setTipoEx(${i},'adicionar',this)">➕ Adicionar</button>
+            <button class="chip-opt ${tipoAtual==='retirar'?'active':''}" onclick="setTipoEx(${i},'retirar',this)">➖ Retirar</button>
+            <button class="chip-opt ${tipoAtual==='ajustar'?'active':''}" onclick="setTipoEx(${i},'ajustar',this)">🔄 Ajustar</button>
+          </div>
+        </div>
+        <div class="field" id="ex-de-${i}" style="${tipoAtual==='adicionar'?'display:none':'display:flex;flex-direction:column;gap:5px'}">
+          <label>${tipoAtual==='retirar'?'Exercício a retirar':'Exercício atual'}</label>
           <select onchange="st.exercicios[${i}].de=this.value">
-            <option value="">Selecionar ou digitar...</option>
+            <option value="">Selecionar...</option>
             ${EXERCICIOS_ANT.map(e=>`<option ${ex.de===e?'selected':''}>${e}</option>`).join('')}
           </select>
         </div>
-        <div class="field">
-          <label>Exercício novo / ajuste realizado</label>
-          <input type="text" placeholder="Ex: Rosca Scott com halteres" value="${ex.para}" oninput="st.exercicios[${i}].para=this.value">
+        <div class="field" id="ex-para-${i}" style="${tipoAtual==='retirar'?'display:none':'display:flex;flex-direction:column;gap:5px'}">
+          <label>${tipoAtual==='adicionar'?'Exercício a adicionar':'Exercício substituto / ajuste'}</label>
+          <input type="text" placeholder="${tipoAtual==='adicionar'?'Ex: Rosca Scott com halteres':'Ex: Mesmo exercício com amplitude reduzida'}" value="${ex.para}" oninput="st.exercicios[${i}].para=this.value">
         </div>
         <div class="field">
-          <label>Motivo / observação</label>
-          <input type="text" placeholder="Ex: Melhor isolamento do bíceps" value="${ex.motivo}" oninput="st.exercicios[${i}].motivo=this.value">
+          <label>Observações</label>
+          <input type="text" placeholder="Detalhes do ajuste ou motivo..." value="${ex.motivo}" oninput="st.exercicios[${i}].motivo=this.value">
         </div>
       </div>`;
-    c.appendChild(div);
+    container.appendChild(div);
   });
+  const btnAdd = document.getElementById('btnAddEx');
+  if(btnAdd) btnAdd.style.display = st.exercicios.length >= 5 ? 'none' : 'block';
+}
+
+function setTipoEx(i, tipo, btn){
+  st.exercicios[i].tipo = tipo;
+  const card = document.getElementById('ex-card-'+i);
+  if(card) card.querySelectorAll('.chip-opt').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const deEl = document.getElementById('ex-de-'+i);
+  const paraEl = document.getElementById('ex-para-'+i);
+  if(deEl){ deEl.style.display = tipo==='adicionar'?'none':'flex'; deEl.style.flexDirection='column'; deEl.style.gap='5px'; }
+  if(paraEl){ paraEl.style.display = tipo==='retirar'?'none':'flex'; paraEl.style.flexDirection='column'; paraEl.style.gap='5px'; }
+  if(deEl) deEl.querySelector('label').textContent = tipo==='retirar'?'Exercício a retirar':'Exercício atual';
+  if(paraEl) paraEl.querySelector('label').textContent = tipo==='adicionar'?'Exercício a adicionar':'Exercício substituto / ajuste';
+}
+
+function adicionarExercicio(){
+  if(st.exercicios.length >= 5) return;
+  st.exercicios.push({de:'',para:'',motivo:'',tipo:'ajustar'});
+  renderExCards();
+}
+
+function removerExercicio(i){
+  st.exercicios.splice(i,1);
+  renderExCards();
 }
 
 // ── MÉTODOS ──────────────────────────────────────────────────
@@ -714,12 +741,108 @@ function updateNav(){
 }
 
 function finalizarRevisao(){
-  showToast('✅ Revisão salva com sucesso!');
+  salvarRevisaoSupabase();
+}
+
+async function salvarRevisaoSupabase(){
+  showToast('💾 Salvando revisão...');
+  
+  try {
+    if(typeof window.supabase !== 'undefined'){
+      const SUPABASE_URL = 'https://xpvedihpejivnkssryhc.supabase.co';
+      const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhwdmVkaWhwZWppdm5rc3NyeWhjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MzM2OTEsImV4cCI6MjA5NTMwOTY5MX0.23eRl7PSoak-YGS91N8lBLIRC0MqHRh5Su1r1Zr6CC4';
+      const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+      // Salvar revisão como tarefa pendente
+      const tarefas = st.exercicios
+        .filter(e => e.de || e.para)
+        .map(e => {
+          const tipo = e.tipo || 'ajustar';
+          let descricao = '';
+          if(tipo === 'adicionar') descricao = `Adicionar: ${e.para}`;
+          else if(tipo === 'retirar') descricao = `Retirar: ${e.de}`;
+          else descricao = `Ajustar: ${e.de} → ${e.para}`;
+          if(e.motivo) descricao += ` (${e.motivo})`;
+          return descricao;
+        });
+
+      if(tarefas.length > 0){
+        await sb.from('tarefas_treinador').insert([{
+          aluno_nome: st.aluno,
+          treinador_resp: st.treinadorResp,
+          treinador_revisao: st.treinadorRevisao,
+          data_revisao: st.data,
+          tarefas: tarefas,
+          metodos: st.metodosSel,
+          obs: st.obs,
+          status: 'pendente',
+        }]);
+      }
+    }
+  } catch(err){
+    console.warn('Erro ao salvar revisão:', err);
+  }
+
+  showToast('✅ Revisão salva!');
   setTimeout(()=>{
-    if(confirm('Revisão registrada! Deseja iniciar uma nova revisão?')){
+    if(confirm('Revisão registrada! As tarefas de ajuste aparecerão na Home do Treinador.\n\nDeseja iniciar uma nova revisão?')){
       location.reload();
     }
-  },1500);
+  }, 1500);
+}
+
+// ── SUPABASE — CARREGAR TREINADORES ──────────────────────────
+async function carregarTreinadoresRevisao(){
+  try {
+    if(typeof window.supabase === 'undefined') return;
+    
+    const SUPABASE_URL = 'https://xpvedihpejivnkssryhc.supabase.co';
+    const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhwdmVkaWhwZWppdm5rc3NyeWhjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MzM2OTEsImV4cCI6MjA5NTMwOTY5MX0.23eRl7PSoak-YGS91N8lBLIRC0MqHRh5Su1r1Zr6CC4';
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+    // Pegar academia do treinador logado via localStorage
+    const treinadorLocal = JSON.parse(localStorage.getItem('qg90_treinador')||'{}');
+    const academiaId = treinadorLocal.academia_id;
+    if(!academiaId) return;
+
+    const { data: lista } = await sb
+      .from('treinadores')
+      .select('id, nome, tipo')
+      .eq('academia_id', academiaId)
+      .order('nome');
+
+    if(!lista || lista.length === 0) return;
+
+    ['f-treinador-resp','f-treinador-revisao'].forEach(selId => {
+      const sel = document.getElementById(selId);
+      if(!sel) return;
+      const placeholder = selId === 'f-treinador-revisao' ? 'Selecionar (pode ser diferente)...' : 'Selecionar...';
+      sel.innerHTML = `<option value="">${placeholder}</option>`;
+      lista.forEach(t => {
+        const o = document.createElement('option');
+        o.value = t.nome;
+        o.textContent = t.nome + (t.tipo ? ' ('+t.tipo+')' : '');
+        sel.appendChild(o);
+      });
+    });
+
+    // Pré-selecionar treinador logado
+    if(treinadorLocal.nome){
+      ['f-treinador-resp','f-treinador-revisao'].forEach(selId => {
+        const sel = document.getElementById(selId);
+        if(!sel) return;
+        for(let opt of sel.options){
+          if(opt.value === treinadorLocal.nome){
+            sel.value = treinadorLocal.nome;
+            break;
+          }
+        }
+      });
+    }
+
+  } catch(err){
+    console.warn('Erro ao carregar treinadores:', err);
+  }
 }
 
 // ── TOAST ────────────────────────────────────────────────────
@@ -729,6 +852,11 @@ function showToast(msg){
 }
 
 init();
+// Carregar treinadores do banco após SDK carregar
+window.addEventListener('load', ()=>{
+  setTimeout(carregarTreinadoresRevisao, 500);
+});
 </script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </body>
 </html>
