@@ -407,17 +407,27 @@ async function fazerLogin(){
 
 async function loginSucesso(user){
   sessaoUser = user;
-  // Buscar treinador/gestor
-  const {data:t} = await sb.from('treinadores').select('id,nome,academia_id').eq('user_id',user.id).single();
-  if(!t){ showErr('Perfil não encontrado. Use o acesso de treinador ou gestor.'); return; }
 
-  treinadorId = t.id;
-  academiaId = t.academia_id;
+  // Buscar primeiro em treinadores, depois em gestores
+  let perfil = null;
+  let tipo = null;
+
+  const {data:t} = await sb.from('treinadores').select('id,nome,academia_id').eq('user_id',user.id).single();
+  if(t){ perfil=t; tipo='treinador'; treinadorId=t.id; }
+
+  if(!perfil){
+    const {data:g} = await sb.from('gestores').select('id,nome,academia_id').eq('user_id',user.id).single();
+    if(g){ perfil=g; tipo='gestor'; treinadorId=g.id; }
+  }
+
+  if(!perfil){ showErr('Perfil não encontrado. Verifique suas credenciais com a equipe QG.90.'); return; }
+
+  academiaId = perfil.academia_id;
 
   // Buscar nome academia
   const {data:acad} = await sb.from('academias').select('nome').eq('id',academiaId).single();
 
-  document.getElementById('userBadgeNome').textContent = (acad?.nome||'Academia') + ' · ' + t.nome;
+  document.getElementById('userBadgeNome').textContent = (acad?.nome||'Academia') + ' · ' + perfil.nome;
   document.getElementById('userBadge').style.display='flex';
   document.getElementById('sec0').classList.remove('active');
   document.getElementById('secApp').classList.add('active');
