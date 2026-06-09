@@ -395,6 +395,36 @@ tr:hover td{background:rgba(255,255,255,.02)}
   </div>
 </div>
 
+<!-- MODAL MÓDULOS -->
+<div class="modal-bg" id="modalModulos">
+  <div class="modal">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <div class="modal-title" style="margin:0">🔧 Módulos da Academia</div>
+      <button onclick="fecharModal('modalModulos')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:20px">✕</button>
+    </div>
+    <input type="hidden" id="mmAcadId">
+    <div class="modal-field" style="margin-bottom:16px">
+      <label>Academia</label>
+      <input type="text" id="mmAcadNome" readonly style="color:var(--muted)">
+    </div>
+
+    <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px">Fase de ativação rápida</div>
+    <div style="display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap">
+      <button onclick="aplicarFase(1)" style="padding:7px 12px;border-radius:7px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s" onmouseover="this.style.borderColor='var(--yellow)';this.style.color='var(--yellow)'" onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--muted)'">Fase 1 — Onboarding</button>
+      <button onclick="aplicarFase(2)" style="padding:7px 12px;border-radius:7px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s" onmouseover="this.style.borderColor='var(--blue)';this.style.color='var(--blue)'" onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--muted)'">Fase 2 — Operação</button>
+      <button onclick="aplicarFase(3)" style="padding:7px 12px;border-radius:7px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s" onmouseover="this.style.borderColor='var(--green)';this.style.color='var(--green)'" onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--muted)'">Fase 3 — Completo</button>
+    </div>
+
+    <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px">Módulos individuais</div>
+    <div id="mmModulosList" style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px"></div>
+
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="fecharModal('modalModulos')">Cancelar</button>
+      <button class="btn-save" onclick="salvarModulos()">Salvar módulos</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL EDITAR PLANO -->
 <div class="modal-bg" id="modalPlano">
   <div class="modal">
@@ -681,7 +711,7 @@ function renderAcademias(){
       <td>
         <button class="btn-action" onclick="abrirModalPlano('${a.id}','${a.nome}','${a.plano||'piloto'}')">Plano</button>
         <button class="btn-action" onclick="abrirModalEditAcad('${a.id}','${a.nome}','${a.cidade||''}','${a.estado||'SP'}')">Editar</button>
-        <button class="btn-action" onclick="abrirModalAddTreinador('${a.id}','${a.nome}')">+ Treinador</button>
+        <button class="btn-action" onclick="abrirModalModulos('${a.id}','${a.nome}',${JSON.stringify(a.modulos||[])})">🔧 Módulos</button>
         <button class="btn-action" onclick="verDetalhesAcademia('${a.id}')">Ver</button>
       </td>
     </tr>
@@ -872,7 +902,10 @@ async function salvarNovaAcademia(){
 
   if(!nome||!cidade){ showToast('Preencha nome e cidade'); return; }
 
-  const {error} = await sb.from('academias').insert([{nome,cidade,estado,plano}]);
+  const {error} = await sb.from('academias').insert([{
+    nome, cidade, estado, plano,
+    modulos: ['diario','carteira','experiencias','revisao']
+  }]);
   if(error){ showToast('Erro: '+error.message); return; }
 
   showToast('✅ Academia criada!');
@@ -1079,7 +1112,76 @@ function copiarTexto(texto){
   showToast('✅ Copiado!');
 }
 
-// ── NOVA ACADEMIA ─────────────────────────────────────────────
+// ── MÓDULOS ───────────────────────────────────────────────────
+const MODULOS_CONFIG = [
+  { key:'diario',      label:'📝 Diário do Treinador',     desc:'Lançamento diário de indicadores',           fase:1 },
+  { key:'carteira',    label:'👥 Carteira de Alunos',       desc:'Upload CSV + cadastro manual de alunos',     fase:1 },
+  { key:'experiencias',label:'⚡ Experiências',             desc:'Cadastro e acompanhamento de leads',         fase:1 },
+  { key:'revisao',     label:'📋 Revisão de Treino',        desc:'Registro de revisões e tarefas pendentes',   fase:1 },
+  { key:'planner',     label:'🎯 Planner Digital',          desc:'Consultoria com área foco, metas e agenda',  fase:2 },
+  { key:'app_aluno',   label:'📱 App do Aluno (QR Code)',   desc:'Desafio 21 dias, missões e NPS',             fase:2 },
+  { key:'dashboard',   label:'📊 Dashboard do Gestor',      desc:'KPIs completos, ranking e indicadores',      fase:3 },
+];
+
+const FASES = {
+  1: ['diario','carteira','experiencias','revisao'],
+  2: ['diario','carteira','experiencias','revisao','planner','app_aluno'],
+  3: ['diario','carteira','experiencias','revisao','planner','app_aluno','dashboard'],
+};
+
+let mmModulosAtual = [];
+
+function abrirModalModulos(id, nome, modulos){
+  document.getElementById('mmAcadId').value = id;
+  document.getElementById('mmAcadNome').value = nome;
+  mmModulosAtual = Array.isArray(modulos) ? [...modulos] : [];
+  renderModulosList();
+  document.getElementById('modalModulos').classList.add('open');
+}
+
+function renderModulosList(){
+  const el = document.getElementById('mmModulosList');
+  el.innerHTML = MODULOS_CONFIG.map(m => {
+    const ativo = mmModulosAtual.includes(m.key);
+    const faseColors = {1:'var(--yellow)',2:'var(--blue)',3:'var(--green)'};
+    return `
+      <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:${ativo?'rgba(232,119,34,.08)':'var(--card2)'};border:1px solid ${ativo?'var(--orange-border)':'var(--border)'};border-radius:8px;cursor:pointer;transition:all .15s" onclick="toggleModulo('${m.key}')">
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:600;color:${ativo?'var(--text)':'var(--muted)'}">${m.label}</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px">${m.desc} · <span style="color:${faseColors[m.fase]}">Fase ${m.fase}</span></div>
+        </div>
+        <div style="width:36px;height:20px;border-radius:10px;background:${ativo?'var(--orange)':'var(--dim)'};position:relative;transition:background .2s;flex-shrink:0">
+          <div style="width:16px;height:16px;border-radius:50%;background:#fff;position:absolute;top:2px;${ativo?'right:2px':'left:2px'};transition:all .2s"></div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function toggleModulo(key){
+  if(mmModulosAtual.includes(key)){
+    mmModulosAtual = mmModulosAtual.filter(m=>m!==key);
+  } else {
+    mmModulosAtual.push(key);
+  }
+  renderModulosList();
+}
+
+function aplicarFase(fase){
+  mmModulosAtual = [...FASES[fase]];
+  renderModulosList();
+  showToast(`Fase ${fase} aplicada — clique em Salvar para confirmar`);
+}
+
+async function salvarModulos(){
+  const id = document.getElementById('mmAcadId').value;
+  const { error } = await sb.from('academias').update({ modulos: mmModulosAtual }).eq('id', id);
+  if(error){ showToast('Erro: '+error.message); return; }
+  showToast('✅ Módulos salvos!');
+  fecharModal('modalModulos');
+  await carregarTudo();
+}
+
+// ── MÓDULOS ───────────────────────────────────────────────────
 let naTreinadoresCount = 0;
 let naTreinadores = [];
 let naCredenciaisTexto = '';
@@ -1182,7 +1284,10 @@ async function naCadastrar(){
   try {
     // 1. Academia
     naSetStep('naStep1','loading');
-    const {data:acad, error:acadErr} = await sb.from('academias').insert([{nome,cidade,estado,plano}]).select().single();
+    const {data:acad, error:acadErr} = await sb.from('academias').insert([{
+      nome, cidade, estado, plano,
+      modulos: ['diario','carteira','experiencias','revisao']
+    }]).select().single();
     if(acadErr) throw new Error('Academia: '+acadErr.message);
     academiaId = acad.id;
     naSetStep('naStep1','done');

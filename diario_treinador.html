@@ -416,9 +416,12 @@ body {
 <!-- HEADER -->
 <div class="header">
   <div class="header-row">
-    <div>
-      <div class="header-logo">QG.90 · Diário</div>
-      <div class="header-nome" id="hNome">Carregando...</div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <button onclick="window.location.href='sistema_integrado_v3.html'" style="background:none;border:1px solid var(--border2);border-radius:7px;color:var(--muted);cursor:pointer;padding:5px 10px;font-size:13px;font-family:'DM Sans',sans-serif;transition:all .15s" onmouseover="this.style.borderColor='var(--orange)';this.style.color='var(--orange)'" onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--muted)'">← Home</button>
+      <div>
+        <div class="header-logo">QG.90 · Diário</div>
+        <div class="header-nome" id="hNome">Carregando...</div>
+      </div>
     </div>
     <div class="header-data" id="hDataBadge" onclick="voltarHoje()">Hoje</div>
   </div>

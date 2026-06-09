@@ -2658,47 +2658,65 @@ async function carregarAcademia(academiaId){
 // ── APLICAR MÓDULOS ───────────────────────────────────────────
 function aplicarModulos(modulos){
   window._modulosAtivos = modulos;
-
-  // Planner: só mostra se módulo 'planner' estiver ativo
-  const temPlanner = modulos.includes('planner');
-  const btnNovoPlanner = document.querySelector('[onclick="irParaPlanner()"]');
-  if(btnNovoPlanner) btnNovoPlanner.style.display = temPlanner ? '' : 'none';
-
-  // App do aluno / QR Code
   window._temAppAluno = modulos.includes('app_aluno');
 
-  // Dashboard do gestor — só afeta login (já tratado no index.html)
-  // Diário sempre visível se módulo ativo
-  const temDiario = modulos.includes('diario');
-  const btnDiario = document.querySelector('[onclick*="diario_treinador"]');
-  if(btnDiario) btnDiario.style.display = temDiario ? '' : 'none';
+  // Aguarda DOM estar pronto
+  const aplicar = () => {
+    const temPlanner   = modulos.includes('planner');
+    const temDiario    = modulos.includes('diario');
+    const temExp       = modulos.includes('experiencias');
+    const temCarteira  = modulos.includes('carteira');
+    const temRevisao   = modulos.includes('revisao');
 
-  // Experiências
-  const temExp = modulos.includes('experiencias');
-  const btnExp = document.querySelector('[onclick="abrirModalNovaExp()"]');
-  if(btnExp) btnExp.style.display = temExp ? '' : 'none';
+    // Botão + Planner
+    document.querySelectorAll('[onclick="irParaPlanner()"]').forEach(el => {
+      el.style.display = temPlanner ? '' : 'none';
+    });
 
-  // Carteira
-  const temCarteira = modulos.includes('carteira');
-  const btnAluno = document.querySelector('[onclick="abrirModalAddAluno()"]');
-  if(btnAluno) btnAluno.style.display = temCarteira ? '' : 'none';
+    // Botão Diário
+    document.querySelectorAll('[onclick*="diario_treinador"]').forEach(el => {
+      el.style.display = temDiario ? '' : 'none';
+    });
 
-  // Revisão
-  const temRevisao = modulos.includes('revisao');
-  const btnRevisao = document.querySelector('[onclick*="revisao_treino"]');
-  if(btnRevisao) btnRevisao.style.display = temRevisao ? '' : 'none';
+    // Botão Nova Experiência
+    document.querySelectorAll('[onclick="abrirModalNovaExp()"]').forEach(el => {
+      el.style.display = temExp ? '' : 'none';
+    });
 
-  // Mostrar banner de fase se planner bloqueado
-  if(!temPlanner){
-    const banner = document.createElement('div');
-    banner.style.cssText = 'background:rgba(234,179,8,.1);border:1px solid rgba(234,179,8,.25);border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#EAB308;line-height:1.5';
-    banner.innerHTML = '📋 <strong>Fase 1 — Onboarding</strong><br>Planner Digital e App do Aluno serão liberados após o treinamento inicial.';
-    const homeView = document.getElementById('home-view');
-    if(homeView){
-      const firstChild = homeView.querySelector('.home-kpis') || homeView.firstElementChild;
-      if(firstChild) homeView.insertBefore(banner, firstChild.nextSibling);
+    // Botão + Aluno / CSV
+    document.querySelectorAll('[onclick="abrirModalAddAluno()"]').forEach(el => {
+      el.style.display = temCarteira ? '' : 'none';
+    });
+    document.querySelectorAll('[onclick="abrirUploadCSV()"]').forEach(el => {
+      el.style.display = temCarteira ? '' : 'none';
+    });
+
+    // Botão Revisão
+    document.querySelectorAll('[onclick*="revisao_treino"]').forEach(el => {
+      el.style.display = temRevisao ? '' : 'none';
+    });
+
+    // Banner de fase se planner bloqueado
+    const bannerExist = document.getElementById('fase-banner');
+    if(!temPlanner && !bannerExist){
+      const banner = document.createElement('div');
+      banner.id = 'fase-banner';
+      banner.style.cssText = 'background:rgba(234,179,8,.1);border:1px solid rgba(234,179,8,.25);border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#EAB308;line-height:1.5';
+      banner.innerHTML = '📋 <strong>Fase 1 — Onboarding</strong> · Planner Digital e App do Aluno serão liberados após o treinamento inicial.';
+      const homeView = document.getElementById('home-view');
+      if(homeView){
+        const kpis = homeView.querySelector('.home-kpis');
+        if(kpis) homeView.insertBefore(banner, kpis);
+        else homeView.prepend(banner);
+      }
+    } else if(temPlanner && bannerExist){
+      bannerExist.remove();
     }
-  }
+  };
+
+  // Aplicar agora e também após render da home
+  aplicar();
+  setTimeout(aplicar, 800);
 }
 
 // ── SALVAR PLANNER NO SUPABASE ────────────────────────────────
