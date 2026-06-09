@@ -2638,18 +2638,66 @@ async function carregarAcademia(academiaId){
   try {
     const { data: acad } = await sbSys
       .from('academias')
-      .select('nome, logo_url')
+      .select('nome, logo_url, modulos')
       .eq('id', academiaId)
       .single();
 
     if(acad){
-      // Atualizar nome da academia no header
       const nomeEl = document.querySelector('.p-logo-sub');
       if(nomeEl && acad.nome) nomeEl.textContent = acad.nome;
       pState.academiaNome = acad.nome || '';
+
+      // Aplicar módulos liberados
+      aplicarModulos(acad.modulos || ['diario','carteira','experiencias','revisao']);
     }
   } catch(err){
     console.warn('Erro ao carregar academia:', err);
+  }
+}
+
+// ── APLICAR MÓDULOS ───────────────────────────────────────────
+function aplicarModulos(modulos){
+  window._modulosAtivos = modulos;
+
+  // Planner: só mostra se módulo 'planner' estiver ativo
+  const temPlanner = modulos.includes('planner');
+  const btnNovoPlanner = document.querySelector('[onclick="irParaPlanner()"]');
+  if(btnNovoPlanner) btnNovoPlanner.style.display = temPlanner ? '' : 'none';
+
+  // App do aluno / QR Code
+  window._temAppAluno = modulos.includes('app_aluno');
+
+  // Dashboard do gestor — só afeta login (já tratado no index.html)
+  // Diário sempre visível se módulo ativo
+  const temDiario = modulos.includes('diario');
+  const btnDiario = document.querySelector('[onclick*="diario_treinador"]');
+  if(btnDiario) btnDiario.style.display = temDiario ? '' : 'none';
+
+  // Experiências
+  const temExp = modulos.includes('experiencias');
+  const btnExp = document.querySelector('[onclick="abrirModalNovaExp()"]');
+  if(btnExp) btnExp.style.display = temExp ? '' : 'none';
+
+  // Carteira
+  const temCarteira = modulos.includes('carteira');
+  const btnAluno = document.querySelector('[onclick="abrirModalAddAluno()"]');
+  if(btnAluno) btnAluno.style.display = temCarteira ? '' : 'none';
+
+  // Revisão
+  const temRevisao = modulos.includes('revisao');
+  const btnRevisao = document.querySelector('[onclick*="revisao_treino"]');
+  if(btnRevisao) btnRevisao.style.display = temRevisao ? '' : 'none';
+
+  // Mostrar banner de fase se planner bloqueado
+  if(!temPlanner){
+    const banner = document.createElement('div');
+    banner.style.cssText = 'background:rgba(234,179,8,.1);border:1px solid rgba(234,179,8,.25);border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#EAB308;line-height:1.5';
+    banner.innerHTML = '📋 <strong>Fase 1 — Onboarding</strong><br>Planner Digital e App do Aluno serão liberados após o treinamento inicial.';
+    const homeView = document.getElementById('home-view');
+    if(homeView){
+      const firstChild = homeView.querySelector('.home-kpis') || homeView.firstElementChild;
+      if(firstChild) homeView.insertBefore(banner, firstChild.nextSibling);
+    }
   }
 }
 
@@ -2828,9 +2876,19 @@ window.gerarApp = async function(){
   document.getElementById('qrNome').textContent = pState.nome;
   document.getElementById('qrOverlay').style.display='flex';
 
-  // Gerar QR Code real se salvou no banco
-  if(plannerId){
+  // Gerar QR Code real se salvou no banco E módulo ativo
+  if(plannerId && window._temAppAluno !== false){
     gerarQRCodeReal(plannerId);
+  } else if(!window._temAppAluno){
+    const qrContainer = document.getElementById('qrCodeContainer');
+    if(qrContainer){
+      qrContainer.innerHTML = `
+        <div style="text-align:center;padding:16px">
+          <div style="font-size:32px;margin-bottom:8px">📋</div>
+          <div style="font-size:13px;font-weight:600;color:var(--text)">Planner salvo!</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">App do Aluno será liberado na Fase 2</div>
+        </div>`;
+    }
   }
 };
 
