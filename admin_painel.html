@@ -486,8 +486,9 @@ tr:hover td{background:rgba(255,255,255,.02)}
     <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;margin-bottom:10px;display:flex;align-items:center;gap:8px">Adicionar usuário <span style="flex:1;height:1px;background:var(--border2);display:block"></span></div>
     <div style="background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:14px">
       <div style="display:flex;gap:8px;margin-bottom:10px">
-        <button class="filter-btn active" id="novoUserTipo-treinador" onclick="selectNovoUserTipo('treinador')">Treinador</button>
-        <button class="filter-btn" id="novoUserTipo-gestor" onclick="selectNovoUserTipo('gestor')">Gestor</button>
+        <button class="filter-btn active" id="novoUserTipo-treinador" onclick="selectNovoUserTipo('treinador')">Treinador(a)</button>
+        <button class="filter-btn" id="novoUserTipo-gestor" onclick="selectNovoUserTipo('gestor')">Gestor(a)</button>
+        <button class="filter-btn" id="novoUserTipo-consultor" onclick="selectNovoUserTipo('consultor')">Consultor(a)</button>
       </div>
       <div class="modal-field"><label>Nome completo *</label><input type="text" id="nuNome" placeholder="Ex: Ana Costa"></div>
       <div class="modal-field"><label>E-mail *</label><input type="email" id="nuEmail" placeholder="ana@academia.com.br"></div>
@@ -587,6 +588,7 @@ let sb = null;
 let allAcademias = [];
 let allTreinadores = [];
 let allGestores = [];
+let allConsultores = [];
 let allAlunos = [];
 let allPlanners = [];
 let filtroPlanoAtual = 'todos';
@@ -634,19 +636,21 @@ async function iniciarApp(){
 
 async function carregarTudo(){
   try {
-    const [acadRes, treinRes, gestRes, alunoRes, plannerRes] = await Promise.all([
+    const [acadRes, treinRes, gestRes, consRes, alunoRes, plannerRes] = await Promise.all([
       sb.from('academias').select('*').order('criado_em', {ascending:false}),
       sb.from('treinadores').select('*').order('nome'),
       sb.from('gestores').select('*').order('nome'),
+      sb.from('consultores').select('*').order('nome'),
       sb.from('alunos').select('*').order('nome'),
       sb.from('planners').select('id,academia_id,aluno_id,treinador_resp_id,status,criado_em').order('criado_em',{ascending:false}),
     ]);
 
-    allAcademias  = acadRes.data   || [];
-    allTreinadores= treinRes.data  || [];
-    allGestores   = gestRes.data   || [];
-    allAlunos     = alunoRes.data  || [];
-    allPlanners   = plannerRes.data|| [];
+    allAcademias   = acadRes.data   || [];
+    allTreinadores = treinRes.data  || [];
+    allGestores    = gestRes.data   || [];
+    allConsultores = consRes.data   || [];
+    allAlunos      = alunoRes.data  || [];
+    allPlanners    = plannerRes.data|| [];
 
     renderKPIs();
     renderAcademias();
@@ -960,17 +964,23 @@ function abrirModalEditAcad(id, nome, cidade, estado){
 
 function renderUsuariosAcademia(acadId){
   const treinadores = allTreinadores.filter(t=>t.academia_id===acadId);
-  const gestores = allGestores.filter(g=>g.academia_id===acadId);
+  const gestores    = allGestores.filter(g=>g.academia_id===acadId);
+  const consultores = allConsultores.filter(c=>c.academia_id===acadId);
   const todos = [];
+
   treinadores.forEach(t=>{
     const isGestor = gestores.some(g=>g.user_id===t.user_id);
-    todos.push({...t, perfil:'Treinador'+(isGestor?' + Gestor':'')});
+    todos.push({...t, perfil:'Treinador(a)'+(isGestor?' + Gestor(a)':''), cor:'var(--orange)'});
   });
   gestores.forEach(g=>{
     if(!treinadores.some(t=>t.user_id===g.user_id)){
-      todos.push({...g, perfil:'Gestor'});
+      todos.push({...g, perfil:'Gestor(a)', cor:'var(--blue)'});
     }
   });
+  consultores.forEach(c=>{
+    todos.push({...c, perfil:'Consultor(a) de Vendas', cor:'var(--purple)'});
+  });
+
   const el = document.getElementById('eaUsuariosList');
   if(!todos.length){
     el.innerHTML='<div style="font-size:13px;color:var(--muted);padding:10px 0">Nenhum usuário cadastrado ainda.</div>';
@@ -981,7 +991,7 @@ function renderUsuariosAcademia(acadId){
       <div style="flex:1">
         <div style="font-size:13px;font-weight:600">${u.nome||'—'}</div>
         <div style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace">${u.email||'—'}</div>
-        <div style="font-size:10px;color:var(--orange);margin-top:2px">${u.perfil}${u.tipo?' · '+u.tipo:''}</div>
+        <div style="font-size:10px;color:${u.cor};margin-top:2px">${u.perfil}${u.tipo?' · '+u.tipo:''}</div>
       </div>
       <button onclick="abrirModalSenha('${u.nome}','${u.email}')" style="padding:5px 10px;border-radius:6px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">🔑 Senha</button>
     </div>`).join('');
@@ -989,10 +999,11 @@ function renderUsuariosAcademia(acadId){
 
 function selectNovoUserTipo(tipo){
   novoUserTipoAtual = tipo;
-  ['treinador','gestor'].forEach(t=>{
+  ['treinador','gestor','consultor'].forEach(t=>{
     const btn=document.getElementById('novoUserTipo-'+t);
     if(btn) btn.classList.toggle('active',t===tipo);
   });
+  // Campo "Tipo" só aparece para treinador
   const tipoWrap=document.getElementById('nuTipoWrap');
   if(tipoWrap) tipoWrap.style.display=tipo==='treinador'?'flex':'none';
 }
@@ -1033,13 +1044,15 @@ async function salvarNovoUsuario(){
     const userId=auth.user?.id;
     if(userId){
       if(perfil==='treinador') await sb.from('treinadores').insert([{user_id:userId,academia_id:acadId,nome,email,tipo}]);
-      if(perfil==='gestor') await sb.from('gestores').insert([{user_id:userId,academia_id:acadId,nome,email}]);
+      if(perfil==='gestor')    await sb.from('gestores').insert([{user_id:userId,academia_id:acadId,nome,email}]);
+      if(perfil==='consultor') await sb.from('consultores').insert([{user_id:userId,academia_id:acadId,nome,email,ativo:true}]);
     }
-    const credText=`${perfil==='treinador'?'Treinador':'Gestor'}: ${nome}\nE-mail: ${email}\nSenha: ${senha}\nURL: https://gefitcorporativo-glitch.github.io/retencao/`;
+    const perfilLabel = perfil==='treinador'?'Treinador(a)':perfil==='gestor'?'Gestor(a)':'Consultor(a)';
+    const credText=`${perfilLabel}: ${nome}\nE-mail: ${email}\nSenha: ${senha}\nURL: https://gefitcorporativo-glitch.github.io/retencao/${perfil==='consultor'?'painel_vendas.html':''}`;
     window._nuCredText=credText;
     document.getElementById('nuCredenciais').innerHTML=credText.replace(/\n/g,'<br>');
     document.getElementById('nuResultado').style.display='block';
-    btn.textContent='+ Criar outro';
+    btn.textContent='+ Criar outro ' + perfilLabel;
     btn.disabled=false;
     btn.onclick=()=>{
       ['nuNome','nuEmail','nuSenha'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
