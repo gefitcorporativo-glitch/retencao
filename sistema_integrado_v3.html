@@ -565,6 +565,11 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
       </div>
       <div style="display:flex;flex-direction:column;gap:5px"><label style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em">Telefone</label><input type="text" id="expTelefone" placeholder="(11) 99999-9999" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px;color:var(--text);font-size:13px;outline:none;font-family:'DM Sans',sans-serif"></div>
     </div>
+    <div style="display:flex;flex-direction:column;gap:5px;margin-top:10px">
+      <label style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em">Link do Mapeamento de Sintomas</label>
+      <input type="url" id="expLinkMapeamento" placeholder="https://forms.gle/... ou outro link" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px;color:var(--text);font-size:13px;outline:none;font-family:'DM Sans',sans-serif">
+      <div style="font-size:10px;color:var(--muted)">Cole o link do mapeamento respondido por este lead — ficará acessível direto da lista.</div>
+    </div>
     <button onclick="salvarNovaExp()" style="width:100%;margin-top:14px;padding:13px;border-radius:10px;border:none;background:var(--orange);color:#000;font-size:14px;font-weight:800;cursor:pointer;font-family:'Syne',sans-serif">Iniciar experiência</button>
   </div>
 </div>
@@ -1222,25 +1227,12 @@ function populateTreinadores(){
     populateTreinadoresDB(window.TREINADORES_DB);
     return;
   }
-  // Fallback: lista simulada (só se banco não retornou nada)
-  const tryPopulate = () => {
-    let found = false;
-    ['sel-treinador-resp','sel-treinador-planner'].forEach(id=>{
-      const sel=document.getElementById(id);
-      if(!sel) return;
-      while(sel.options.length > 1) sel.remove(1);
-      TREINADORES.forEach(t=>{
-        const o=document.createElement('option');
-        o.value=t; o.textContent=t;
-        sel.appendChild(o);
-      });
-      found = true;
-    });
-    return found;
-  };
-  if(!tryPopulate()){
-    setTimeout(tryPopulate, 500);
-  }
+  // Fallback: mostrar mensagem vazia — não usa lista simulada
+  ['sel-treinador-resp','sel-treinador-planner'].forEach(id=>{
+    const sel = document.getElementById(id);
+    if(!sel) return;
+    sel.innerHTML = '<option value="">Nenhum treinador cadastrado</option>';
+  });
 }
 
 function loadLogo(input){
@@ -2240,6 +2232,7 @@ async function salvarNovaExp(){
   const inicio = document.getElementById('expInicio').value;
   const perfil = document.getElementById('expPerfil').value;
   const telefone = document.getElementById('expTelefone').value.trim()||null;
+  const linkMapeamento = document.getElementById('expLinkMapeamento').value.trim()||null;
 
   if(!nome){ showToast('Preencha o nome do lead'); return; }
   if(!inicio){ showToast('Preencha a data de início'); return; }
@@ -2254,6 +2247,7 @@ async function salvarNovaExp(){
       academia_id: currentAcademiaId,
       treinador_id: treinadorLocal.id || null,
       nome, duracao, perfil, telefone,
+      link_mapeamento: linkMapeamento,
       data_inicio: inicio,
       data_fim: dataFim.toISOString().slice(0,10),
       status: 'andamento',
@@ -2265,6 +2259,35 @@ async function salvarNovaExp(){
     fecharModalHome('modalNovaExp');
     document.getElementById('expNome').value='';
     document.getElementById('expTelefone').value='';
+    document.getElementById('expLinkMapeamento').value='';
+    await carregarDadosHome();
+  } catch(err){
+    showToast('Erro: '+err.message);
+  }
+}
+
+// ── ATRIBUIÇÃO DO TREINADOR À EXPERIÊNCIA ────────────────────
+function atribuirTreinador(expId){
+  const form = document.getElementById('atribForm-'+expId);
+  if(form) form.style.display = form.style.display==='none'?'flex':'none';
+}
+
+async function confirmarAtribuicao(expId){
+  const obs = document.getElementById('atribObs-'+expId)?.value.trim()||null;
+  const engaj = document.getElementById('atribEngaj-'+expId)?.value||null;
+  const treinadorLocal = JSON.parse(localStorage.getItem('qg90_treinador')||'{}');
+
+  try {
+    const {error} = await sbSys.from('experiencias').update({
+      treinador_atendeu: treinadorLocal.nome || 'Treinador',
+      treinador_atendeu_id: treinadorLocal.id || null,
+      status_funil: 'comparecida',
+      obs_treinador: obs,
+      engajamento: engaj,
+    }).eq('id', expId);
+
+    if(error) throw new Error(error.message);
+    showToast('✅ Experiência atribuída a você!');
     await carregarDadosHome();
   } catch(err){
     showToast('Erro: '+err.message);
@@ -2450,16 +2473,41 @@ async function carregarDadosHome(){
         const dia = Math.floor((hoje - inicio) / (1000*60*60*24)) + 1;
         const fim = new Date(e.data_fim+'T00:00:00');
         const restam = Math.ceil((fim - hoje) / (1000*60*60*24));
-        return `<div class="aluno-row" style="border-left:3px solid var(--yellow)">
-          <div class="aluno-av" style="background:var(--yellow-dim);border-color:var(--yellow);color:var(--yellow)">${e.nome.charAt(0)}</div>
-          <div class="aluno-info">
-            <div class="aluno-nome">${e.nome}</div>
-            <div class="aluno-sub">Dia ${dia} de ${e.duracao} · Perfil ${e.perfil}% · ${restam>0?restam+' dias restantes':'Finalizada'}</div>
+        const pct = Math.min(100, Math.round((dia / e.duracao) * 100));
+        const jaAtribuido = !!e.treinador_atendeu;
+        return `<div class="aluno-row" style="border-left:3px solid var(--yellow);flex-direction:column;align-items:stretch;gap:8px">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div class="aluno-av" style="background:var(--yellow-dim);border-color:var(--yellow);color:var(--yellow)">${e.nome.charAt(0)}</div>
+            <div class="aluno-info">
+              <div class="aluno-nome">${e.nome}</div>
+              <div class="aluno-sub">Dia ${dia} de ${e.duracao} · Perfil ${e.perfil}% · ${restam>0?restam+' dias restantes':'⚠️ Prazo encerrado'}</div>
+              ${jaAtribuido ? `<div style="font-size:10px;color:var(--green);margin-top:2px">✓ Atendido por ${e.treinador_atendeu}</div>` : `<div style="font-size:10px;color:var(--yellow);margin-top:2px">⚠️ Treinador não atribuído ainda</div>`}
+            </div>
+            <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0">
+              <button onclick="converterExp('${e.id}','${e.nome.replace(/'/g,"\\'")}'); event.stopPropagation()" style="padding:4px 8px;border-radius:6px;border:1px solid var(--green-border);background:var(--green-dim);color:var(--green);font-size:10px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">✅ Converteu</button>
+              <button onclick="naoConverterExp('${e.id}'); event.stopPropagation()" style="padding:4px 8px;border-radius:6px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-size:10px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">❌ Não conv.</button>
+            </div>
           </div>
-          <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0">
-            <button onclick="converterExp('${e.id}','${e.nome}')" style="padding:4px 8px;border-radius:6px;border:1px solid var(--green-border);background:var(--green-dim);color:var(--green);font-size:10px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">✅ Converteu</button>
-            <button onclick="naoConverterExp('${e.id}')" style="padding:4px 8px;border-radius:6px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-size:10px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">❌ Não conv.</button>
+          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+            <div style="flex:1;min-width:120px;height:4px;background:var(--border2);border-radius:2px;overflow:hidden">
+              <div style="height:100%;width:${pct}%;background:var(--yellow);border-radius:2px"></div>
+            </div>
+            <span style="font-size:10px;color:var(--muted)">${pct}%</span>
+            ${!jaAtribuido ? `<button onclick="atribuirTreinador('${e.id}')" style="font-size:10px;font-weight:700;color:var(--orange);padding:2px 8px;border:1px solid var(--orange-border);border-radius:4px;background:var(--orange-dim);cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">👟 Fui eu que atendi</button>` : ''}
+            ${e.link_mapeamento ? `<a href="${e.link_mapeamento}" target="_blank" style="font-size:10px;font-weight:700;color:var(--blue);text-decoration:none;padding:2px 8px;border:1px solid rgba(96,165,250,.25);border-radius:4px;background:var(--blue-dim);white-space:nowrap">🔗 Mapeamento</a>` : ''}
           </div>
+          ${!jaAtribuido ? `<div id="atribForm-${e.id}" style="display:none;flex-direction:column;gap:6px">
+            <textarea id="atribObs-${e.id}" placeholder="Observações sobre o atendimento..." rows="2" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:8px;color:var(--text);font-size:12px;outline:none;font-family:'DM Sans',sans-serif;width:100%"></textarea>
+            <div style="display:flex;gap:6px">
+              <select id="atribEngaj-${e.id}" style="flex:1;background:#111;border:1px solid var(--border2);border-radius:8px;padding:8px;color:var(--text);font-size:12px;outline:none;font-family:'DM Sans',sans-serif">
+                <option value="">Engajamento do lead...</option>
+                <option value="bom">😊 Bom — veio, se engajou</option>
+                <option value="regular">😐 Regular — veio mas desanimado</option>
+                <option value="baixo">😟 Baixo — pouco interesse</option>
+              </select>
+              <button onclick="confirmarAtribuicao('${e.id}')" style="padding:8px 12px;border-radius:8px;border:none;background:var(--orange);color:#000;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">Confirmar</button>
+            </div>
+          </div>` : ''}
         </div>`;
       }).join('');
     }
