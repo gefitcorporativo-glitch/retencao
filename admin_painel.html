@@ -1297,13 +1297,14 @@ async function naCadastrar(){
   try {
     // 1. Academia
     naSetStep('naStep1','loading');
-    const {data:acad, error:acadErr} = await sb.from('academias').insert([{
-      nome, cidade, estado, plano,
-      modulos: ['diario','carteira','experiencias','revisao']
-    }]).select().single();
-    if(acadErr) throw new Error('Academia: '+acadErr.message);
-    academiaId = acad.id;
-    naSetStep('naStep1','done');
+const sbService = window.supabase.createClient(SUPABASE_URL, SUPABASE_SERVICE);
+const {data:acad, error:acadErr} = await sbService.from('academias').insert([{
+  nome, cidade, estado, plano,
+  modulos: ['diario','carteira','experiencias','revisao']
+}]).select().single();
+if(acadErr) throw new Error('Academia: '+acadErr.message);
+academiaId = acad.id;
+naSetStep('naStep1','done');
 
     // 2. Gestor
     naSetStep('naStep2','loading');
