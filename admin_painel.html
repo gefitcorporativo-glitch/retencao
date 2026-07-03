@@ -637,12 +637,12 @@ async function iniciarApp(){
 async function carregarTudo(){
   try {
     const [acadRes, treinRes, gestRes, consRes, alunoRes, plannerRes] = await Promise.all([
-      sb.from('academias').select('*').order('criado_em', {ascending:false}),
+      sb.from('academias').select('*').order('nome', {ascending:true}),
       sb.from('treinadores').select('*').order('nome'),
       sb.from('gestores').select('*').order('nome'),
       sb.from('consultores').select('*').order('nome'),
       sb.from('alunos').select('*').order('nome'),
-      sb.from('planners').select('id,academia_id,aluno_id,treinador_resp_id,status,criado_em').order('criado_em',{ascending:false}),
+      sb.from('planners').select('id,academia_id,aluno_id,treinador_resp_id,status').order('id',{ascending:false}),
     ]);
 
     allAcademias   = acadRes.data   || [];
@@ -700,7 +700,7 @@ function renderAcademias(){
     const alunos = allAlunos.filter(al => al.academia_id === a.id);
     const planners = allPlanners.filter(p => p.academia_id === a.id);
     const plano = PLANOS[a.plano] || {label:a.plano, valor:0};
-    const data = new Date(a.criado_em).toLocaleDateString('pt-BR');
+    const data = a.criado_em ? new Date(a.criado_em).toLocaleDateString('pt-BR') : '—';
 
     return `
     <tr>
@@ -1297,14 +1297,13 @@ async function naCadastrar(){
   try {
     // 1. Academia
     naSetStep('naStep1','loading');
-const sbService = window.supabase.createClient(SUPABASE_URL, SUPABASE_SERVICE);
-const {data:acad, error:acadErr} = await sbService.from('academias').insert([{
-  nome, cidade, estado, plano,
-  modulos: ['diario','carteira','experiencias','revisao']
-}]).select().single();
-if(acadErr) throw new Error('Academia: '+acadErr.message);
-academiaId = acad.id;
-naSetStep('naStep1','done');
+    const {data:acad, error:acadErr} = await sb.from('academias').insert([{
+      nome, cidade, estado, plano,
+      modulos: ['diario','carteira','experiencias','revisao']
+    }]).select().single();
+    if(acadErr) throw new Error('Academia: '+acadErr.message);
+    academiaId = acad.id;
+    naSetStep('naStep1','done');
 
     // 2. Gestor
     naSetStep('naStep2','loading');
