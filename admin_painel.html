@@ -564,6 +564,31 @@ tr:hover td{background:rgba(255,255,255,.02)}
       <button class="btn-cancel" onclick="fecharModal('modalSenha')">Cancelar</button>
       <button class="btn-save" onclick="salvarNovaSenha()">Redefinir senha</button>
     </div>
+    <div id="rsCredenciais" style="display:none;background:var(--green-dim);border:1px solid var(--green-border);border-radius:10px;padding:14px;margin-top:14px;font-size:12px;line-height:1.7"></div>
+    <div id="rsEnviarBtns" style="display:none;gap:8px;margin-top:10px">
+      <button onclick="copiarTexto(window._rsCredText||'')" style="flex:1;padding:9px;border-radius:8px;border:1px solid var(--green-border);background:transparent;color:var(--green);font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">📋 Copiar dados</button>
+      <button onclick="window.open('https://wa.me/?text='+encodeURIComponent(window._rsCredText||''),'_blank')" style="flex:1;padding:9px;border-radius:8px;border:1px solid var(--green-border);background:var(--green-dim);color:var(--green);font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">📲 Enviar WhatsApp</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ENVIAR ACESSO (sem trocar senha) -->
+<div class="modal-bg" id="modalEnviarAcesso">
+  <div class="modal">
+    <div class="modal-title">📤 Enviar Dados de Acesso</div>
+    <div class="modal-field"><label>Usuário</label><input type="text" id="eaEnvioNome" readonly style="color:var(--muted)"></div>
+    <div class="modal-field"><label>E-mail</label><input type="text" id="eaEnvioEmail" readonly style="color:var(--muted)"></div>
+    <div style="background:var(--yellow-dim);border:1px solid rgba(234,179,8,.25);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--yellow);margin-top:4px;line-height:1.5">
+      ⚠️ Por segurança, o sistema não guarda a senha atual. Este texto traz e-mail e link de acesso. Se o cliente não lembra a senha, use <strong>🔑 Senha</strong> primeiro para gerar uma nova — de lá também dá pra enviar tudo pronto.
+    </div>
+    <div id="eaEnvioPreview" style="background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-top:12px;font-size:12px;line-height:1.7;white-space:pre-line"></div>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button onclick="copiarTexto(window._eaEnvioTexto||'')" style="flex:1;padding:9px;border-radius:8px;border:1px solid var(--green-border);background:transparent;color:var(--green);font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">📋 Copiar dados</button>
+      <button onclick="window.open('https://wa.me/?text='+encodeURIComponent(window._eaEnvioTexto||''),'_blank')" style="flex:1;padding:9px;border-radius:8px;border:1px solid var(--green-border);background:var(--green-dim);color:var(--green);font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">📲 Enviar WhatsApp</button>
+    </div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="fecharModal('modalEnviarAcesso')">Fechar</button>
+    </div>
   </div>
 </div>
 
@@ -723,12 +748,11 @@ function renderAcademias(){
       <td colspan="9">
         <div class="detail-inner">
           <div class="mini-stats">
-            <div class="mini-stat">Treinadores: <strong>${treinadores.map(t=>t.nome).join(', ')||'—'}</strong></div>
-          </div>
-          <div class="mini-stats">
             <div class="mini-stat">Receita mensal: <strong style="color:var(--green)">R$ ${plano.valor}/mês</strong></div>
             <div class="mini-stat">Academia ID: <strong style="font-family:'DM Mono',monospace;font-size:11px">${a.id}</strong></div>
           </div>
+          <div style="font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--orange);margin:14px 0 8px">Usuários e Acessos</div>
+          <div>${getUsuariosAcademia(a.id).map(u=>usuarioCardHTML(u, a.nome)).join('') || '<div style="font-size:13px;color:var(--muted);padding:6px 0">Nenhum usuário cadastrado ainda.</div>'}</div>
         </div>
       </td>
     </tr>`;
@@ -962,7 +986,8 @@ function abrirModalEditAcad(id, nome, cidade, estado){
   document.getElementById('modalEditAcad').classList.add('open');
 }
 
-function renderUsuariosAcademia(acadId){
+// Helper compartilhado: monta a lista de usuários (treinadores, gestores, consultores) de uma academia
+function getUsuariosAcademia(acadId){
   const treinadores = allTreinadores.filter(t=>t.academia_id===acadId);
   const gestores    = allGestores.filter(g=>g.academia_id===acadId);
   const consultores = allConsultores.filter(c=>c.academia_id===acadId);
@@ -980,21 +1005,35 @@ function renderUsuariosAcademia(acadId){
   consultores.forEach(c=>{
     todos.push({...c, perfil:'Consultor(a) de Vendas', cor:'var(--purple)'});
   });
+  return todos;
+}
 
-  const el = document.getElementById('eaUsuariosList');
-  if(!todos.length){
-    el.innerHTML='<div style="font-size:13px;color:var(--muted);padding:10px 0">Nenhum usuário cadastrado ainda.</div>';
-    return;
-  }
-  el.innerHTML = todos.map(u=>`
+// Renderiza um cartão de usuário com ações (Senha / Enviar acesso) — usado no modal e no painel inicial
+function usuarioCardHTML(u, acadNome){
+  const acad = (acadNome||'').replace(/'/g,"\\'");
+  const nome = (u.nome||'').replace(/'/g,"\\'");
+  const email = (u.email||'').replace(/'/g,"\\'");
+  return `
     <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--card2);border:1px solid var(--border);border-radius:8px;margin-bottom:6px">
       <div style="flex:1">
         <div style="font-size:13px;font-weight:600">${u.nome||'—'}</div>
         <div style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace">${u.email||'—'}</div>
         <div style="font-size:10px;color:${u.cor};margin-top:2px">${u.perfil}${u.tipo?' · '+u.tipo:''}</div>
       </div>
-      <button onclick="abrirModalSenha('${u.nome}','${u.email}')" style="padding:5px 10px;border-radius:6px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">🔑 Senha</button>
-    </div>`).join('');
+      <button onclick="abrirModalSenha('${nome}','${email}')" style="padding:5px 10px;border-radius:6px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">🔑 Senha</button>
+      <button onclick="abrirModalEnviarAcesso('${nome}','${email}','${acad}')" style="padding:5px 10px;border-radius:6px;border:1px solid var(--orange-border);background:var(--orange-dim);color:var(--orange);font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">📤 Enviar</button>
+    </div>`;
+}
+
+function renderUsuariosAcademia(acadId){
+  const todos = getUsuariosAcademia(acadId);
+  const acad = allAcademias.find(a=>a.id===acadId);
+  const el = document.getElementById('eaUsuariosList');
+  if(!todos.length){
+    el.innerHTML='<div style="font-size:13px;color:var(--muted);padding:10px 0">Nenhum usuário cadastrado ainda.</div>';
+    return;
+  }
+  el.innerHTML = todos.map(u=>usuarioCardHTML(u, acad?.nome||'')).join('');
 }
 
 function selectNovoUserTipo(tipo){
@@ -1080,10 +1119,13 @@ function abrirModalSenha(nome, email){
   document.getElementById('rsEmailDisplay').value = email;
   document.getElementById('rsSenhaEmail').value = email;
   document.getElementById('rsSenha').value = '';
+  document.getElementById('rsCredenciais').style.display = 'none';
+  document.getElementById('rsEnviarBtns').style.display = 'none';
   document.getElementById('modalSenha').classList.add('open');
 }
 
 async function salvarNovaSenha(){
+  const nome = document.getElementById('rsNomeDisplay').value;
   const email = document.getElementById('rsSenhaEmail').value;
   const novaSenha = document.getElementById('rsSenha').value.trim();
 
@@ -1104,12 +1146,29 @@ async function salvarNovaSenha(){
     if(error) throw new Error(error.message);
 
     showToast('✅ Senha redefinida com sucesso!');
-    fecharModal('modalSenha');
+
+    // Monta texto pronto para enviar ao cliente
+    const credText = `👤 ${nome}\nE-mail: ${email}\nSenha: ${novaSenha}\nLink de acesso: https://gefitcorporativo-glitch.github.io/retencao/`;
+    window._rsCredText = credText;
+    const box = document.getElementById('rsCredenciais');
+    box.innerHTML = '<strong style="color:var(--green)">✅ Pronto para enviar ao cliente:</strong><br><br>' + credText.replace(/\n/g,'<br>');
+    box.style.display = 'block';
+    document.getElementById('rsEnviarBtns').style.display = 'flex';
 
   } catch(err){
     console.error(err);
     showToast('Erro: '+err.message);
   }
+}
+
+// Enviar dados de acesso sem trocar a senha (usa o link fixo do sistema)
+function abrirModalEnviarAcesso(nome, email, acadNome){
+  document.getElementById('eaEnvioNome').value = nome;
+  document.getElementById('eaEnvioEmail').value = email;
+  const texto = `👤 ${nome}${acadNome?' — '+acadNome:''}\nE-mail: ${email}\nLink de acesso: https://gefitcorporativo-glitch.github.io/retencao/\n\n(Se esqueceu a senha, solicite uma nova.)`;
+  window._eaEnvioTexto = texto;
+  document.getElementById('eaEnvioPreview').textContent = texto;
+  document.getElementById('modalEnviarAcesso').classList.add('open');
 }
 
 function gerarSenhaModal(inputId){
