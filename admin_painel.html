@@ -38,7 +38,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 
 /* ── HEADER ── */
 .header{background:rgba(10,10,10,.96);border-bottom:1px solid var(--border);padding:0 24px;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px)}
-.header-inner{max-width:1400px;margin:0 auto;height:56px;display:flex;align-items:center;gap:16px}
+.header-inner{max-width:1600px;margin:0 auto;height:56px;display:flex;align-items:center;gap:16px}
 .hlogo{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--orange)}
 .htitle{font-size:12px;color:var(--muted);padding-left:14px;border-left:1px solid var(--border2)}
 .hright{margin-left:auto;display:flex;align-items:center;gap:12px}
@@ -47,7 +47,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .hlogout:hover{border-color:var(--red);color:var(--red)}
 
 /* ── LAYOUT ── */
-.content{max-width:1400px;margin:0 auto;padding:24px}
+.content{max-width:1600px;margin:0 auto;padding:24px}
 
 /* ── KPI CARDS ── */
 .kpi-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-bottom:24px}
@@ -58,6 +58,8 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .kpi.blue::before{background:var(--blue)}
 .kpi.yellow::before{background:var(--yellow)}
 .kpi.purple::before{background:var(--purple)}
+.kpi.red::before{background:#EF4444}
+.kpi.cyan::before{background:#22D3EE}
 .kpi-icon{font-size:20px;margin-bottom:8px}
 .kpi-val{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;line-height:1;margin-bottom:3px}
 .kpi-label{font-size:11px;color:var(--muted)}
@@ -223,7 +225,10 @@ tr:hover td{background:rgba(255,255,255,.02)}
               <th>Cidade / Estado</th>
               <th>Plano</th>
               <th>Treinadores</th>
-              <th>Alunos</th>
+              <th>Ativos</th>
+              <th>Mat · Agreg</th>
+              <th>Encarteirado</th>
+              <th>Desafio 21d</th>
               <th>Planners</th>
               <th>Status</th>
               <th>Cadastro</th>
@@ -231,7 +236,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
             </tr>
           </thead>
           <tbody id="tbAcademias">
-            <tr><td colspan="9" class="loading"><div class="spinner"></div>Carregando academias...</td></tr>
+            <tr><td colspan="12" class="loading"><div class="spinner"></div>Carregando academias...</td></tr>
           </tbody>
         </table>
       </div>
@@ -271,6 +276,10 @@ tr:hover td{background:rgba(255,255,255,.02)}
         <button class="filter-btn active" onclick="filtroAlunoStatus('todos',this)">Todos</button>
         <button class="filter-btn" onclick="filtroAlunoStatus('ativo',this)">Ativos</button>
         <button class="filter-btn" onclick="filtroAlunoStatus('inativo',this)">Inativos</button>
+        <span style="width:1px;height:20px;background:var(--border2);margin:0 4px"></span>
+        <button class="filter-btn" onclick="filtroAlunoVinculo('matricula',this)">📝 Matrícula</button>
+        <button class="filter-btn" onclick="filtroAlunoVinculo('agregador',this)">🔗 Agregador</button>
+        <button class="filter-btn active" onclick="filtroAlunoVinculo('todos',this)" id="btnVincTodos">Todos vínculos</button>
       </div>
       <div class="table-wrap">
         <table>
@@ -278,15 +287,18 @@ tr:hover td{background:rgba(255,255,255,.02)}
             <tr>
               <th>Aluno</th>
               <th>Matrícula</th>
+              <th>Vínculo</th>
               <th>Idade</th>
               <th>Academia</th>
               <th>Treinador</th>
+              <th>Encarteirado</th>
+              <th>Desafio 21d</th>
               <th>Planners</th>
               <th>Status</th>
             </tr>
           </thead>
           <tbody id="tbAlunos">
-            <tr><td colspan="7" class="loading"><div class="spinner"></div>Carregando alunos...</td></tr>
+            <tr><td colspan="10" class="loading"><div class="spinner"></div>Carregando alunos...</td></tr>
           </tbody>
         </table>
       </div>
@@ -738,7 +750,7 @@ async function carregarTudo(){
       sb.from('gestores').select('*').order('nome'),
       sb.from('consultores').select('*').order('nome'),
       sb.from('alunos').select('*').order('nome'),
-      sb.from('planners').select('id,academia_id,aluno_id,treinador_resp_id,status').order('id',{ascending:false}),
+      sb.from('planners').select('id,academia_id,aluno_id,treinador_resp_id,status,inicio_desafio').order('id',{ascending:false}),
     ]);
 
     allAcademias   = acadRes.data   || [];
@@ -761,12 +773,38 @@ async function carregarTudo(){
 }
 
 // ── KPIs ──────────────────────────────────────────────────────
+function isEncarteirado(al){ return !!al.treinador_id; }
+
+function isDesafioAtivo(planner){
+  if(!planner || !planner.inicio_desafio) return false;
+  const hoje = new Date(); hoje.setHours(0,0,0,0);
+  const ini = new Date(planner.inicio_desafio+'T00:00:00');
+  const dias = Math.floor((hoje-ini)/(1000*60*60*24));
+  return dias>=0 && dias<=21;
+}
+
 function renderKPIs(){
   const receitaMensal = allAcademias.reduce((sum, a) => sum + (PLANOS[a.plano]?.valor || 0), 0);
+
+  const ativos = allAlunos.filter(al=>al.ativo);
+  const matriculas = ativos.filter(al=>(al.tipo_vinculo||'matricula')!=='agregador');
+  const agregadores = ativos.filter(al=>(al.tipo_vinculo||'matricula')==='agregador');
+  const encarteirados = ativos.filter(isEncarteirado);
+  const pctEncarteiradoGeral = ativos.length ? Math.round(encarteirados.length/ativos.length*100) : 0;
+
+  // Alunos com desafio 21 dias ativo (via último planner de cada aluno)
+  const alunoIdsComDesafio = new Set();
+  allPlanners.forEach(p=>{ if(isDesafioAtivo(p)) alunoIdsComDesafio.add(p.aluno_id); });
+  const emDesafio = ativos.filter(al=>alunoIdsComDesafio.has(al.id)).length;
+
   const kpis = [
     {icon:'🏢', val:allAcademias.length,   label:'Academias ativas', cls:'orange'},
     {icon:'👤', val:allTreinadores.length,  label:'Treinadores',      cls:'blue'},
-    {icon:'🎓', val:allAlunos.length,       label:'Alunos cadastrados',cls:'green'},
+    {icon:'🎓', val:ativos.length,          label:'Alunos ativos (total)', cls:'green'},
+    {icon:'📝', val:matriculas.length,      label:'Matrícula direta', cls:'cyan'},
+    {icon:'🔗', val:agregadores.length,     label:'Agregador (Wellhub/TotalPass...)', cls:'purple'},
+    {icon:'🎯', val:pctEncarteiradoGeral+'%', label:'Encarteirados (meta 75–85%)', cls: pctEncarteiradoGeral>=75?'green':pctEncarteiradoGeral>=50?'yellow':'red'},
+    {icon:'🔥', val:emDesafio,              label:'Em Desafio 21 dias ativo', cls:'orange'},
     {icon:'📋', val:allPlanners.length,     label:'Planners gerados', cls:'purple'},
     {icon:'💰', val:`R$ ${receitaMensal}`,  label:'Receita mensal',   cls:'yellow'},
   ];
@@ -789,12 +827,22 @@ function renderAcademias(){
   });
 
   const tbody = document.getElementById('tbAcademias');
-  if(!filtered.length){ tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:24px;color:var(--muted)">Nenhuma academia encontrada</td></tr>'; return; }
+  if(!filtered.length){ tbody.innerHTML = '<tr><td colspan="12" style="text-align:center;padding:24px;color:var(--muted)">Nenhuma academia encontrada</td></tr>'; return; }
 
   tbody.innerHTML = filtered.map(a => {
     const treinadores = allTreinadores.filter(t => t.academia_id === a.id);
     const alunos = allAlunos.filter(al => al.academia_id === a.id);
+    const ativos = alunos.filter(al=>al.ativo);
+    const matriculas = ativos.filter(al=>(al.tipo_vinculo||'matricula')!=='agregador');
+    const agregadores = ativos.filter(al=>(al.tipo_vinculo||'matricula')==='agregador');
+    const encarteirados = ativos.filter(isEncarteirado);
+    const pctEnc = ativos.length ? Math.round(encarteirados.length/ativos.length*100) : 0;
+    const encCor = pctEnc>=75?'var(--green)':pctEnc>=50?'var(--yellow)':'var(--red)';
+
     const planners = allPlanners.filter(p => p.academia_id === a.id);
+    const idsComDesafio = new Set(planners.filter(isDesafioAtivo).map(p=>p.aluno_id));
+    const emDesafio = ativos.filter(al=>idsComDesafio.has(al.id)).length;
+
     const plano = PLANOS[a.plano] || {label:a.plano, valor:0};
     const data = a.criado_em ? new Date(a.criado_em).toLocaleDateString('pt-BR') : '—';
 
@@ -804,7 +852,10 @@ function renderAcademias(){
       <td style="color:var(--muted)">${a.cidade||'—'}${a.estado?' / '+a.estado:''}</td>
       <td><span class="badge ${a.plano||'piloto'}">${plano.label}</span></td>
       <td style="font-family:'DM Mono',monospace">${treinadores.length}</td>
-      <td style="font-family:'DM Mono',monospace">${alunos.length}</td>
+      <td style="font-family:'DM Mono',monospace;font-weight:700">${ativos.length}</td>
+      <td style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted)">${matriculas.length} · ${agregadores.length}</td>
+      <td style="font-family:'DM Mono',monospace;font-weight:700;color:${encCor}">${ativos.length?pctEnc+'%':'—'}</td>
+      <td style="font-family:'DM Mono',monospace;color:var(--orange)">${emDesafio||'—'}</td>
       <td style="font-family:'DM Mono',monospace">${planners.length}</td>
       <td><span class="badge ativo">Ativa</span></td>
       <td style="color:var(--muted);font-size:11px">${data}</td>
@@ -816,11 +867,14 @@ function renderAcademias(){
       </td>
     </tr>
     <tr class="detail-row" id="detail-${a.id}">
-      <td colspan="9">
+      <td colspan="12">
         <div class="detail-inner">
           <div class="mini-stats">
             <div class="mini-stat">Receita mensal: <strong style="color:var(--green)">R$ ${plano.valor}/mês</strong></div>
             <div class="mini-stat">Academia ID: <strong style="font-family:'DM Mono',monospace;font-size:11px">${a.id}</strong></div>
+            <div class="mini-stat">Matrícula: <strong style="color:#22D3EE">${matriculas.length}</strong> · Agregador: <strong style="color:var(--purple)">${agregadores.length}</strong></div>
+            <div class="mini-stat">Encarteirados: <strong style="color:${encCor}">${encarteirados.length}/${ativos.length} (${ativos.length?pctEnc+'%':'—'})</strong> · meta 75–85%</div>
+            <div class="mini-stat">Em Desafio 21 dias: <strong style="color:var(--orange)">${emDesafio}</strong></div>
           </div>
           <div style="font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--orange);margin:14px 0 8px">Usuários e Acessos</div>
           <div>${getUsuariosAcademia(a.id).map(u=>usuarioCardHTML(u, a.nome)).join('') || '<div style="font-size:13px;color:var(--muted);padding:6px 0">Nenhum usuário cadastrado ainda.</div>'}</div>
@@ -901,16 +955,19 @@ function filtroTipoUser(t, btn){
 }
 
 // ── ALUNOS ────────────────────────────────────────────────────
+let filtroVinculoAtual = 'todos';
+
 function renderAlunos(){
   const search = (document.getElementById('searchAluno')?.value||'').toLowerCase();
   const filtered = allAlunos.filter(al => {
     const matchSearch = !search || (al.nome||'').toLowerCase().includes(search) || (al.matricula||'').includes(search);
     const matchStatus = filtroAlunoStatusAtual === 'todos' || (filtroAlunoStatusAtual==='ativo'?al.ativo:!al.ativo);
-    return matchSearch && matchStatus;
+    const matchVinculo = filtroVinculoAtual === 'todos' || (al.tipo_vinculo||'matricula') === filtroVinculoAtual;
+    return matchSearch && matchStatus && matchVinculo;
   });
 
   const tbody = document.getElementById('tbAlunos');
-  if(!filtered.length){ tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--muted)">Nenhum aluno encontrado</td></tr>'; return; }
+  if(!filtered.length){ tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:24px;color:var(--muted)">Nenhum aluno encontrado</td></tr>'; return; }
 
   tbody.innerHTML = filtered.map(al => {
     const acad = allAcademias.find(a=>a.id===al.academia_id);
@@ -918,18 +975,54 @@ function renderAlunos(){
     // Buscar treinador responsável do último planner
     const ultimoPlanner = planners[0];
     const treinador = ultimoPlanner ? allTreinadores.find(t=>t.id===ultimoPlanner.treinador_resp_id) : null;
+    const vinculo = al.tipo_vinculo||'matricula';
+    const encarteirado = isEncarteirado(al);
+    const emDesafio = planners.some(isDesafioAtivo);
 
     return `
     <tr>
       <td><div style="font-weight:600">${al.nome||'—'}</div></td>
       <td style="font-family:'DM Mono',monospace;color:var(--muted)">${al.matricula||'—'}</td>
+      <td>
+        <span class="badge ${vinculo==='agregador'?'gestor':'ativo'}" style="cursor:pointer" onclick="toggleVinculoAluno('${al.id}','${vinculo}')" title="Clique para alternar">
+          ${vinculo==='agregador'?'🔗 Agregador':'📝 Matrícula'}
+        </span>
+      </td>
       <td style="color:var(--muted)">${al.idade?al.idade+' anos':'—'}</td>
       <td style="font-size:12px">${acad?.nome||'—'}</td>
       <td style="font-size:12px;color:var(--muted)">${treinador?.nome||'—'}</td>
+      <td>${encarteirado?'<span class="badge ativo">Sim</span>':'<span class="badge inativo">Não</span>'}</td>
+      <td>${emDesafio?'<span style="color:var(--orange);font-weight:700">🔥 Ativo</span>':'<span style="color:var(--muted)">—</span>'}</td>
       <td style="font-family:'DM Mono',monospace">${planners.length}</td>
       <td><span class="badge ${al.ativo?'ativo':'inativo'}">${al.ativo?'Ativo':'Inativo'}</span></td>
     </tr>`;
   }).join('');
+}
+
+async function toggleVinculoAluno(alunoId, vinculoAtual){
+  const novo = vinculoAtual==='agregador' ? 'matricula' : 'agregador';
+  try {
+    const { error } = await sb.from('alunos').update({tipo_vinculo:novo}).eq('id',alunoId);
+    if(error) throw new Error(error.message);
+    const al = allAlunos.find(a=>a.id===alunoId);
+    if(al) al.tipo_vinculo = novo;
+    renderAlunos();
+    renderKPIs();
+    renderAcademias();
+    showToast(`Vínculo alterado para ${novo==='agregador'?'Agregador':'Matrícula'}`);
+  } catch(err){
+    console.error(err);
+    showToast('Erro ao alterar vínculo: '+err.message);
+  }
+}
+
+function filtroAlunoVinculo(v, btn){
+  filtroVinculoAtual = v;
+  document.querySelectorAll('#panel-alunos .filter-btn').forEach(b=>{
+    if(['matricula','agregador','todos'].some(x=>b.getAttribute('onclick')?.includes(`filtroAlunoVinculo('${x}'`))) b.classList.remove('active');
+  });
+  btn.classList.add('active');
+  renderAlunos();
 }
 
 function filtrarAlunos(){ renderAlunos(); }
