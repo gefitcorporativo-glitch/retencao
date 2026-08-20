@@ -287,6 +287,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
             <tr>
               <th>Aluno</th>
               <th>Matrícula</th>
+              <th>E-mail</th>
               <th>Vínculo</th>
               <th>Idade</th>
               <th>Academia</th>
@@ -298,7 +299,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
             </tr>
           </thead>
           <tbody id="tbAlunos">
-            <tr><td colspan="10" class="loading"><div class="spinner"></div>Carregando alunos...</td></tr>
+            <tr><td colspan="11" class="loading"><div class="spinner"></div>Carregando alunos...</td></tr>
           </tbody>
         </table>
       </div>
@@ -676,6 +677,24 @@ tr:hover td{background:rgba(255,255,255,.02)}
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- MODAL EXCLUIR ACADEMIA -->
+<div class="modal-bg" id="modalExcluirAcademia">
+  <div class="modal">
+    <div class="modal-title" style="color:var(--red)">🗑️ Excluir Academia</div>
+    <div style="background:var(--red-dim,rgba(239,68,68,.1));border:1px solid rgba(239,68,68,.3);border-radius:10px;padding:14px;margin-bottom:16px;font-size:13px;color:var(--red);line-height:1.6">
+      <strong>Ação irreversível.</strong> Vai apagar a academia <strong id="exNomeAcademia"></strong> e TODOS os dados vinculados: alunos, treinadores, gestores, consultores, planners, experiências, diário e agenda.
+    </div>
+    <div class="modal-field">
+      <label>Digite o nome exato da academia para confirmar</label>
+      <input type="text" id="exConfirmInput" placeholder="Nome da academia">
+    </div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="fecharModal('modalExcluirAcademia')">Cancelar</button>
+      <button class="btn-save" style="background:var(--red);border-color:var(--red)" onclick="confirmarExcluirAcademia()">Excluir definitivamente</button>
+    </div>
+  </div>
+</div>
 <script>
 // ── CREDENCIAIS ADMIN ─────────────────────────────────────────
 // ALTERE AQUI para definir usuário e senha do painel admin
@@ -798,7 +817,7 @@ function renderKPIs(){
   const emDesafio = ativos.filter(al=>alunoIdsComDesafio.has(al.id)).length;
 
   const kpis = [
-    {icon:'🏢', val:allAcademias.length,   label:'Academias ativas', cls:'orange'},
+    {icon:'🏢', val:allAcademias.filter(a=>a.ativo!==false).length, label:'Academias ativas', cls:'orange'},
     {icon:'👤', val:allTreinadores.length,  label:'Treinadores',      cls:'blue'},
     {icon:'🎓', val:ativos.length,          label:'Alunos ativos (total)', cls:'green'},
     {icon:'📝', val:matriculas.length,      label:'Matrícula direta', cls:'cyan'},
@@ -846,8 +865,10 @@ function renderAcademias(){
     const plano = PLANOS[a.plano] || {label:a.plano, valor:0};
     const data = a.criado_em ? new Date(a.criado_em).toLocaleDateString('pt-BR') : '—';
 
+    const inativa = a.ativo === false;
+
     return `
-    <tr>
+    <tr style="${inativa?'opacity:.5':''}">
       <td><div style="font-weight:600">${a.nome}</div></td>
       <td style="color:var(--muted)">${a.cidade||'—'}${a.estado?' / '+a.estado:''}</td>
       <td><span class="badge ${a.plano||'piloto'}">${plano.label}</span></td>
@@ -857,13 +878,16 @@ function renderAcademias(){
       <td style="font-family:'DM Mono',monospace;font-weight:700;color:${encCor}">${ativos.length?pctEnc+'%':'—'}</td>
       <td style="font-family:'DM Mono',monospace;color:var(--orange)">${emDesafio||'—'}</td>
       <td style="font-family:'DM Mono',monospace">${planners.length}</td>
-      <td><span class="badge ativo">Ativa</span></td>
+      <td><span class="badge ${inativa?'inativo':'ativo'}">${inativa?'Inativa':'Ativa'}</span></td>
       <td style="color:var(--muted);font-size:11px">${data}</td>
       <td>
         <button class="btn-action" onclick="abrirModalPlano('${a.id}','${a.nome}','${a.plano||'piloto'}')">Plano</button>
         <button class="btn-action" onclick="abrirModalEditAcad('${a.id}','${a.nome}','${a.cidade||''}','${a.estado||'SP'}')">Editar</button>
         <button class="btn-action" onclick="abrirModalModulos('${a.id}','${a.nome}',${JSON.stringify(a.modulos||[])})">🔧 Módulos</button>
         <button class="btn-action" onclick="verDetalhesAcademia('${a.id}')">Ver</button>
+        <button class="btn-action" style="color:var(--blue)" onclick="acessarDashboard('${a.id}')">🖥️ Acessar</button>
+        <button class="btn-action" style="color:var(--yellow)" onclick="toggleAtivaAcademia('${a.id}','${a.nome.replace(/'/g,"\\'")}',${a.ativo===false})">${inativa?'▶️ Ativar':'⏸️ Inativar'}</button>
+        <button class="btn-action" style="color:var(--red)" onclick="abrirModalExcluirAcademia('${a.id}','${a.nome.replace(/'/g,"\\'")}')">🗑️ Excluir</button>
       </td>
     </tr>
     <tr class="detail-row" id="detail-${a.id}">
@@ -882,6 +906,68 @@ function renderAcademias(){
       </td>
     </tr>`;
   }).join('');
+}
+
+// ── ACESSO DIRETO (MODO ADMIN — 1 clique, sem senha) ────────────
+function acessarDashboard(academiaId){
+  window.open(`dashboard_gestor_v3.html?admin_academia=${academiaId}`, '_blank');
+}
+function acessarComoUsuario(userId, tipo, academiaId){
+  if(tipo.startsWith('Treinador')){
+    window.open(`sistema_integrado_v3.html?admin_academia=${academiaId}&admin_treinador=${userId}`, '_blank');
+  } else if(tipo.startsWith('Gestor')){
+    window.open(`dashboard_gestor_v3.html?admin_academia=${academiaId}`, '_blank');
+  } else {
+    showToast('Acesso direto ainda não disponível para este perfil.');
+  }
+}
+
+// ── INATIVAR / ATIVAR ACADEMIA ──────────────────────────────────
+async function toggleAtivaAcademia(id, nome, estaInativa){
+  const acao = estaInativa ? 'reativar' : 'inativar';
+  if(!confirm(`Confirma ${acao} a academia "${nome}"?${!estaInativa?'\n\nAcademias inativas somem dos indicadores mas os dados continuam salvos.':''}`)) return;
+  try {
+    const { error } = await sb.from('academias').update({ativo: estaInativa}).eq('id', id);
+    if(error) throw new Error(error.message);
+    const a = allAcademias.find(x=>x.id===id);
+    if(a) a.ativo = estaInativa;
+    renderAcademias();
+    renderKPIs();
+    showToast(estaInativa ? `✅ ${nome} reativada` : `⏸️ ${nome} inativada`);
+  } catch(err){
+    console.error(err);
+    showToast('Erro: '+err.message+' (coluna "ativo" existe na tabela academias?)');
+  }
+}
+
+// ── EXCLUIR ACADEMIA (com confirmação por nome) ─────────────────
+let excluirAcademiaAlvo = null;
+function abrirModalExcluirAcademia(id, nome){
+  excluirAcademiaAlvo = {id, nome};
+  document.getElementById('exNomeAcademia').textContent = nome;
+  document.getElementById('exConfirmInput').value = '';
+  document.getElementById('modalExcluirAcademia').classList.add('open');
+}
+async function confirmarExcluirAcademia(){
+  const digitado = document.getElementById('exConfirmInput').value.trim();
+  if(digitado !== excluirAcademiaAlvo.nome){ showToast('O nome digitado não confere.'); return; }
+  const { id, nome } = excluirAcademiaAlvo;
+  try {
+    const sbAdmin = window.supabase.createClient(SUPABASE_URL, SUPABASE_SERVICE);
+    // Apaga dependências primeiro (best-effort — ignora tabelas que não existirem)
+    const tabelasFilhas = ['compromissos','diario_treinador','experiencias','planners','alunos','consultores','gestores','treinadores'];
+    for(const t of tabelasFilhas){
+      try { await sbAdmin.from(t).delete().eq('academia_id', id); } catch(e){ console.warn('Falha ao limpar', t, e); }
+    }
+    const { error } = await sbAdmin.from('academias').delete().eq('id', id);
+    if(error) throw new Error(error.message);
+    fecharModal('modalExcluirAcademia');
+    showToast(`🗑️ ${nome} excluída (e todos os dados vinculados)`);
+    carregarTudo();
+  } catch(err){
+    console.error(err);
+    showToast('Erro ao excluir: '+err.message);
+  }
 }
 
 function verDetalhesAcademia(id){
@@ -967,22 +1053,24 @@ function renderAlunos(){
   });
 
   const tbody = document.getElementById('tbAlunos');
-  if(!filtered.length){ tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:24px;color:var(--muted)">Nenhum aluno encontrado</td></tr>'; return; }
+  if(!filtered.length){ tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:24px;color:var(--muted)">Nenhum aluno encontrado</td></tr>'; return; }
 
   tbody.innerHTML = filtered.map(al => {
     const acad = allAcademias.find(a=>a.id===al.academia_id);
     const planners = allPlanners.filter(p=>p.aluno_id===al.id);
-    // Buscar treinador responsável do último planner
-    const ultimoPlanner = planners[0];
-    const treinador = ultimoPlanner ? allTreinadores.find(t=>t.id===ultimoPlanner.treinador_resp_id) : null;
+    const treinador = allTreinadores.find(t=>t.id===al.treinador_id) || (planners[0] ? allTreinadores.find(t=>t.id===planners[0].treinador_resp_id) : null);
     const vinculo = al.tipo_vinculo||'matricula';
     const encarteirado = isEncarteirado(al);
     const emDesafio = planners.some(isDesafioAtivo);
+    const statusC = al.status_contato || (al.ativo?'ativo':'ex_aluno');
+    const statusLabel = {ativo:'Aluno Ativo', lead:'Lead/Visitante', ex_aluno:'Ex-Aluno'}[statusC] || 'Aluno Ativo';
+    const statusCls = statusC==='lead' ? 'gestor' : (al.ativo?'ativo':'inativo');
 
     return `
     <tr>
       <td><div style="font-weight:600">${al.nome||'—'}</div></td>
       <td style="font-family:'DM Mono',monospace;color:var(--muted)">${al.matricula||'—'}</td>
+      <td style="font-size:11px;color:var(--muted)">${al.email||'—'}</td>
       <td>
         <span class="badge ${vinculo==='agregador'?'gestor':'ativo'}" style="cursor:pointer" onclick="toggleVinculoAluno('${al.id}','${vinculo}')" title="Clique para alternar">
           ${vinculo==='agregador'?'🔗 Agregador':'📝 Matrícula'}
@@ -994,7 +1082,7 @@ function renderAlunos(){
       <td>${encarteirado?'<span class="badge ativo">Sim</span>':'<span class="badge inativo">Não</span>'}</td>
       <td>${emDesafio?'<span style="color:var(--orange);font-weight:700">🔥 Ativo</span>':'<span style="color:var(--muted)">—</span>'}</td>
       <td style="font-family:'DM Mono',monospace">${planners.length}</td>
-      <td><span class="badge ${al.ativo?'ativo':'inativo'}">${al.ativo?'Ativo':'Inativo'}</span></td>
+      <td><span class="badge ${statusCls}">${statusLabel}</span></td>
     </tr>`;
   }).join('');
 }
@@ -1177,6 +1265,7 @@ function usuarioCardHTML(u, acadNome){
   const acad = (acadNome||'').replace(/'/g,"\\'");
   const nome = (u.nome||'').replace(/'/g,"\\'");
   const email = (u.email||'').replace(/'/g,"\\'");
+  const podeAcessar = u.perfil && (u.perfil.startsWith('Treinador') || u.perfil.startsWith('Gestor'));
   return `
     <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--card2);border:1px solid var(--border);border-radius:8px;margin-bottom:6px">
       <div style="flex:1">
@@ -1184,6 +1273,7 @@ function usuarioCardHTML(u, acadNome){
         <div style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace">${u.email||'—'}</div>
         <div style="font-size:10px;color:${u.cor};margin-top:2px">${u.perfil}${u.tipo?' · '+u.tipo:''}</div>
       </div>
+      ${podeAcessar?`<button onclick="acessarComoUsuario('${u.id}','${u.perfil.replace(/'/g,"\\'")}','${u.academia_id}')" style="padding:5px 10px;border-radius:6px;border:1px solid rgba(96,165,250,.3);background:var(--blue-dim,rgba(96,165,250,.1));color:#60A5FA;font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">🖥️ Acessar</button>`:''}
       <button onclick="abrirModalSenha('${nome}','${email}')" style="padding:5px 10px;border-radius:6px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">🔑 Senha</button>
       <button onclick="abrirModalEnviarAcesso('${nome}','${email}','${acad}')" style="padding:5px 10px;border-radius:6px;border:1px solid var(--orange-border);background:var(--orange-dim);color:var(--orange);font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">📤 Enviar</button>
     </div>`;

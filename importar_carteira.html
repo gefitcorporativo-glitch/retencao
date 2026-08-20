@@ -238,7 +238,7 @@ tr:last-child td{border-bottom:none}
 
       <div class="alert alert-info">
         <span>💡</span>
-        <div>Exporte a <strong>lista de alunos ativos</strong> do seu sistema. Não precisa ser formatada — o conversor detecta as colunas automaticamente.</div>
+        <div>Exporte a <strong>lista de alunos ativos</strong> do seu sistema. Não precisa ser formatada — o conversor detecta as colunas automaticamente.<br>Não tem um arquivo pronto? <a href="#" onclick="baixarModeloPlanilha();return false" style="color:var(--laranja,var(--orange));font-weight:700;text-decoration:underline">📥 Baixe o modelo de planilha</a> e preencha.</div>
       </div>
 
       <button class="btn-primary" id="btnProStep1" onclick="irStep(2)" disabled>Próximo →</button>
@@ -361,23 +361,43 @@ let rawRows=[], headers=[], sep=',', mapeamento={}, planoMap={}, dadosConvertido
 
 const CAMPOS = [
   {key:'nome',      label:'Nome',       obrig:true},
-  {key:'matricula', label:'Matrícula',  obrig:false},
+  {key:'matricula', label:'Código / Matrícula',  obrig:false},
+  {key:'status',    label:'Status (Ativo/Lead/Ex-Aluno)', obrig:false},
   {key:'plano',     label:'Plano',      obrig:false},
   {key:'vencimento',label:'Vencimento', obrig:false},
   {key:'idade',     label:'Idade',      obrig:false},
   {key:'telefone',  label:'Telefone',   obrig:false},
+  {key:'email',     label:'E-mail',     obrig:false},
+  {key:'treinador', label:'Treinador(a) Responsável', obrig:false},
   {key:'tipo_vinculo', label:'Vínculo (Matrícula/Agregador)', obrig:false},
 ];
 
 const AUTO_KEYS = {
   nome:       ['nome','name','aluno','cliente','member'],
   matricula:  ['matricula','matr','código','codigo','code','id','reg'],
+  status:     ['status','situacao','situação','estado_aluno'],
   plano:      ['plano','plan','modalidade','produto','contrato','tipo'],
   vencimento: ['vencimento','venc','validade','expir','fim','data_fim','dt_venc','prazo'],
   idade:      ['idade','age','anos'],
   telefone:   ['telefone','fone','celular','whatsapp','tel','phone'],
+  email:      ['email','e-mail','mail'],
+  treinador:  ['treinador','trainer','responsavel','responsável','coach'],
   tipo_vinculo: ['vinculo','vínculo','origem','canal','agregador','wellhub','totalpass','gympass'],
 };
+
+const STATUS_KW = {
+  ativo:    ['ativo','matriculado','aluno ativo','vigente'],
+  lead:     ['lead','visitante','prospect','experiencia','experiência','interessado'],
+  ex_aluno: ['ex-aluno','ex aluno','inativo','cancelado','desistente','evadido'],
+};
+function detectarStatus(v){
+  if(!v) return 'ativo';
+  const vl = v.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  for(const [k,kws] of Object.entries(STATUS_KW)){
+    if(kws.some(kw=>vl.includes(kw.normalize('NFD').replace(/[\u0300-\u036f]/g,'')))) return k;
+  }
+  return 'ativo';
+}
 
 const VINCULO_KW = ['wellhub','totalpass','gympass','agregador','avulso','parceir'];
 function detectarVinculo(v){
@@ -583,6 +603,22 @@ function renderPlanoMap(){
 }
 
 // ── CONVERTER ─────────────────────────────────────────────────
+function baixarModeloPlanilha(){
+  const cabecalho = ['codigo','nome','idade','status','telefone','email','treinador'];
+  const exemplos = [
+    ['1023','Maria Fernanda Souza','34','Aluno Ativo','(11) 99999-1234','maria@email.com','Ana Costa'],
+    ['','João Paulo Lima','','Lead/Visitante','(11) 98888-5678','joao@email.com',''],
+    ['0980','Carlos Eduardo','41','Ex-Aluno','(11) 97777-4321','','Bruno Silva'],
+  ];
+  const linhas = [cabecalho, ...exemplos].map(l=>l.map(c=>`"${(c||'').replace(/"/g,'""')}"`).join(',')).join('\r\n');
+  const blob = new Blob(['\uFEFF'+linhas], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'modelo_importacao_alunos_QG90.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
 function converter(){
   if(mapeamento['nome']===undefined){showToast('⚠️ Selecione a coluna Nome');return;}
   const vinculoPadrao = document.getElementById('vinculoDefault')?.value || 'matricula';
@@ -595,7 +631,13 @@ function converter(){
     if(!['anual','mensal','recorrencia'].includes(plano)) plano=plano?'mensal':'';
     const vinculoBruto = g('tipo_vinculo');
     const tipo_vinculo = vinculoBruto ? (detectarVinculo(vinculoBruto)||vinculoPadrao) : vinculoPadrao;
-    return {nome, matricula:g('matricula'), plano, vencimento:normData(g('vencimento')), idade:g('idade').replace(/\D/g,''), telefone:g('telefone').replace(/[^\d()\-+ ]/g,''), tipo_vinculo};
+    const status_contato = detectarStatus(g('status'));
+    const treinadorNomeCsv = g('treinador');
+    return {
+      nome, matricula:g('matricula'), plano, vencimento:normData(g('vencimento')),
+      idade:g('idade').replace(/\D/g,''), telefone:g('telefone').replace(/[^\d()\-+ ]/g,''),
+      email:g('email'), tipo_vinculo, status_contato, treinadorNomeCsv,
+    };
   }).filter(Boolean);
 
   renderRevisao();
@@ -620,6 +662,8 @@ function renderRevisao(){
   const semPlano=dadosConvertidos.filter(r=>!r.plano).length;
   const semVenc=dadosConvertidos.filter(r=>!r.vencimento).length;
   const agregadores=dadosConvertidos.filter(r=>r.tipo_vinculo==='agregador').length;
+  const leads=dadosConvertidos.filter(r=>r.status_contato==='lead').length;
+  const exAlunos=dadosConvertidos.filter(r=>r.status_contato==='ex_aluno').length;
   const hoje=new Date();
   const vencidos=dadosConvertidos.filter(r=>{
     if(!r.vencimento) return false;
@@ -632,7 +676,8 @@ function renderRevisao(){
     <div class="stat-box"><div class="stat-val ${semPlano?'warn':'ok'}">${total-semPlano}</div><div class="stat-label">Com plano</div></div>
     <div class="stat-box"><div class="stat-val ${semVenc?'warn':'ok'}">${total-semVenc}</div><div class="stat-label">Com venc.</div></div>
     <div class="stat-box"><div class="stat-val ${vencidos?'err':'ok'}">${vencidos}</div><div class="stat-label">Vencidos</div></div>
-    <div class="stat-box"><div class="stat-val ok">${total-agregadores} · ${agregadores}</div><div class="stat-label">Matrícula · Agregador</div></div>`;
+    <div class="stat-box"><div class="stat-val ok">${total-agregadores} · ${agregadores}</div><div class="stat-label">Matrícula · Agregador</div></div>
+    <div class="stat-box"><div class="stat-val ok">${total-leads-exAlunos} · ${leads} · ${exAlunos}</div><div class="stat-label">Ativo · Lead · Ex-Aluno</div></div>`;
 
   let al='';
   if(semPlano) al+=`<div class="alert alert-warn"><span>⚠️</span><div>${semPlano} aluno(s) sem plano → serão importados como "mensal"</div></div>`;
@@ -678,8 +723,17 @@ async function importar(){
     const {data:existentes} = await sb.from('alunos').select('id,matricula,nome').eq('academia_id',academiaId);
     const existMap = {};
     (existentes||[]).forEach(a=>{ if(a.matricula) existMap[a.matricula]=a.id; existMap['n:'+a.nome.toLowerCase()]=a.id; });
+    const {data:treinadoresAcad} = await sb.from('treinadores').select('id,nome').eq('academia_id',academiaId);
+    const listaTreinadores = treinadoresAcad||[];
+    function resolverTreinadorId(nomeCsv){
+      if(!nomeCsv) return treinadorId;
+      const alvo = nomeCsv.toLowerCase().trim();
+      const achado = listaTreinadores.find(t=>t.nome.toLowerCase().trim()===alvo)
+        || listaTreinadores.find(t=>t.nome.toLowerCase().includes(alvo)||alvo.includes(t.nome.toLowerCase()));
+      return achado ? achado.id : treinadorId;
+    }
     setStep('prog2','done');
-    addLog(`✓ ${(existentes||[]).length} alunos já cadastrados`);
+    addLog(`✓ ${(existentes||[]).length} alunos já cadastrados · ${listaTreinadores.length} treinadores na academia`);
 
     // 3. Importar
     setStep('prog3','loading');
@@ -696,18 +750,20 @@ async function importar(){
       const lote=dadosConvertidos.slice(i,i+LOTE);
       for(const r of lote){
         const venc = r.vencimento ? (() => { const [d,m,a]=r.vencimento.split('/'); return `${a}-${m}-${d}`; })() : null;
+        const statusC = r.status_contato || 'ativo';
         const payload = {
-          academia_id:academiaId, treinador_id:treinadorId,
+          academia_id:academiaId, treinador_id:resolverTreinadorId(r.treinadorNomeCsv),
           nome:r.nome, matricula:r.matricula||null,
           plano:r.plano||'mensal', vencimento:venc,
-          idade:parseInt(r.idade)||null, telefone:r.telefone||null, ativo:true,
+          idade:parseInt(r.idade)||null, telefone:r.telefone||null,
+          email:r.email||null, status_contato:statusC, ativo: statusC!=='ex_aluno',
           tipo_vinculo:r.tipo_vinculo||'matricula',
         };
 
         const existId = r.matricula ? existMap[r.matricula] : existMap['n:'+r.nome.toLowerCase()];
 
         if(existId && modo==='atualizar'){
-          await sb.from('alunos').update({plano:payload.plano,vencimento:payload.vencimento,telefone:payload.telefone,idade:payload.idade,tipo_vinculo:payload.tipo_vinculo}).eq('id',existId);
+          await sb.from('alunos').update({plano:payload.plano,vencimento:payload.vencimento,telefone:payload.telefone,idade:payload.idade,tipo_vinculo:payload.tipo_vinculo,email:payload.email,status_contato:payload.status_contato,ativo:payload.ativo,treinador_id:payload.treinador_id}).eq('id',existId);
           atualizados++;
         } else if(existId && modo==='adicionar'){
           ignorados++;

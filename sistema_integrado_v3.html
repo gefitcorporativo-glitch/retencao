@@ -2918,7 +2918,15 @@ function mostrarToastHome(msg){
 }
 
 // ── LOGOUT ───────────────────────────────────────────────────
+function mostrarBannerModoAdmin(){
+  const b = document.createElement('div');
+  b.style.cssText = 'position:sticky;top:0;z-index:200;background:#3B1F0A;border-bottom:2px solid var(--orange);color:var(--orange);font-size:12px;font-weight:700;padding:8px 16px;text-align:center;font-family:"DM Sans",sans-serif';
+  b.innerHTML = '🛡️ MODO ADMIN — visualizando/editando em nome do treinador. Nenhuma senha foi usada. <button onclick="window.close()" style="margin-left:12px;padding:3px 10px;border-radius:6px;border:1px solid var(--orange);background:transparent;color:var(--orange);font-weight:700;cursor:pointer;font-size:11px">Fechar aba</button>';
+  document.body.insertBefore(b, document.body.firstChild);
+}
+
 function fazerLogout(){
+  if(modoAdmin){ window.close(); return; }
   localStorage.removeItem('qg90_user');
   sessionStorage.clear();
   window.location.replace('index.html');
@@ -2936,12 +2944,46 @@ let currentAcademiaId = null;
 let currentPlannerId = null;
 
 // ── INICIALIZAR COM SUPABASE ──────────────────────────────────
+let modoAdmin = false;
+
 async function initComSupabase(){
   try {
     // Inicializar cliente Supabase
     sbSys = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
-    
-    // 1. Verificar sessão
+
+    // ── MODO ADMIN: acesso direto vindo do painel admin, sem login ──
+    const urlParams = new URLSearchParams(window.location.search);
+    const adminAcademiaId = urlParams.get('admin_academia');
+    const adminTreinadorId = urlParams.get('admin_treinador');
+
+    if(adminAcademiaId && adminTreinadorId){
+      const { data: treinador } = await sbSys
+        .from('treinadores')
+        .select('id, nome, academia_id, tipo')
+        .eq('id', adminTreinadorId)
+        .single();
+
+      if(treinador){
+        modoAdmin = true;
+        currentAcademiaId = treinador.academia_id;
+        localStorage.setItem('qg90_treinador', JSON.stringify(treinador));
+        mostrarBannerModoAdmin();
+
+        await carregarTreinadores(treinador.academia_id);
+        await carregarAcademia(treinador.academia_id);
+        initPlanner();
+        if(window.TREINADORES_DB && window.TREINADORES_DB.length > 0){
+          populateTreinadoresDB(window.TREINADORES_DB);
+        }
+        document.getElementById('planner-view').classList.remove('active');
+        document.getElementById('home-view').classList.add('active');
+        document.getElementById('btnHomeFixed').classList.remove('visible');
+        await carregarDadosHome();
+        return;
+      }
+    }
+
+    // 1. Verificar sessão (fluxo normal — login do próprio treinador)
     const { data: { session } } = await sbSys.auth.getSession();
     if(!session){ window.location.replace('index.html'); return; }
     currentUser = session.user;
