@@ -136,7 +136,7 @@ body{
     <div class="card-sub">Acesse com seu e-mail e senha</div>
 
     <!-- ROLE SELECTOR -->
-    <div class="role-grid">
+    <div class="role-grid" style="grid-template-columns:repeat(3,1fr)">
       <button class="role-btn active" onclick="selectRole('treinador',this)" id="role-treinador">
         <div class="role-icon">🏋️</div>
         <div class="role-label">Treinador</div>
@@ -144,6 +144,10 @@ body{
       <button class="role-btn" onclick="selectRole('gestor',this)" id="role-gestor">
         <div class="role-icon">📊</div>
         <div class="role-label">Gestor</div>
+      </button>
+      <button class="role-btn" onclick="selectRole('consultor',this)" id="role-consultor">
+        <div class="role-icon">💬</div>
+        <div class="role-label">Consultor(a)</div>
       </button>
     </div>
 
@@ -256,12 +260,43 @@ async function fazerLogin(){
         .single();
 
       if(gestor){
+        localStorage.setItem('qg90_user', JSON.stringify({
+          id: gestor.id,
+          nome: gestor.nome,
+          academiaId: gestor.academia_id,
+          role: 'gestor'
+        }));
         showSuccess('Bem-vindo, ' + gestor.nome + '! Redirecionando...');
         setTimeout(() => {
           window.location.href = 'dashboard_gestor_v3.html';
         }, 1200);
       } else {
         showError('Perfil de gestor não encontrado. Verifique o tipo de acesso selecionado.');
+        setLoading(false);
+        await sbClient.auth.signOut();
+      }
+
+    } else if(selectedRole === 'consultor'){
+      // Verificar se é consultor(a) de vendas
+      const { data: consultor } = await sbClient
+        .from('consultores')
+        .select('id, nome, academia_id')
+        .eq('user_id', userId)
+        .single();
+
+      if(consultor){
+        localStorage.setItem('qg90_user', JSON.stringify({
+          id: consultor.id,
+          nome: consultor.nome,
+          academiaId: consultor.academia_id,
+          role: 'consultor'
+        }));
+        showSuccess('Bem-vindo, ' + consultor.nome + '! Redirecionando...');
+        setTimeout(() => {
+          window.location.href = 'painel_vendas.html';
+        }, 1200);
+      } else {
+        showError('Perfil de consultor(a) não encontrado. Verifique o tipo de acesso selecionado.');
         setLoading(false);
         await sbClient.auth.signOut();
       }
@@ -363,6 +398,8 @@ function showLogin(){
         window.location.href = 'dashboard_gestor_v3.html';
       } else if(user.role === 'treinador'){
         window.location.href = 'sistema_integrado_v3.html';
+      } else if(user.role === 'consultor'){
+        window.location.href = 'painel_vendas.html';
       }
     } else {
       // Limpa qualquer sessão residual

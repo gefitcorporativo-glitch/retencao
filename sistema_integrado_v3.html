@@ -532,6 +532,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
       <div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap">
         <button onclick="abrirModalNovaExp()" style="flex:1;min-width:140px;padding:10px;border-radius:8px;border:1px solid var(--orange-border);background:var(--orange-dim);color:var(--orange);font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">⚡ Nova Exp.</button>
         <button onclick="window.open('diario_treinador.html','_blank')" style="flex:1;min-width:140px;padding:10px;border-radius:8px;border:none;background:var(--orange);color:#000;font-size:12px;font-weight:800;cursor:pointer;font-family:'Syne',sans-serif">📝 Diário</button>
+        <button onclick="window.open('revisao_treino.html','_blank')" style="flex:1;min-width:140px;padding:10px;border-radius:8px;border:1px solid var(--border2);background:var(--card);color:var(--muted);font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">📋 Revisão</button>
         <button onclick="abrirUploadCSV()" style="flex:1;min-width:140px;padding:10px;border-radius:8px;border:1px solid var(--border2);background:var(--card);color:var(--muted);font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">📤 CSV</button>
         <button onclick="window.open('pesquisa_consultoria.html','_blank')" style="flex:1;min-width:140px;padding:10px;border-radius:8px;border:1px solid var(--border2);background:var(--card);color:var(--muted);font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">📊 Pesquisa</button>
       </div>
@@ -652,6 +653,9 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
       </div>
       <div id="csvPreview" style="margin-top:10px;display:none"></div>
       <button id="btnImportarCSV" onclick="importarCSV()" style="display:none;width:100%;margin-top:10px;padding:13px;border-radius:10px;border:none;background:var(--orange);color:#000;font-size:14px;font-weight:800;cursor:pointer;font-family:'Syne',sans-serif">Importar alunos</button>
+      <div style="text-align:center;margin-top:12px;font-size:11px;color:var(--muted)">
+        Tem uma planilha grande, com e-mail, status ou treinador de cada aluno? <a href="importar_carteira.html" target="_blank" style="color:var(--orange);font-weight:700;text-decoration:underline">Use o importador completo →</a>
+      </div>
     </div>
   </div>
 </div>
@@ -2365,7 +2369,9 @@ async function salvarNovaExp(){
       link_mapeamento: linkMapeamento,
       data_inicio: inicio,
       data_fim: dataFim.toISOString().slice(0,10),
-      status: 'andamento',
+      status_funil: 'comparecida', // criada pelo treinador = já iniciou (dia 1)
+      treinador_atendeu: treinadorLocal.nome || null,
+      treinador_atendeu_id: treinadorLocal.id || null,
       convertido: false,
     }]);
 
@@ -2423,7 +2429,7 @@ function toggleCarteira(){
 async function converterExp(id, nome){
   if(!confirm(`Converter "${nome}" para aluno ativo?`)) return;
   try {
-    await sbSys.from('experiencias').update({status:'convertida', convertido:true}).eq('id',id);
+    await sbSys.from('experiencias').update({status_funil:'convertida', convertido:true}).eq('id',id);
     // Criar aluno na carteira
     const treinadorLocal = JSON.parse(localStorage.getItem('qg90_treinador')||'{}');
     await sbSys.from('alunos').insert([{
@@ -2438,7 +2444,7 @@ async function converterExp(id, nome){
 
 async function naoConverterExp(id){
   try {
-    await sbSys.from('experiencias').update({status:'nao_convertida'}).eq('id',id);
+    await sbSys.from('experiencias').update({status_funil:'nao_convertida'}).eq('id',id);
     showToast('Experiência encerrada sem conversão');
     await carregarDadosHome();
   } catch(err){ showToast('Erro: '+err.message); }
@@ -2517,9 +2523,9 @@ async function carregarDadosHome(){
       .order('data_inicio', {ascending: false});
 
     const listaExps = exps || [];
-    const expAndamento = listaExps.filter(e => e.status === 'andamento');
-    const expConvertidas = listaExps.filter(e => e.status === 'convertida');
-    const expFinalizadas = listaExps.filter(e => e.status !== 'andamento');
+    const expAndamento = listaExps.filter(e => e.status_funil === 'comparecida');
+    const expConvertidas = listaExps.filter(e => e.status_funil === 'convertida');
+    const expFinalizadas = listaExps.filter(e => e.status_funil !== 'comparecida' && e.status_funil !== 'agendada');
     const pctConv = expFinalizadas.length > 0
       ? Math.round((expConvertidas.length / expFinalizadas.length) * 100)
       : 0;
@@ -2927,7 +2933,9 @@ function mostrarBannerModoAdmin(){
 
 function fazerLogout(){
   if(modoAdmin){ window.close(); return; }
+  if(sbSys) sbSys.auth.signOut();
   localStorage.removeItem('qg90_user');
+  localStorage.removeItem('qg90_treinador');
   sessionStorage.clear();
   window.location.replace('index.html');
 }
