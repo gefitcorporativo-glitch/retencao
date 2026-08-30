@@ -444,12 +444,14 @@ body::before {
     <div class="header-right">
       <div class="live-badge"><div class="live-dot"></div>Ao vivo</div>
       <button onclick="document.getElementById('secTreinadores').scrollIntoView({behavior:'smooth'})" style="padding:6px 12px;border-radius:8px;border:1px solid var(--border2);background:var(--card2);color:var(--text);font-size:11px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">🖥️ Ver Treinadores</button>
+      <button onclick="document.getElementById('secEquipe').scrollIntoView({behavior:'smooth'})" style="padding:6px 12px;border-radius:8px;border:1px solid var(--border2);background:var(--card2);color:var(--text);font-size:11px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">👥 Equipe</button>
       <div class="period-btns">
         <button class="p-btn active" onclick="setPeriod('semana',this)">Semana</button>
         <button class="p-btn" onclick="setPeriod('mes',this)">Mês</button>
         <button class="p-btn" onclick="setPeriod('trimestre',this)">Trim.</button>
       </div>
       <div class="clock" id="clock">--:--:--</div>
+      <button onclick="fazerLogoutGestor()" style="padding:6px 14px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;background:transparent;border:1px solid #2A2A2A;color:#888" onmouseover="this.style.borderColor='#EF4444';this.style.color='#EF4444'" onmouseout="this.style.borderColor='#2A2A2A';this.style.color='#888'">Sair</button>
     </div>
   </div>
 </header>
@@ -943,7 +945,75 @@ body::before {
   </div>
 </div>
 
+<!-- ══════════════════════════════════════════════
+     BLOCO 5 — EQUIPE
+══════════════════════════════════════════════ -->
+<div class="sec-hdr" id="secEquipe">
+  <div class="sec-num">05</div>
+  <div class="sec-title">Equipe</div>
+  <div class="sec-line"></div>
+  <button onclick="abrirModalNovoMembro()" style="padding:6px 14px;border-radius:8px;border:none;background:var(--orange);color:#000;font-size:12px;font-weight:800;cursor:pointer;font-family:'Syne',sans-serif">+ Novo(a)</button>
+</div>
+<div class="card">
+  <div id="equipeAviso" style="display:none;background:rgba(255,209,102,.08);border:1px solid rgba(255,209,102,.25);border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:var(--yellow)"></div>
+  <div id="equipeLista" style="display:flex;flex-direction:column;gap:8px">
+    <div style="text-align:center;padding:16px;color:var(--text3);font-size:12px">Carregando equipe...</div>
+  </div>
+</div>
+
 </div><!-- /content -->
+
+<!-- MODAL: NOVO MEMBRO DA EQUIPE -->
+<div id="modalNovoMembro" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:300;align-items:center;justify-content:center;padding:20px">
+  <div style="background:var(--card);border:1px solid var(--border2);border-radius:16px;padding:24px;width:100%;max-width:420px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800">+ Novo(a) da Equipe</div>
+      <button onclick="document.getElementById('modalNovoMembro').style.display='none'" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:20px">✕</button>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:12px">
+      <button id="tipoTreinadorBtn" onclick="setTipoMembro('treinador')" style="flex:1;padding:9px;border-radius:8px;border:1px solid var(--orange-border,rgba(232,119,34,.4));background:var(--orange-dim,rgba(232,119,34,.12));color:var(--orange);font-size:12px;font-weight:700;cursor:pointer">🏋️ Treinador(a)</button>
+      <button id="tipoConsultorBtn" onclick="setTipoMembro('consultor')" style="flex:1;padding:9px;border-radius:8px;border:1px solid var(--border2);background:transparent;color:var(--text3);font-size:12px;font-weight:700;cursor:pointer">💬 Consultor(a)</button>
+    </div>
+    <input type="hidden" id="nmTipo" value="treinador">
+    <div id="nmTipoTreinadorWrap" style="display:flex;flex-direction:column;gap:5px;margin-bottom:10px">
+      <label style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.1em">Vínculo</label>
+      <select id="nmTipoTreinador" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:9px;color:var(--text);font-size:13px">
+        <option value="interno">Interno</option>
+        <option value="externo">Externo</option>
+      </select>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:10px">
+      <label style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.1em">Nome completo *</label>
+      <input type="text" id="nmNome" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:9px;color:var(--text);font-size:13px">
+    </div>
+    <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:10px">
+      <label style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.1em">E-mail *</label>
+      <input type="email" id="nmEmail" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:9px;color:var(--text);font-size:13px">
+    </div>
+    <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:16px">
+      <label style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.1em">Senha inicial (mín. 8 caracteres) *</label>
+      <input type="text" id="nmSenha" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:9px;color:var(--text);font-size:13px">
+    </div>
+    <button id="btnCriarMembro" onclick="criarMembroEquipe()" style="width:100%;padding:12px;border-radius:10px;border:none;background:var(--orange);color:#000;font-size:14px;font-weight:800;cursor:pointer">Criar acesso</button>
+  </div>
+</div>
+
+<!-- MODAL: REDEFINIR SENHA DA EQUIPE -->
+<div id="modalSenhaEquipe" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:300;align-items:center;justify-content:center;padding:20px">
+  <div style="background:var(--card);border:1px solid var(--border2);border-radius:16px;padding:24px;width:100%;max-width:380px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800">🔑 Redefinir Senha</div>
+      <button onclick="document.getElementById('modalSenhaEquipe').style.display='none'" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:20px">✕</button>
+    </div>
+    <div style="font-size:12px;color:var(--text3);margin-bottom:14px" id="senhaEquipeNome"></div>
+    <input type="hidden" id="senhaEquipeEmail">
+    <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:16px">
+      <label style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.1em">Nova senha (mín. 8 caracteres)</label>
+      <input type="text" id="novaSenhaEquipe" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:9px;color:var(--text);font-size:13px">
+    </div>
+    <button onclick="confirmarResetSenhaEquipe()" style="width:100%;padding:12px;border-radius:10px;border:none;background:var(--orange);color:#000;font-size:14px;font-weight:800;cursor:pointer">Redefinir</button>
+  </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -955,6 +1025,135 @@ let DESAFIOS = [];
 const SUPABASE_URL  = 'https://xpvedihpejivnkssryhc.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhwdmVkaWhwZWppdm5rc3NyeWhjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MzM2OTEsImV4cCI6MjA5NTMwOTY5MX0.23eRl7PSoak-YGS91N8lBLIRC0MqHRh5Su1r1Zr6CC4';
 let sb, academiaId, academiaNome = 'Academia';
+let modoAdmin = false;
+
+function fazerLogoutGestor(){
+  if(modoAdmin){ window.close(); return; }
+  if(sb) sb.auth.signOut();
+  localStorage.removeItem('qg90_user');
+  sessionStorage.clear();
+  window.location.replace('index.html');
+}
+
+// ══════════════════════════════════════════════
+// EQUIPE — via Edge Function "gestor-equipe" (a service_role key nunca chega aqui)
+// ══════════════════════════════════════════════
+const EDGE_FUNCTION_URL = SUPABASE_URL + '/functions/v1/gestor-equipe';
+
+async function chamarEdgeFunction(payload){
+  const { data: { session } } = await sb.auth.getSession();
+  if(!session){ showToast('Sessão expirada — faça login novamente.'); return { error: 'Sem sessão' }; }
+  const resp = await fetch(EDGE_FUNCTION_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.access_token },
+    body: JSON.stringify(payload),
+  });
+  return await resp.json();
+}
+
+function renderEquipe(){
+  const el = document.getElementById('equipeLista');
+  const aviso = document.getElementById('equipeAviso');
+  if(modoAdmin){
+    aviso.style.display = 'block';
+    aviso.textContent = '🛡️ Modo Admin: criação de acesso e redefinição de senha ficam desabilitadas aqui — use o Painel Admin pra isso.';
+  } else {
+    aviso.style.display = 'none';
+  }
+
+  const treinadores = (window.TREINADORES_DB_RAW||[]).map(t => ({...t, tipoPapel:'Treinador(a)', sub: t.tipo==='externo'?'Externo':'Interno', cor:'var(--orange)'}));
+  const consultores = (window.CONSULTORES_DB||[]).map(c => ({...c, tipoPapel:'Consultor(a)', sub:'Vendas', cor:'var(--blue)'}));
+  const todos = [...treinadores, ...consultores];
+
+  if(!todos.length){
+    el.innerHTML = '<div style="text-align:center;padding:16px;color:var(--text3);font-size:12px">Nenhum treinador ou consultor(a) cadastrado ainda.</div>';
+    return;
+  }
+
+  el.innerHTML = todos.map(p => `
+    <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--card2);border:1px solid var(--border);border-radius:10px">
+      <div style="width:34px;height:34px;border-radius:50%;background:${p.cor};opacity:.15;display:flex;align-items:center;justify-content:center;flex-shrink:0"></div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:700">${p.nome}</div>
+        <div style="font-size:11px;color:var(--text3)">${p.email||'sem e-mail cadastrado'} · <span style="color:${p.cor}">${p.tipoPapel}</span> · ${p.sub}</div>
+      </div>
+      ${modoAdmin ? '' : `<button onclick="abrirModalSenhaEquipe('${(p.nome||'').replace(/'/g,"\\'")}','${p.email||''}')" style="padding:6px 12px;border-radius:7px;border:1px solid var(--border2);background:transparent;color:var(--text3);font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap">🔑 Senha</button>`}
+    </div>`).join('');
+}
+
+function abrirModalNovoMembro(){
+  document.getElementById('nmNome').value = '';
+  document.getElementById('nmEmail').value = '';
+  document.getElementById('nmSenha').value = '';
+  setTipoMembro('treinador');
+  document.getElementById('modalNovoMembro').style.display = 'flex';
+}
+
+function setTipoMembro(tipo){
+  document.getElementById('nmTipo').value = tipo;
+  const btnT = document.getElementById('tipoTreinadorBtn');
+  const btnC = document.getElementById('tipoConsultorBtn');
+  const wrap = document.getElementById('nmTipoTreinadorWrap');
+  if(tipo==='treinador'){
+    btnT.style.background='var(--orange-dim,rgba(232,119,34,.12))'; btnT.style.color='var(--orange)'; btnT.style.borderColor='var(--orange-border,rgba(232,119,34,.4))';
+    btnC.style.background='transparent'; btnC.style.color='var(--text3)'; btnC.style.borderColor='var(--border2)';
+    wrap.style.display = 'flex';
+  } else {
+    btnC.style.background='var(--blue-dim,rgba(126,184,255,.12))'; btnC.style.color='var(--blue)'; btnC.style.borderColor='var(--blue-border,rgba(126,184,255,.4))';
+    btnT.style.background='transparent'; btnT.style.color='var(--text3)'; btnT.style.borderColor='var(--border2)';
+    wrap.style.display = 'none';
+  }
+}
+
+async function criarMembroEquipe(){
+  const tipo = document.getElementById('nmTipo').value;
+  const nome = document.getElementById('nmNome').value.trim();
+  const email = document.getElementById('nmEmail').value.trim();
+  const senha = document.getElementById('nmSenha').value.trim();
+  const tipoTreinador = document.getElementById('nmTipoTreinador').value;
+
+  if(!nome || !email || !senha){ showToast('Preencha nome, e-mail e senha'); return; }
+  if(senha.length < 8){ showToast('Senha precisa ter no mínimo 8 caracteres'); return; }
+
+  const btn = document.getElementById('btnCriarMembro');
+  btn.disabled = true; btn.textContent = 'Criando...';
+
+  try {
+    const resp = await chamarEdgeFunction({ action:'criar_usuario', nome, email, senha, tipo, tipoTreinador });
+    if(resp.error){ showToast('Erro: '+resp.error); return; }
+    showToast('✅ ' + resp.message);
+    document.getElementById('modalNovoMembro').style.display = 'none';
+    await carregarDadosReais();
+  } catch(err){
+    console.error(err);
+    showToast('Erro ao criar acesso: '+err.message);
+  } finally {
+    btn.disabled = false; btn.textContent = 'Criar acesso';
+  }
+}
+
+function abrirModalSenhaEquipe(nome, email){
+  document.getElementById('senhaEquipeNome').textContent = `${nome} · ${email}`;
+  document.getElementById('senhaEquipeEmail').value = email;
+  document.getElementById('novaSenhaEquipe').value = '';
+  document.getElementById('modalSenhaEquipe').style.display = 'flex';
+}
+
+async function confirmarResetSenhaEquipe(){
+  const email = document.getElementById('senhaEquipeEmail').value;
+  const novaSenha = document.getElementById('novaSenhaEquipe').value.trim();
+  if(novaSenha.length < 8){ showToast('Senha precisa ter no mínimo 8 caracteres'); return; }
+
+  try {
+    const resp = await chamarEdgeFunction({ action:'resetar_senha', email, novaSenha });
+    if(resp.error){ showToast('Erro: '+resp.error); return; }
+    showToast('✅ ' + resp.message);
+    document.getElementById('modalSenhaEquipe').style.display = 'none';
+  } catch(err){
+    console.error(err);
+    showToast('Erro ao redefinir: '+err.message);
+  }
+}
 
 // Cores fixas para diferenciar treinadores nos gráficos
 const CORES_TREINADOR = ['#E87722','#7EB8FF','#2DD4A0','#B09FFF','#FFD166','#FF4D6D','#F59E4A','#9AF0D0'];
@@ -977,6 +1176,7 @@ async function carregarDadosReais(){
     const adminAcademiaId = urlParams.get('admin_academia');
 
     if(adminAcademiaId){
+      modoAdmin = true;
       academiaId = adminAcademiaId;
       const { data: academia } = await sb.from('academias').select('nome').eq('id', academiaId).single();
       if(!academia){
@@ -1023,16 +1223,20 @@ function mostrarBannerModoAdmin(){
 async function carregarDadosAcademia(){
   try {
     // ── Buscar dados-base em paralelo ──
-    const [alunosRes, treinadoresRes, plannersRes, expRes] = await Promise.all([
+    const [alunosRes, treinadoresRes, plannersRes, expRes, consultoresRes] = await Promise.all([
       sb.from('alunos').select('*').eq('academia_id', academiaId),
       sb.from('treinadores').select('*').eq('academia_id', academiaId),
       sb.from('planners').select('*').eq('academia_id', academiaId),
       sb.from('experiencias').select('*').eq('academia_id', academiaId),
+      sb.from('consultores').select('*').eq('academia_id', academiaId),
     ]);
     const alunos = alunosRes.data || [];
     const treinadoresDB = treinadoresRes.data || [];
     const planners = plannersRes.data || [];
     const experiencias = expRes.data || [];
+    window.CONSULTORES_DB = consultoresRes.data || [];
+    window.TREINADORES_DB_RAW = treinadoresDB;
+    renderEquipe();
 
     // Diário do treinador — mês corrente (para consultorias/experiências/novos) e semana corrente (revisões)
     const hoje = new Date(); hoje.setHours(0,0,0,0);
