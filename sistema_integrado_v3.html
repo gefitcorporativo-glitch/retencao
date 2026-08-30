@@ -57,10 +57,10 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .home-kpi{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center}
 .home-kpi-val{font-family:"Syne",sans-serif;font-size:26px;font-weight:800;color:var(--orange)}
 .home-kpi-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:3px}
-.home-sec{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;margin:20px 0 10px;display:flex;align-items:center;gap:8px}
-.home-sec::after{content:"";flex:1;height:1px;background:var(--border)}
-.home-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.home-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 @media(max-width:860px){.home-grid-2{grid-template-columns:1fr}}
+.home-sec{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;margin:16px 0 8px;display:flex;align-items:center;gap:8px}
+.home-sec::after{content:"";flex:1;height:1px;background:var(--border)}
 .aluno-row{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:6px;display:flex;align-items:center;gap:12px;transition:all .15s}
 .aluno-row:hover{border-color:var(--orange-border)}
 .aluno-av{width:34px;height:34px;border-radius:50%;background:var(--orange-dim);border:2px solid var(--orange-border);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--orange);flex-shrink:0}
@@ -71,7 +71,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .abadge-ativo{background:rgba(34,197,94,.1);color:#22C55E;border:1px solid rgba(34,197,94,.25)}
 .abadge-revisao{background:var(--orange-dim);color:var(--orange);border:1px solid var(--orange-border)}
 .abadge-sem{background:#1A1A1A;color:var(--muted)}
-.home-empty{text-align:center;padding:24px;color:var(--muted);font-size:13px;background:var(--card);border-radius:10px;border:1px solid var(--border)}
+.home-empty{text-align:left;padding:13px 16px;color:var(--muted);font-size:13px;background:var(--card);border-radius:10px;border:1px solid var(--border)}
 .btn-home{position:fixed;bottom:20px;right:16px;padding:10px 16px;border-radius:24px;background:var(--orange);border:none;color:#000;font-size:12px;font-weight:800;cursor:pointer;font-family:"Syne",sans-serif;box-shadow:0 4px 16px rgba(232,119,34,.4);z-index:90;display:none;align-items:center;gap:6px}
 .btn-home.visible{display:flex}
 
@@ -461,6 +461,12 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 </head>
 <body>
 
+<div id="loadingScreen" style="position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;gap:14px">
+  <div style="font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--orange)">QG.90</div>
+  <div style="width:26px;height:26px;border:3px solid var(--border2);border-top-color:var(--orange);border-radius:50%;animation:qgspin .7s linear infinite"></div>
+</div>
+<style>@keyframes qgspin{to{transform:rotate(360deg)}}</style>
+
 <!-- TOAST -->
 <div class="notif-toast" id="toast"></div>
 
@@ -695,7 +701,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 <!-- Botão flutuante home -->
 <button class="btn-home" id="btnHomeFixed" onclick="mostrarHome()">🏠 Home</button>
 
-<div class="view active" id="planner-view">
+<div class="view" id="planner-view">
 
   <div class="p-header">
     <div class="p-header-inner">
@@ -2986,6 +2992,7 @@ async function initComSupabase(){
         document.getElementById('planner-view').classList.remove('active');
         document.getElementById('home-view').classList.add('active');
         document.getElementById('btnHomeFixed').classList.remove('visible');
+        esconderLoading();
         await carregarDadosHome();
         return;
       }
@@ -3037,6 +3044,7 @@ async function initComSupabase(){
       document.getElementById('planner-view').classList.remove('active');
       document.getElementById('home-view').classList.add('active');
       document.getElementById('btnHomeFixed').classList.remove('visible');
+      esconderLoading();
       await carregarDadosHome();
 
       return;
@@ -3047,7 +3055,15 @@ async function initComSupabase(){
 
   initPlanner();
   // Sem banco: mostra planner direto com botão home escondido
+  document.getElementById('planner-view').classList.add('active');
+  esconderLoading();
 }
+
+function esconderLoading(){
+  const el = document.getElementById('loadingScreen');
+  if(el) el.remove();
+}
+setTimeout(esconderLoading, 8000); // segurança: nunca trava na tela de loading
 
 // ── CARREGAR TREINADORES DO BANCO ─────────────────────────────
 async function carregarTreinadores(academiaId){

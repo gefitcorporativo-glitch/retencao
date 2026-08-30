@@ -351,6 +351,7 @@ tr:last-child td{border-bottom:none}
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 const SUPABASE_URL  = 'https://xpvedihpejivnkssryhc.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhwdmVkaWhwZWppdm5rc3NyeWhjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MzM2OTEsImV4cCI6MjA5NTMwOTY5MX0.23eRl7PSoak-YGS91N8lBLIRC0MqHRh5Su1r1Zr6CC4';
@@ -418,7 +419,7 @@ const DICAS = {
   nextfit: '📌 NextFit: Pessoas → Alunos → Filtrar ativos → Exportar',
   tecnofit:'📌 Tecnofit: Relatórios → Matriculados → Exportar CSV',
   wafitness:'📌 WA Fitness: Alunos → Lista → Exportar Excel',
-  excel:   '📌 Excel: Salve como "CSV UTF-8" antes de fazer upload',
+  excel:   '📌 Excel: pode subir o .xlsx direto, sem precisar converter pra CSV',
 };
 
 // ── LOGIN ─────────────────────────────────────────────────────
@@ -506,9 +507,34 @@ function processarArquivo(file){
   if(ext==='csv'||ext==='txt'){
     reader.onload=e=>parseCSV(e.target.result);
     reader.readAsText(file,'UTF-8');
+  } else if(ext==='xlsx'||ext==='xls'){
+    reader.onload = e => {
+      try {
+        const wb = XLSX.read(e.target.result, {type:'array', cellDates:true});
+        const primeiraAba = wb.SheetNames[0];
+        const linhas = XLSX.utils.sheet_to_json(wb.Sheets[primeiraAba], {header:1, defval:'', raw:false});
+        parseExcelLinhas(linhas);
+      } catch(err){
+        console.error(err);
+        showToast('Não consegui ler esse Excel — confira se o arquivo não está corrompido ou protegido por senha');
+      }
+    };
+    reader.readAsArrayBuffer(file);
   } else {
-    showToast('Excel: salve como CSV UTF-8 e tente novamente');
+    showToast('Formato não reconhecido — use .csv, .xlsx ou .xls');
   }
+}
+
+function parseExcelLinhas(linhas){
+  linhas = linhas.filter(l => l.some(c => String(c).trim()!==''));
+  if(linhas.length<2){ showToast('Planilha vazia'); return; }
+
+  headers = linhas[0].map(h => String(h).trim());
+  rawRows = linhas.slice(1).map(row => headers.map((_,i) => String(row[i]??'').trim()));
+
+  document.getElementById('fileInfo2').textContent = `${rawRows.length} alunos · ${headers.length} colunas detectadas`;
+  document.getElementById('btnProStep1').disabled=false;
+  autoMapear();
 }
 
 function parseCSV(text){
