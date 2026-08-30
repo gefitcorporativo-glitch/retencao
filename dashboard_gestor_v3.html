@@ -738,6 +738,16 @@ body::before {
       </div>
     </div>
     <div id="cicloListaBody" style="display:none;margin-top:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+        <a href="importar_carteira.html" target="_blank" style="display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;border:1px solid var(--orange-border);background:var(--orange-dim);color:var(--orange);font-size:11px;font-weight:700;text-decoration:none">📤 Importar planilha de alunos</a>
+        <span style="font-size:10px;color:var(--text3)">Sobe Excel/CSV com nome, vencimento e treinador — organiza a carteira pro ciclo de renovação</span>
+      </div>
+      <div id="barraReatribuirCiclo" style="display:none;align-items:center;gap:10px;background:var(--orange-dim);border:1px solid var(--orange-border);border-radius:8px;padding:8px 12px;margin-bottom:10px;flex-wrap:wrap">
+        <span style="font-size:12px;font-weight:700;color:var(--orange)"><span id="qtdSelecionadosCiclo">0</span> selecionado(s)</span>
+        <select id="selTreinadorDestinoCiclo" style="flex:1;min-width:180px;max-width:260px;background:#111;border:1px solid var(--border2);border-radius:7px;padding:6px 10px;color:var(--text);font-size:12px"></select>
+        <button onclick="reatribuirCicloSelecionados()" style="padding:6px 14px;border-radius:7px;border:none;background:var(--orange);color:#000;font-size:12px;font-weight:700;cursor:pointer">Direcionar pro treinador</button>
+        <button onclick="limparSelecaoCiclo()" style="padding:6px 12px;border-radius:7px;border:1px solid var(--border2);background:transparent;color:var(--text3);font-size:12px;cursor:pointer">Cancelar</button>
+      </div>
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
         <div style="display:flex;gap:4px;flex-wrap:wrap" id="cicloListFilter">
           <button class="chip active" onclick="filterCicloList('todos',this)" style="font-size:10px;padding:3px 10px">Todos</button>
@@ -751,7 +761,8 @@ body::before {
           🔐 <span id="perfilAtual" style="font-weight:700;cursor:pointer" onclick="event.stopPropagation();togglePerfil()">Gestor (somente leitura)</span>
         </div>
       </div>
-      <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1.2fr;gap:8px;padding:6px 12px;background:var(--card2);border-radius:8px;margin-bottom:6px">
+      <div style="display:grid;grid-template-columns:24px 2fr 1fr 1fr 1fr 1.2fr;gap:8px;padding:6px 12px;background:var(--card2);border-radius:8px;margin-bottom:6px;align-items:center">
+        <input type="checkbox" id="chkTodosCiclo" onchange="toggleTodosCiclo(this)">
         <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em">Aluno</div>
         <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em">Treinador</div>
         <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em">Vencimento</div>
@@ -1681,8 +1692,9 @@ function renderCicloLista(){
       `<span style="padding:3px 8px;border-radius:5px;font-size:10px;font-weight:700;background:${sc.bg};border:1px solid ${sc.border};color:${sc.color}">${sc.label}</span>`;
 
     const row = document.createElement('div');
-    row.style.cssText = `display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1.2fr;gap:8px;padding:8px 12px;border-radius:8px;background:var(--card2);border:1px solid ${['renovado','rematricula'].includes(a.status)?sc.border:'var(--border)'};align-items:center;transition:all .15s`;
+    row.style.cssText = `display:grid;grid-template-columns:24px 2fr 1fr 1fr 1fr 1.2fr;gap:8px;padding:8px 12px;border-radius:8px;background:var(--card2);border:1px solid ${['renovado','rematricula'].includes(a.status)?sc.border:'var(--border)'};align-items:center;transition:all .15s`;
     row.innerHTML = `
+      <input type="checkbox" data-aluno-id="${a.id}" ${cicloSelecionados.has(a.id)?'checked':''} onchange="toggleCicloSelecionado('${a.id}',this.checked)" onclick="event.stopPropagation()">
       <div>
         <div style="font-size:12px;font-weight:600">${a.nome}</div>
         ${!a.treinador ? '<div style="font-size:10px;color:var(--red);margin-top:1px">⚠️ Sem treinador</div>' : ''}
@@ -1696,6 +1708,63 @@ function renderCicloLista(){
       <div>${statusCol}</div>`;
     c.appendChild(row);
   });
+}
+
+// ── SELEÇÃO E REATRIBUIÇÃO EM MASSA (Ciclo de Renovação) ────────
+let cicloSelecionados = new Set();
+
+function toggleCicloSelecionado(id, marcado){
+  if(marcado) cicloSelecionados.add(id);
+  else cicloSelecionados.delete(id);
+  atualizarBarraCiclo();
+}
+
+function toggleTodosCiclo(chk){
+  document.querySelectorAll('#cicloListaAlunos input[type=checkbox]').forEach(c=>{
+    c.checked = chk.checked;
+    if(chk.checked) cicloSelecionados.add(c.dataset.alunoId);
+    else cicloSelecionados.delete(c.dataset.alunoId);
+  });
+  atualizarBarraCiclo();
+}
+
+function limparSelecaoCiclo(){
+  cicloSelecionados.clear();
+  document.querySelectorAll('#cicloListaAlunos input[type=checkbox]').forEach(c=>c.checked=false);
+  const chkTodos = document.getElementById('chkTodosCiclo');
+  if(chkTodos) chkTodos.checked = false;
+  atualizarBarraCiclo();
+}
+
+function atualizarBarraCiclo(){
+  const barra = document.getElementById('barraReatribuirCiclo');
+  const qtd = cicloSelecionados.size;
+  document.getElementById('qtdSelecionadosCiclo').textContent = qtd;
+  barra.style.display = qtd > 0 ? 'flex' : 'none';
+  if(qtd === 0) return;
+  const sel = document.getElementById('selTreinadorDestinoCiclo');
+  sel.innerHTML = '<option value="">Escolher treinador(a)...</option>'
+    + TREINADORES.map(t=>`<option value="${t.id}">${t.nome}</option>`).join('');
+}
+
+async function reatribuirCicloSelecionados(){
+  const treinadorId = document.getElementById('selTreinadorDestinoCiclo').value;
+  if(!treinadorId){ showToast('Escolha o treinador de destino'); return; }
+  const ids = [...cicloSelecionados];
+  if(!ids.length) return;
+
+  try {
+    const { error } = await sb.from('alunos').update({ treinador_id: treinadorId }).in('id', ids);
+    if(error) throw new Error(error.message);
+    const nomeTreinador = TREINADORES.find(t=>t.id===treinadorId)?.nome || 'treinador(a)';
+    ids.forEach(id => { const a = CICLO_ALUNOS.find(x=>x.id===id); if(a) a.treinador = nomeTreinador; });
+    showToast(`✅ ${ids.length} aluno(s) direcionado(s) para ${nomeTreinador}`);
+    limparSelecaoCiclo();
+    renderCicloLista();
+  } catch(err){
+    console.error(err);
+    showToast('Erro ao direcionar: '+err.message);
+  }
 }
 
 function toggleDropdown(btn){
