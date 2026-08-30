@@ -281,10 +281,17 @@ tr:hover td{background:rgba(255,255,255,.02)}
         <button class="filter-btn" onclick="filtroAlunoVinculo('agregador',this)">🔗 Agregador</button>
         <button class="filter-btn active" onclick="filtroAlunoVinculo('todos',this)" id="btnVincTodos">Todos vínculos</button>
       </div>
+      <div id="barraReatribuir" style="display:none;align-items:center;gap:12px;background:var(--orange-dim,rgba(232,119,34,.1));border:1px solid var(--orange-border,rgba(232,119,34,.3));border-radius:10px;padding:10px 16px;margin-bottom:12px">
+        <span style="font-size:13px;font-weight:700;color:var(--orange)"><span id="qtdSelecionados">0</span> aluno(s) selecionado(s)</span>
+        <select id="selTreinadorDestino" style="flex:1;max-width:280px;background:#111;border:1px solid var(--border2);border-radius:8px;padding:8px 10px;color:var(--text);font-size:13px"></select>
+        <button class="btn-action" style="background:var(--orange);color:#000;font-weight:700" onclick="reatribuirSelecionados()">Reatribuir carteira</button>
+        <button class="btn-action" onclick="limparSelecaoAlunos()">Cancelar</button>
+      </div>
       <div class="table-wrap">
         <table>
           <thead>
             <tr>
+              <th style="width:30px"><input type="checkbox" id="chkTodosAlunos" onchange="toggleTodosAlunos(this)"></th>
               <th>Aluno</th>
               <th>Matrícula</th>
               <th>E-mail</th>
@@ -299,7 +306,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
             </tr>
           </thead>
           <tbody id="tbAlunos">
-            <tr><td colspan="11" class="loading"><div class="spinner"></div>Carregando alunos...</td></tr>
+            <tr><td colspan="12" class="loading"><div class="spinner"></div>Carregando alunos...</td></tr>
           </tbody>
         </table>
       </div>
@@ -1053,7 +1060,7 @@ function renderAlunos(){
   });
 
   const tbody = document.getElementById('tbAlunos');
-  if(!filtered.length){ tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:24px;color:var(--muted)">Nenhum aluno encontrado</td></tr>'; return; }
+  if(!filtered.length){ tbody.innerHTML = '<tr><td colspan="12" style="text-align:center;padding:24px;color:var(--muted)">Nenhum aluno encontrado</td></tr>'; return; }
 
   tbody.innerHTML = filtered.map(al => {
     const acad = allAcademias.find(a=>a.id===al.academia_id);
@@ -1065,9 +1072,11 @@ function renderAlunos(){
     const statusC = al.status_contato || (al.ativo?'ativo':'ex_aluno');
     const statusLabel = {ativo:'Aluno Ativo', lead:'Lead/Visitante', ex_aluno:'Ex-Aluno'}[statusC] || 'Aluno Ativo';
     const statusCls = statusC==='lead' ? 'gestor' : (al.ativo?'ativo':'inativo');
+    const marcado = alunosSelecionados.has(al.id);
 
     return `
     <tr>
+      <td><input type="checkbox" data-aluno-id="${al.id}" data-academia-id="${al.academia_id}" ${marcado?'checked':''} onchange="toggleAlunoSelecionado('${al.id}','${al.academia_id}',this.checked)"></td>
       <td><div style="font-weight:600">${al.nome||'—'}</div></td>
       <td style="font-family:'DM Mono',monospace;color:var(--muted)">${al.matricula||'—'}</td>
       <td style="font-size:11px;color:var(--muted)">${al.email||'—'}</td>
@@ -1085,6 +1094,76 @@ function renderAlunos(){
       <td><span class="badge ${statusCls}">${statusLabel}</span></td>
     </tr>`;
   }).join('');
+}
+
+// ── SELEÇÃO E REATRIBUIÇÃO EM MASSA ─────────────────────────────
+let alunosSelecionados = new Map(); // id -> academia_id
+
+function toggleAlunoSelecionado(id, academiaId, marcado){
+  if(marcado) alunosSelecionados.set(id, academiaId);
+  else alunosSelecionados.delete(id);
+  atualizarBarraReatribuir();
+}
+
+function toggleTodosAlunos(chk){
+  document.querySelectorAll('#tbAlunos input[type=checkbox]').forEach(c=>{
+    c.checked = chk.checked;
+    if(chk.checked) alunosSelecionados.set(c.dataset.alunoId, c.dataset.academiaId);
+    else alunosSelecionados.delete(c.dataset.alunoId);
+  });
+  atualizarBarraReatribuir();
+}
+
+function limparSelecaoAlunos(){
+  alunosSelecionados.clear();
+  document.querySelectorAll('#tbAlunos input[type=checkbox]').forEach(c=>c.checked=false);
+  const chkTodos = document.getElementById('chkTodosAlunos');
+  if(chkTodos) chkTodos.checked = false;
+  atualizarBarraReatribuir();
+}
+
+function atualizarBarraReatribuir(){
+  const barra = document.getElementById('barraReatribuir');
+  const qtd = alunosSelecionados.size;
+  document.getElementById('qtdSelecionados').textContent = qtd;
+  barra.style.display = qtd > 0 ? 'flex' : 'none';
+  if(qtd === 0) return;
+
+  // Só permite reatribuir dentro da mesma academia — trava se vier mais de uma
+  const academias = new Set(alunosSelecionados.values());
+  const sel = document.getElementById('selTreinadorDestino');
+  if(academias.size > 1){
+    sel.innerHTML = '<option value="">⚠️ Selecione alunos de uma única academia</option>';
+    sel.disabled = true;
+    return;
+  }
+  sel.disabled = false;
+  const academiaId = [...academias][0];
+  const treinadoresDaAcademia = allTreinadores.filter(t=>t.academia_id===academiaId);
+  sel.innerHTML = '<option value="">Escolher treinador(a) de destino...</option>'
+    + treinadoresDaAcademia.map(t=>`<option value="${t.id}">${t.nome}</option>`).join('');
+}
+
+async function reatribuirSelecionados(){
+  const treinadorId = document.getElementById('selTreinadorDestino').value;
+  if(!treinadorId){ showToast('Escolha o treinador de destino'); return; }
+  const ids = [...alunosSelecionados.keys()];
+  if(!ids.length) return;
+
+  try {
+    const { error } = await sb.from('alunos').update({ treinador_id: treinadorId }).in('id', ids);
+    if(error) throw new Error(error.message);
+    ids.forEach(id => { const al = allAlunos.find(a=>a.id===id); if(al) al.treinador_id = treinadorId; });
+    const nomeTreinador = allTreinadores.find(t=>t.id===treinadorId)?.nome || 'treinador(a)';
+    showToast(`✅ ${ids.length} aluno(s) reatribuído(s) para ${nomeTreinador}`);
+    limparSelecaoAlunos();
+    renderAlunos();
+    renderAcademias();
+    renderKPIs();
+  } catch(err){
+    console.error(err);
+    showToast('Erro ao reatribuir: '+err.message);
+  }
 }
 
 async function toggleVinculoAluno(alunoId, vinculoAtual){

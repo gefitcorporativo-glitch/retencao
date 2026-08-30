@@ -500,6 +500,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
     <div class="h-header-inner">
       <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:var(--orange)">QG.90</div>
       <div style="margin-left:auto;font-size:11px;color:var(--muted)" id="homeNomeAcademia">Departamento Técnico</div>
+      <button onclick="fazerLogout()" style="padding:6px 14px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;background:transparent;border:1px solid #2A2A2A;color:#888" onmouseover="this.style.borderColor='#EF4444';this.style.color='#EF4444'" onmouseout="this.style.borderColor='#2A2A2A';this.style.color='#888'">Sair</button>
     </div>
   </div>
   <div class="h-content">
@@ -559,9 +560,11 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
           <div id="hListaAtivos"><div class="home-empty">Carregando...</div></div>
 
           <!-- Carteira ativa -->
-          <div class="home-sec" style="cursor:pointer" onclick="toggleCarteira()">
-            👥 Carteira ativa
-            <span id="carteiraToggleIcon" style="font-size:12px;font-weight:normal">▾ ver todos</span>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin:16px 0 8px">
+            <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.12em">👥 Carteira ativa</div>
+            <button onclick="toggleCarteira()" id="btnToggleCarteira" style="padding:5px 12px;border-radius:7px;border:1px solid var(--orange-border);background:var(--orange-dim);color:var(--orange);font-size:11px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">
+              <span id="carteiraToggleIcon">▾ Ver todos</span>
+            </button>
           </div>
           <div id="hListaCarteira" style="display:none"><div class="home-empty">Carregando...</div></div>
         </div>
@@ -2428,7 +2431,7 @@ function toggleCarteira(){
   const el = document.getElementById('hListaCarteira');
   const icon = document.getElementById('carteiraToggleIcon');
   if(el) el.style.display = carteiraVisivel ? 'block' : 'none';
-  if(icon) icon.textContent = carteiraVisivel ? '▴ ocultar' : '▾ ver todos';
+  if(icon) icon.textContent = carteiraVisivel ? '▴ Ocultar' : '▾ Ver todos';
 }
 
 // ── CONVERTER EXPERIÊNCIA ─────────────────────────────────────
