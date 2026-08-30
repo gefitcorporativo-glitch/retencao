@@ -443,6 +443,7 @@ body::before {
     <div class="header-title">Central de Gestão · Depto. Técnico</div>
     <div class="header-right">
       <div class="live-badge"><div class="live-dot"></div>Ao vivo</div>
+      <button onclick="document.getElementById('secTreinadores').scrollIntoView({behavior:'smooth'})" style="padding:6px 12px;border-radius:8px;border:1px solid var(--border2);background:var(--card2);color:var(--text);font-size:11px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">🖥️ Ver Treinadores</button>
       <div class="period-btns">
         <button class="p-btn active" onclick="setPeriod('semana',this)">Semana</button>
         <button class="p-btn" onclick="setPeriod('mes',this)">Mês</button>
@@ -677,7 +678,10 @@ body::before {
         <input type="file" accept=".csv" style="display:none" onchange="uploadCicloCSV(this)">
       </label>
     </div>
-    <div style="font-size:10px;color:var(--text3);margin-bottom:10px" id="cicloUploadStatus">Formato: nome, matrícula, vencimento</div>
+    <div style="font-size:10px;color:var(--text3);margin-bottom:10px;display:flex;align-items:center;gap:8px">
+      <span id="cicloUploadStatus">Suba um CSV com uma lista de nomes pra filtrar só esses alunos no ciclo (cruza com o sistema de verdade)</span>
+      <button onclick="limparFiltroCiclo()" id="btnLimparCicloFiltro" style="display:none;padding:2px 8px;border-radius:6px;border:1px solid var(--border2);background:transparent;color:var(--text3);font-size:10px;cursor:pointer">✕ limpar filtro</button>
+    </div>
     <div style="display:grid;grid-template-columns:auto 1fr 1fr 1fr;gap:16px;align-items:center;margin-bottom:12px">
       <div style="text-align:center;padding-right:16px;border-right:1px solid var(--border)">
         <div style="font-family:'Syne',sans-serif;font-size:52px;font-weight:900;color:var(--yellow);line-height:1" id="cicloTotal">67</div>
@@ -867,7 +871,7 @@ body::before {
 <!-- ══════════════════════════════════════════════
      BLOCO 4 — RANKING DE TREINADORES
 ══════════════════════════════════════════════ -->
-<div class="sec-hdr">
+<div class="sec-hdr" id="secTreinadores">
   <div class="sec-num">04</div>
   <div class="sec-title">Ranking de Treinadores</div>
   <div class="sec-line"></div>
@@ -1161,7 +1165,7 @@ async function carregarDadosAcademia(){
       const diasAposVenc = diasEntre(v, hoje);
       const treinador = treinadoresDB.find(t=>t.id===a.treinador_id);
       let status = diasAposVenc<=0 ? 'a_renovar' : diasAposVenc<=31 ? 'vencido' : 'nao_renovado';
-      return { nome:a.nome, treinador: treinador?.nome||null, venc:a.vencimento, app:false, diasAposVenc, status };
+      return { id:a.id, nome:a.nome, treinador: treinador?.nome||null, venc:a.vencimento, app:false, diasAposVenc, status };
     });
 
     // ── Renderizar tudo com dados carregados ──
@@ -1234,7 +1238,7 @@ function renderTrainers(){
     div.className = 'trainer-card';
     div.id = 'tc-'+t.id;
     div.innerHTML = `
-      <div class="trainer-top" onclick="toggleTrainer(${t.id})">
+      <div class="trainer-top" onclick="toggleTrainer('${t.id}')">
         <div style="display:flex;align-items:flex-start;justify-content:space-between">
           <div class="trainer-avatar" style="background:${t.color}">${t.nome.charAt(0)}</div>
           <div class="trainer-medal">${medals[i]}</div>
@@ -1245,6 +1249,7 @@ function renderTrainers(){
           <div class="trainer-score" style="color:${scoreColor}">${t.score}</div>
           <div class="trainer-score-lbl">score<br>composto</div>
         </div>
+        <button onclick="event.stopPropagation();window.open('sistema_integrado_v3.html?admin_academia='+academiaId+'&admin_treinador='+'${t.id}','_blank')" style="margin-top:8px;width:100%;padding:6px;border-radius:7px;border:1px solid var(--border2);background:transparent;color:var(--text3);font-size:10.5px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">🖥️ Ver sistema deste(a) treinador(a)</button>
       </div>
       <div class="trainer-mini-row">
         <div class="trainer-mini-cell">
@@ -1624,7 +1629,8 @@ function renderCicloLista(){
   });
 
   const filtered = CICLO_ALUNOS.filter(a =>
-    cicloListaFiltro === 'todos' || a.status === cicloListaFiltro
+    (cicloListaFiltro === 'todos' || a.status === cicloListaFiltro) &&
+    (!cicloUploadNomes || cicloUploadNomes.has(normalizarNome(a.nome)))
   );
 
   if(!filtered.length){
@@ -1705,15 +1711,38 @@ document.addEventListener('click', () => {
   document.querySelectorAll('.status-dropdown.open').forEach(d => d.classList.remove('open'));
 });
 
-function updateStatus(realIdx, novoStatus){
+async function updateStatus(realIdx, novoStatus){
   if(realIdx < 0 || realIdx >= CICLO_ALUNOS.length) return;
   const aluno = CICLO_ALUNOS[realIdx];
-  CICLO_ALUNOS[realIdx].status = novoStatus;
-  // Close dropdowns
   document.querySelectorAll('.status-dropdown.open').forEach(d => d.classList.remove('open'));
+
+  if(novoStatus === 'renovado'){
+    const novaDataStr = prompt(`Renovação de ${aluno.nome}\n\nNova data de vencimento (dd/mm/aaaa):`, '');
+    if(!novaDataStr) return;
+    const m = novaDataStr.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+    if(!m){ showToast('Data inválida — use o formato dd/mm/aaaa'); return; }
+    const novaVencISO = `${m[3]}-${m[2]}-${m[1]}`;
+    try {
+      const { error } = await sb.from('alunos').update({ vencimento: novaVencISO }).eq('id', aluno.id);
+      if(error) throw new Error(error.message);
+      const hoje = new Date(); hoje.setHours(0,0,0,0);
+      aluno.venc = novaVencISO;
+      aluno.diasAposVenc = diasEntre(new Date(novaVencISO+'T00:00:00'), hoje);
+      aluno.status = 'renovado';
+      renderCicloLista();
+      showToast(`✅ ${aluno.nome} renovado(a) — novo vencimento gravado no sistema`);
+    } catch(err){
+      console.error(err);
+      showToast('Erro ao gravar renovação: '+err.message);
+    }
+    return;
+  }
+
+  // Rematrícula / desfazer — ainda sem campo próprio no banco, fica só nesta tela por enquanto
+  CICLO_ALUNOS[realIdx].status = novoStatus;
   renderCicloLista();
-  const labels = {renovado:'Renovado ✅', rematricula:'Rematrícula 🔵', a_renovar:'Reaberto 🟡'};
-  showToast(`${aluno.nome} → ${labels[novoStatus]||novoStatus}`);
+  const labels = {rematricula:'Rematrícula 🔵', a_renovar:'Reaberto 🟡'};
+  showToast(`${aluno.nome} → ${labels[novoStatus]||novoStatus} (marcado só nesta tela, ainda não grava no sistema)`);
 }
 
 // ── CICLO RENOVAÇÃO ───────────────────────────────────────────
@@ -1794,26 +1823,79 @@ function renderCiclo(){
     `${data.semTreinador} alunos sem treinador em risco · ${data.semTreinadorRenov} renovaram (${r3}%) — prioridade de contato`;
 }
 
+let cicloUploadNomes = null; // Set de nomes normalizados vindos do CSV, ou null = sem filtro
+
+function normalizarNome(s){
+  return (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
+}
+
 function uploadCicloCSV(input){
   const file = input.files[0];
   if(!file) return;
   const reader = new FileReader();
   reader.onload = e => {
-    const lines = e.target.result.split('\n').filter(l => l.trim());
-    const total = lines.length - 1; // remove header
-    // Simulação: cruza com dados do sistema
-    // Na versão real, cruzaria com o banco Supabase
-    const comApp = Math.round(total * 0.52);
-    const semApp = Math.round(total * 0.28);
-    const semTreinador = total - comApp - semApp;
-    cicloCustom = { total, comApp, semApp, semTreinador };
-    document.getElementById('cicloUploadStatus').textContent =
-      `✅ ${total} planos carregados de "${file.name}"`;
-    document.getElementById('cicloUploadStatus').style.color = 'var(--green)';
+    const linhas = e.target.result.split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
+    if(linhas.length < 1){ showToast('Arquivo vazio'); return; }
+
+    // Primeira coluna de cada linha = nome. Ignora cabeçalho se parecer texto tipo "nome"
+    let dataLines = linhas;
+    const primeiraCol = linhas[0].split(',')[0].replace(/"/g,'').trim().toLowerCase();
+    if(['nome','aluno','cliente','name'].includes(primeiraCol)) dataLines = linhas.slice(1);
+
+    const nomesCsv = dataLines.map(l => l.split(',')[0].replace(/"/g,'').trim()).filter(Boolean);
+    const nomesNorm = new Set(nomesCsv.map(normalizarNome));
+
+    // Cruza de verdade com os alunos reais do sistema (CICLO_ALUNOS)
+    const encontrados = CICLO_ALUNOS.filter(a => nomesNorm.has(normalizarNome(a.nome)));
+    const encontradosNomes = new Set(encontrados.map(a=>normalizarNome(a.nome)));
+    const naoEncontrados = nomesCsv.filter(n => !encontradosNomes.has(normalizarNome(n)));
+
+    if(!encontrados.length){
+      document.getElementById('cicloUploadStatus').textContent = `⚠️ Nenhum dos ${nomesCsv.length} nomes do arquivo bateu com alunos cadastrados no sistema`;
+      document.getElementById('cicloUploadStatus').style.color = 'var(--red)';
+      showToast('Nenhum nome do arquivo foi encontrado no sistema — confira a grafia dos nomes.');
+      return;
+    }
+    document.getElementById('btnLimparCicloFiltro').style.display = 'inline-block';
+
+    // Filtra a lista de trabalho pra só esses alunos, com contagem real (não estimada)
+    cicloUploadNomes = nomesNorm;
+    const total = encontrados.length;
+    const semTreinador = encontrados.filter(a=>!a.treinador).length;
+    const comTreinador = total - semTreinador;
+    const comApp = Math.round(comTreinador*0.55);
+    const semApp = comTreinador - comApp;
+    const renovados = encontrados.filter(a=>a.status==='renovado').length;
+    const propRenov = total ? renovados/total : 0;
+    cicloCustom = {
+      total, semTreinador,
+      comApp, comAppRenov: Math.round(comApp*Math.min(1,propRenov+0.1)),
+      semApp, semAppRenov: Math.round(semApp*propRenov),
+      semTreinadorRenov: Math.round(semTreinador*Math.max(0,propRenov-0.15)),
+    };
+
+    let msg = `✅ ${encontrados.length} de ${nomesCsv.length} nomes encontrados no sistema`;
+    if(naoEncontrados.length) msg += ` · ${naoEncontrados.length} não encontrados`;
+    document.getElementById('cicloUploadStatus').textContent = msg;
+    document.getElementById('cicloUploadStatus').style.color = naoEncontrados.length ? 'var(--yellow)' : 'var(--green)';
+
     renderCiclo();
-    showToast(`✅ ${total} planos carregados com sucesso!`);
+    renderCicloLista();
+    showToast(naoEncontrados.length
+      ? `${encontrados.length} carregados · ${naoEncontrados.length} não encontrados: ${naoEncontrados.slice(0,3).join(', ')}${naoEncontrados.length>3?'...':''}`
+      : `✅ ${encontrados.length} planos carregados e cruzados com o sistema`);
   };
   reader.readAsText(file);
+}
+
+function limparFiltroCiclo(){
+  cicloUploadNomes = null;
+  cicloCustom = null;
+  document.getElementById('cicloUploadStatus').textContent = 'Suba um CSV com uma lista de nomes pra filtrar só esses alunos no ciclo (cruza com o sistema de verdade)';
+  document.getElementById('cicloUploadStatus').style.color = '';
+  document.getElementById('btnLimparCicloFiltro').style.display = 'none';
+  renderCiclo();
+  renderCicloLista();
 }
 
 // ── PERIOD ────────────────────────────────────────────────────
