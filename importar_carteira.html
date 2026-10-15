@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+<script src="config.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>QG.90 · Atualizar Carteira</title>
+<title>GeFit · Atualizar Carteira</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg:#0A0A0A; --card:#141414; --card2:#1A1A1A; --border:#1E1E1E; --border2:#2A2A2A;
-  --orange:#E87722; --orange-dim:rgba(232,119,34,.1); --orange-border:rgba(232,119,34,.28);
+  --bg:#060A16; --card:#0B1222; --card2:#1A1A1A; --border:#1E1E1E; --border2:#2A2A2A;
+  --orange:#B3F400; --orange-dim:rgba(179,244,0,.1); --orange-border:rgba(179,244,0,.28);
   --text:#F0F0F0; --muted:#666; --dim:#222;
   --green:#22C55E; --green-dim:rgba(34,197,94,.1); --green-border:rgba(34,197,94,.3);
   --red:#EF4444; --red-dim:rgba(239,68,68,.1);
@@ -105,7 +106,7 @@ tr:last-child td{border-bottom:none}
 .alert-info{background:var(--blue-dim);border:1px solid rgba(96,165,250,.25);color:var(--blue)}
 
 /* ── BUTTONS ── */
-.btn-primary{padding:14px 24px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--orange),#F59E4A);color:#000;font-size:14px;font-weight:800;cursor:pointer;font-family:'Syne',sans-serif;transition:opacity .2s;width:100%}
+.btn-primary{padding:14px 24px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--orange),#D4FF4D);color:#000;font-size:14px;font-weight:800;cursor:pointer;font-family:'Syne',sans-serif;transition:opacity .2s;width:100%}
 .btn-primary:hover{opacity:.9}
 .btn-primary:disabled{background:var(--dim);color:var(--muted);cursor:default;opacity:1}
 .btn-sec{padding:12px 20px;border-radius:10px;border:1px solid var(--border2);background:transparent;color:var(--text);font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;width:100%}
@@ -142,6 +143,7 @@ tr:last-child td{border-bottom:none}
 .spinner{width:20px;height:20px;border:2px solid rgba(96,165,250,.2);border-top-color:var(--blue);border-radius:50%;animation:spin .6s linear infinite;flex-shrink:0}
 @keyframes spin{to{transform:rotate(360deg)}}
 </style>
+<link rel="stylesheet" href="theme-gefit.css">
 </head>
 <body>
 <div class="toast" id="toast"></div>
@@ -150,7 +152,7 @@ tr:last-child td{border-bottom:none}
 <div class="header">
   <div class="header-inner">
     <div>
-      <div class="logo">QG.90</div>
+      <div class="logo"><img class="gf-logo" src="logo-gefit.png" alt="GeFit" style="height:34px"></div>
       <div class="logo-sub">Atualização de Carteira</div>
     </div>
     <div class="user-badge" id="userBadge" style="display:none" onclick="fazerLogout()">
@@ -168,7 +170,7 @@ tr:last-child td{border-bottom:none}
     <div class="login-hero">
       <div class="login-icon">🏋️</div>
       <div class="login-title">Atualizar carteira de alunos</div>
-      <div class="login-sub">Importe a lista do seu sistema de gestão e atualize o QG.90 com um clique. Rápido, seguro e sem precisar de TI.</div>
+      <div class="login-sub">Importe a lista do seu sistema de gestão e atualize o GeFit com um clique. Rápido, seguro e sem precisar de TI.</div>
     </div>
     <div class="login-card">
       <div class="field">
@@ -183,7 +185,7 @@ tr:last-child td{border-bottom:none}
       <div id="loginErro" style="display:none;margin-top:10px;text-align:center;font-size:12px;color:var(--red)"></div>
     </div>
     <div style="text-align:center;font-size:11px;color:var(--muted);margin-top:8px">
-      Credenciais fornecidas pela equipe QG.90 · <a href="mailto:suporte@gefit.com.br" style="color:var(--orange)">suporte@gefit.com.br</a>
+      Credenciais fornecidas pela equipe GeFit · <a href="mailto:suporte@gefit.com.br" style="color:var(--orange)">suporte@gefit.com.br</a>
     </div>
   </div>
 
@@ -254,7 +256,7 @@ tr:last-child td{border-bottom:none}
 
       <div id="planoMapWrap" style="display:none" class="card">
         <div class="card-title">Equivalência de planos</div>
-        <div style="font-size:12px;color:var(--muted);margin-bottom:10px">Valores encontrados → padrão QG.90:</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:10px">Valores encontrados → padrão GeFit:</div>
         <div id="planoChips"></div>
       </div>
 
@@ -324,7 +326,7 @@ tr:last-child td{border-bottom:none}
     <!-- ── STEP 4: IMPORTANDO ── -->
     <div class="sec" id="step4">
       <div class="card">
-        <div class="card-title">Importando para o QG.90</div>
+        <div class="card-title">Importando para o GeFit</div>
         <div class="progress-steps" id="progSteps">
           <div class="prog-step idle" id="prog1"><span class="prog-icon">🔐</span> Verificando credenciais...</div>
           <div class="prog-step idle" id="prog2"><span class="prog-icon">🔍</span> Verificando alunos existentes...</div>
@@ -340,7 +342,7 @@ tr:last-child td{border-bottom:none}
       <div class="success-screen">
         <div class="success-icon">🎉</div>
         <div class="success-title">Carteira atualizada!</div>
-        <div class="success-sub" id="successSub">Alunos importados com sucesso para o sistema QG.90.</div>
+        <div class="success-sub" id="successSub">Alunos importados com sucesso para o sistema GeFit.</div>
         <div class="success-stats" id="successStats"></div>
         <button class="btn-primary" onclick="novaImportacao()" style="margin-bottom:10px">📂 Importar outro arquivo</button>
         <button class="btn-sec" onclick="window.location.href='sistema_integrado_v3.html'">← Ir para o sistema</button>
@@ -353,8 +355,8 @@ tr:last-child td{border-bottom:none}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
-const SUPABASE_URL  = 'https://xpvedihpejivnkssryhc.supabase.co';
-const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhwdmVkaWhwZWppdm5rc3NyeWhjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MzM2OTEsImV4cCI6MjA5NTMwOTY5MX0.23eRl7PSoak-YGS91N8lBLIRC0MqHRh5Su1r1Zr6CC4';
+const SUPABASE_URL  = APP_CONFIG.SUPABASE_URL;
+const SUPABASE_ANON = APP_CONFIG.SUPABASE_ANON;
 let sb, sessaoUser, academiaId, treinadorId;
 
 // ── STATE ─────────────────────────────────────────────────────
@@ -459,7 +461,7 @@ async function loginSucesso(user){
     if(g){ perfil=g; tipo='gestor'; treinadorId=g.id; }
   }
 
-  if(!perfil){ showErr('Perfil não encontrado. Verifique suas credenciais com a equipe QG.90.'); return; }
+  if(!perfil){ showErr('Perfil não encontrado. Verifique suas credenciais com a equipe GeFit.'); return; }
 
   academiaId = perfil.academia_id;
 
@@ -640,7 +642,7 @@ function baixarModeloPlanilha(){
   const blob = new Blob(['\uFEFF'+linhas], {type:'text/csv;charset=utf-8;'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url; a.download = 'modelo_importacao_alunos_QG90.csv';
+  a.href = url; a.download = 'modelo_importacao_alunos_GeFit.csv';
   document.body.appendChild(a); a.click(); document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }

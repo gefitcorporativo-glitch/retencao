@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+<script src="config.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>QG.90 · Painel de Vendas</title>
+<title>GeFit · Painel de Vendas</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0A0A0A;--card:#141414;--card2:#1A1A1A;--border:#1E1E1E;--border2:#2A2A2A;
-  --orange:#E87722;--orange-dim:rgba(232,119,34,.1);--orange-border:rgba(232,119,34,.25);
+  --bg:#060A16;--card:#0B1222;--card2:#1A1A1A;--border:#1E1E1E;--border2:#2A2A2A;
+  --orange:#B3F400;--orange-dim:rgba(179,244,0,.1);--orange-border:rgba(179,244,0,.25);
   --text:#F0F0F0;--muted:#555;--dim:#222;
   --green:#22C55E;--green-dim:rgba(34,197,94,.1);--green-border:rgba(34,197,94,.25);
   --red:#EF4444;--red-dim:rgba(239,68,68,.1);--red-border:rgba(239,68,68,.25);
@@ -92,7 +93,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .funil-opt.selected{border-color:var(--orange);background:var(--orange-dim)}
 .funil-opt-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
 .funil-opt-label{font-size:12px;font-weight:600}
-.btn-primary{width:100%;padding:14px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--orange),#F59E4A);color:#000;font-size:14px;font-weight:800;cursor:pointer;font-family:'Syne',sans-serif;margin-top:6px}
+.btn-primary{width:100%;padding:14px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--orange),#D4FF4D);color:#000;font-size:14px;font-weight:800;cursor:pointer;font-family:'Syne',sans-serif;margin-top:6px}
 .btn-sec{padding:10px 16px;border-radius:8px;border:1px solid var(--border2);background:transparent;color:var(--text);font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s}
 .btn-sec:hover{border-color:var(--orange);color:var(--orange)}
 .btn-green{padding:10px 16px;border-radius:8px;border:1px solid var(--green-border);background:var(--green-dim);color:var(--green);font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif}
@@ -128,6 +129,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .login-sub{font-size:13px;color:var(--muted);text-align:center;margin-bottom:24px}
 .login-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;width:100%;max-width:380px}
 </style>
+<link rel="stylesheet" href="theme-gefit.css">
 </head>
 <body>
 <div class="toast" id="toast"></div>
@@ -137,7 +139,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
   <div class="login-wrap">
     <div class="login-icon">📊</div>
     <div class="login-title">Painel de Vendas</div>
-    <div class="login-sub">QG.90 · Gestão de Experiências</div>
+    <div class="login-sub">GeFit · Gestão de Experiências</div>
     <div class="login-card">
       <div class="field"><label>E-mail</label><input type="email" id="loginEmail" placeholder="seu@email.com" onkeydown="if(event.key==='Enter')fazerLogin()"></div>
       <div class="field"><label>Senha</label><input type="password" id="loginSenha" placeholder="••••••••" onkeydown="if(event.key==='Enter')fazerLogin()"></div>
@@ -151,7 +153,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 <div id="appView" style="display:none">
   <div class="header">
     <div class="header-row">
-      <div><div class="logo">QG.90 · Vendas</div><div class="logo-sub" id="hAcademia">—</div></div>
+      <div><div class="logo">GeFit · Vendas</div><div class="logo-sub" id="hAcademia">—</div></div>
       <div class="user-chip" onclick="fazerLogout()">
         <div class="user-chip-dot"></div>
         <span id="hConsultor">—</span>
@@ -296,8 +298,8 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SB_URL  = 'https://xpvedihpejivnkssryhc.supabase.co';
-const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhwdmVkaWhwZWppdm5rc3NyeWhjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MzM2OTEsImV4cCI6MjA5NTMwOTY5MX0.23eRl7PSoak-YGS91N8lBLIRC0MqHRh5Su1r1Zr6CC4';
+const SB_URL  = APP_CONFIG.SUPABASE_URL;
+const SB_ANON = APP_CONFIG.SUPABASE_ANON;
 
 let sb, consultor, academiaId;
 let todasExps = [], todosFollowUps = [];

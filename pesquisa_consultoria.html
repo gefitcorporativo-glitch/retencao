@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+<script src="config.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>QG.90 · Pesquisa de Consultoria</title>
+<title>GeFit · Pesquisa de Consultoria</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0A0A0A;--card:#141414;--card2:#1A1A1A;--border:#1E1E1E;--border2:#2A2A2A;
-  --orange:#E87722;--orange-dim:rgba(232,119,34,.1);--orange-border:rgba(232,119,34,.25);
+  --bg:#060A16;--card:#0B1222;--card2:#1A1A1A;--border:#1E1E1E;--border2:#2A2A2A;
+  --orange:#B3F400;--orange-dim:rgba(179,244,0,.1);--orange-border:rgba(179,244,0,.25);
   --text:#F0F0F0;--muted:#555;--dim:#222;
   --green:#22C55E;--green-dim:rgba(34,197,94,.1);--green-border:rgba(34,197,94,.25);
   --red:#EF4444;--red-dim:rgba(239,68,68,.1);
@@ -91,13 +92,14 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 
 .sem-dados{text-align:center;padding:40px;color:var(--muted);font-size:13px;background:var(--card);border-radius:12px;border:1px solid var(--border)}
 </style>
+<link rel="stylesheet" href="theme-gefit.css">
 </head>
 <body>
 
 <div class="header">
   <div class="header-inner">
     <div>
-      <div class="logo">QG.90 · Pesquisa de Consultoria</div>
+      <div class="logo">GeFit · Pesquisa de Consultoria</div>
       <div class="logo-sub">Respostas do App do Aluno — Dia 1</div>
     </div>
     <a href="sistema_integrado_v3.html" class="back-btn">← Voltar</a>
@@ -112,8 +114,8 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SB_URL  = 'https://xpvedihpejivnkssryhc.supabase.co';
-const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhwdmVkaWhwZWppdm5rc3NyeWhjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MzM2OTEsImV4cCI6MjA5NTMwOTY5MX0.23eRl7PSoak-YGS91N8lBLIRC0MqHRh5Su1r1Zr6CC4';
+const SB_URL  = APP_CONFIG.SUPABASE_URL;
+const SB_ANON = APP_CONFIG.SUPABASE_ANON;
 
 let sb, respostas = [];
 

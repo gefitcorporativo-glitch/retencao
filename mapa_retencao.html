@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>QG.90 | Mapa do Sistema de Retenção</title>
+<title>GeFit | Mapa do Sistema de Retenção</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --fundo:#0E0E0E;--fundo2:#161616;--fundo3:#1E1E1E;
-  --laranja:#F28C0F;--texto:#E8E4DC;--texto2:#9A9488;
+  --fundo:#060A16;--fundo2:#0D1526;--fundo3:#131D33;
+  --laranja:#B3F400;--texto:#E8E4DC;--texto2:#9A9488;
   --verde:#3DBA7A;--vermelho:#E05252;--azul:#4A9FE0;--roxo:#B57BEE;
   --borda:rgba(232,228,220,.08);
 }
@@ -40,14 +40,14 @@ h1,h2,h3,h4,button{font-family:'Barlow Condensed',sans-serif;letter-spacing:.01e
   margin-bottom:2px;transition:background .15s;
 }
 .step-nav-item:hover{background:var(--fundo3);}
-.step-nav-item.active{background:rgba(242,140,15,.12);}
+.step-nav-item.active{background:rgba(179,244,0,.12);}
 .step-nav-item.hidden{display:none;}
 .step-num{
   width:22px;height:22px;border-radius:6px;background:var(--fundo3);color:var(--texto2);
   display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;
   border:1px solid var(--borda);
 }
-.step-nav-item.active .step-num{background:var(--laranja);color:#0E0E0E;border-color:var(--laranja);}
+.step-nav-item.active .step-num{background:var(--laranja);color:#060A16;border-color:var(--laranja);}
 .step-nav-label{font-size:13.5px;color:var(--texto2);padding-top:2px;line-height:1.3;}
 .step-nav-item.active .step-nav-label{color:var(--texto);font-weight:600;}
 
@@ -88,8 +88,8 @@ code{background:var(--fundo3);border:1px solid var(--borda);border-radius:5px;pa
 .step-footer{display:flex;justify-content:space-between;margin-top:30px;padding-bottom:60px;}
 .nav-btn{background:var(--fundo3);border:1px solid var(--borda);color:var(--texto);padding:12px 22px;border-radius:9px;font-family:'Barlow',sans-serif;font-weight:600;font-size:14.5px;cursor:pointer;transition:.15s;}
 .nav-btn:hover{border-color:var(--laranja);}
-.nav-btn.primary{background:var(--laranja);color:#0E0E0E;border-color:var(--laranja);}
-.nav-btn.primary:hover{background:#ff9d2e;}
+.nav-btn.primary{background:var(--laranja);color:#060A16;border-color:var(--laranja);}
+.nav-btn.primary:hover{background:#D4FF4D;}
 .nav-btn:disabled{opacity:.3;cursor:default;}
 
 .ref-table{width:100%;border-collapse:collapse;margin-top:8px;}
@@ -97,12 +97,12 @@ code{background:var(--fundo3);border:1px solid var(--borda);border-radius:5px;pa
 .ref-table td{padding:11px 10px;border-bottom:1px solid var(--borda);font-size:14px;}
 
 .mod-badge{display:inline-block;font-size:10.5px;font-weight:700;padding:2px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;}
-.mod-roi{background:rgba(255,107,0,.15);color:var(--laranja);}
+.mod-roi{background:rgba(179,244,0,.15);color:var(--laranja);}
 .mod-camp{background:rgba(181,123,238,.15);color:var(--roxo);}
 .mod-exp{background:rgba(74,159,224,.15);color:var(--azul);}
 .mod-scripts{background:rgba(61,186,122,.15);color:var(--verde);}
 .mod-geral{background:rgba(154,148,136,.15);color:var(--texto2);}
-.mod-treinador{background:rgba(255,107,0,.15);color:var(--laranja);}
+.mod-treinador{background:rgba(179,244,0,.15);color:var(--laranja);}
 .mod-vendas{background:rgba(74,159,224,.15);color:var(--azul);}
 .mod-gestor{background:rgba(181,123,238,.15);color:var(--roxo);}
 .mod-admin{background:rgba(224,82,82,.15);color:var(--vermelho);}
@@ -115,12 +115,13 @@ code{background:var(--fundo3);border:1px solid var(--borda);border-radius:5px;pa
   .step-title{font-size:26px;}
 }
 </style>
+<link rel="stylesheet" href="theme-gefit.css">
 </head>
 <body>
 
 <div id="shell">
   <nav id="sidebar">
-    <div class="side-logo">QG<span style="color:var(--texto)">.90</span></div>
+    <div class="side-logo"><img class="gf-logo" src="logo-gefit.png" alt="GeFit" style="height:34px"></div>
     <div class="side-sub">Mapa do Sistema de Retenção</div>
     <input class="side-search" id="sideSearch" placeholder="🔍 Buscar um tema..." oninput="filtrarNav(this.value)">
     <div id="stepNavList"></div>
@@ -134,7 +135,7 @@ const steps = [
 {
   grupo:"Antes de Começar",
   eyebrow:"Comece por aqui",
-  title:"O que é o QG.90 Retenção",
+  title:"O que é o GeFit Retenção",
   sub:"A metodologia por trás do sistema, em uma frase",
   badge:"mod-geral",
   blocks:[
@@ -338,7 +339,7 @@ const steps = [
   sub:"A tela que abre ao logar como gestor(a)",
   badge:"mod-gestor",
   blocks:[
-    {type:'expect', title:'Bloco 1 — Academia', text:'Alunos Ativos, Com Treinador+Planner (vinculados ao método), Novos no mês, Índice de Vinculação (% no método QG.90, meta 70%).'},
+    {type:'expect', title:'Bloco 1 — Academia', text:'Alunos Ativos, Com Treinador+Planner (vinculados ao método), Novos no mês, Índice de Vinculação (% no método GeFit, meta 70%).'},
     {type:'expect', title:'Bloco 2 — KPIs do Depto. Técnico', text:'Consultorias, Revisões (semana), Experiências (mês) — todos com dado real. Ativos no App, Alunos em Risco e Índice de Engajamento ainda aparecem marcados <strong>🟡 modelo</strong> — sem fonte de dado real conectada ainda.'},
     {type:'warn', title:'Seletor de período (Semana/Mês/Trim.)', text:'Ainda não filtra os dados de verdade — Consultorias e Experiências sempre mostram o mês corrente, Revisões sempre a semana corrente.'}
   ]
@@ -467,7 +468,7 @@ const steps = [
     {type:'warn', title:'"O botão Acessar do admin não funciona"', text:'Confirme que o link tem <code>?admin_academia=...</code> na URL — sem isso, a tela pede login normal.'},
     {type:'warn', title:'"Os números do Diário não batem com a Agenda"', text:'Os dois ainda não são sincronizados — o Diário é contador manual do dia, a Agenda é compromisso individual por aluno. Preencha os dois com atenção.'},
     {type:'tip', title:'Indicadores marcados 🟡', text:'Sempre que você vir a etiqueta 🟡 "modelo" numa tela, significa que aquele número ainda é estimado ou ilustrativo — não existe uma fonte de dado real conectada por trás dele ainda.'},
-    {type:'tip', title:'Ainda com dúvida?', text:'Fale com o suporte GeFit/QG.90.'}
+    {type:'tip', title:'Ainda com dúvida?', text:'Fale com o suporte GeFit.'}
   ]
 }
 ];
