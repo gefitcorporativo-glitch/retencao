@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GeFit · Pesquisa de Consultoria</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#060A16;--card:#0B1222;--card2:#1A1A1A;--border:#1E1E1E;--border2:#2A2A2A;
@@ -18,11 +18,11 @@
   --purple:#A78BFA;--purple-dim:rgba(167,139,250,.1);
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;padding-bottom:60px}
+body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-height:100vh;padding-bottom:60px}
 
 .header{background:rgba(10,10,10,.97);border-bottom:1px solid var(--border);padding:0 24px;position:sticky;top:0;z-index:50;backdrop-filter:blur(16px)}
 .header-inner{max-width:900px;margin:0 auto;height:56px;display:flex;align-items:center;justify-content:space-between}
-.logo{font-family:'Syne',sans-serif;font-size:15px;font-weight:900;color:var(--orange)}
+.logo{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:900;color:var(--orange)}
 .logo-sub{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-top:1px}
 .back-btn{font-size:12px;color:var(--muted);text-decoration:none;padding:6px 12px;border:1px solid var(--border2);border-radius:7px;transition:all .15s}
 .back-btn:hover{border-color:var(--orange);color:var(--orange)}
@@ -88,10 +88,11 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 
 /* FILTROS */
 .filtros{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
-.filtro-select{background:var(--card);border:1px solid var(--border2);border-radius:8px;padding:8px 12px;color:var(--text);font-size:12px;outline:none;font-family:'DM Sans',sans-serif}
+.filtro-select{background:var(--card);border:1px solid var(--border2);border-radius:8px;padding:8px 12px;color:var(--text);font-size:12px;outline:none;font-family:'Barlow',sans-serif}
 
 .sem-dados{text-align:center;padding:40px;color:var(--muted);font-size:13px;background:var(--card);border-radius:12px;border:1px solid var(--border)}
 </style>
+<script src="gf-embed.js"></script>
 <link rel="stylesheet" href="theme-gefit.css">
 </head>
 <body>

@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GeFit · Admin</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#060A16;--card:#0B1222;--card2:#1A1A1A;--border:#1E1E1E;--border2:#2A2A2A;
@@ -18,19 +18,19 @@
   --purple:#A78BFA;--purple-dim:rgba(167,139,250,.1);
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh}
+body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-height:100vh}
 
 /* ── LOGIN ── */
 .login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px}
 .login-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:36px 32px;width:100%;max-width:380px;position:relative;overflow:hidden}
 .login-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--orange),transparent)}
-.login-logo{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--orange);margin-bottom:4px}
+.login-logo{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:800;color:var(--orange);margin-bottom:4px}
 .login-sub{font-size:12px;color:var(--muted);margin-bottom:28px;text-transform:uppercase;letter-spacing:.1em}
 .field{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
 .field label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
-.field input{background:#111;border:1px solid var(--border2);border-radius:8px;padding:11px 14px;color:var(--text);font-size:14px;outline:none;font-family:'DM Sans',sans-serif;transition:border-color .15s;width:100%}
+.field input{background:#111;border:1px solid var(--border2);border-radius:8px;padding:11px 14px;color:var(--text);font-size:14px;outline:none;font-family:'Barlow',sans-serif;transition:border-color .15s;width:100%}
 .field input:focus{border-color:var(--orange)}
-.btn-login{width:100%;padding:13px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--orange),#D4FF4D);color:#000;font-size:14px;font-weight:800;cursor:pointer;font-family:'Syne',sans-serif;margin-top:4px;transition:opacity .2s}
+.btn-login{width:100%;padding:13px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--orange),#D4FF4D);color:#000;font-size:14px;font-weight:800;cursor:pointer;font-family:'Barlow Condensed',sans-serif;margin-top:4px;transition:opacity .2s}
 .btn-login:hover{opacity:.9}
 .login-error{color:var(--red);font-size:12px;margin-top:10px;text-align:center;display:none}
 
@@ -40,11 +40,11 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 /* ── HEADER ── */
 .header{background:rgba(10,10,10,.96);border-bottom:1px solid var(--border);padding:0 24px;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px)}
 .header-inner{max-width:1600px;margin:0 auto;height:56px;display:flex;align-items:center;gap:16px}
-.hlogo{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--orange)}
+.hlogo{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;color:var(--orange)}
 .htitle{font-size:12px;color:var(--muted);padding-left:14px;border-left:1px solid var(--border2)}
 .hright{margin-left:auto;display:flex;align-items:center;gap:12px}
 .hadmin{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;background:var(--orange-dim);border:1px solid var(--orange-border);color:var(--orange)}
-.hlogout{padding:5px 12px;border-radius:6px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s}
+.hlogout{padding:5px 12px;border-radius:6px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;font-family:'Barlow',sans-serif;transition:all .15s}
 .hlogout:hover{border-color:var(--red);color:var(--red)}
 
 /* ── LAYOUT ── */
@@ -62,12 +62,12 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .kpi.red::before{background:#EF4444}
 .kpi.cyan::before{background:#22D3EE}
 .kpi-icon{font-size:20px;margin-bottom:8px}
-.kpi-val{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;line-height:1;margin-bottom:3px}
+.kpi-val{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:800;line-height:1;margin-bottom:3px}
 .kpi-label{font-size:11px;color:var(--muted)}
 
 /* ── TABS ── */
 .tabs{display:flex;gap:4px;margin-bottom:20px;border-bottom:1px solid var(--border);padding-bottom:0}
-.tab{padding:8px 16px;border-radius:8px 8px 0 0;font-size:12px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;border-bottom:2px solid transparent;transition:all .15s;margin-bottom:-1px}
+.tab{padding:8px 16px;border-radius:8px 8px 0 0;font-size:12px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--muted);font-family:'Barlow',sans-serif;border-bottom:2px solid transparent;transition:all .15s;margin-bottom:-1px}
 .tab.active{color:var(--orange);border-bottom-color:var(--orange);background:var(--orange-dim)}
 .tab-panel{display:none}
 .tab-panel.active{display:block}
@@ -98,7 +98,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
 .badge.treinador{background:var(--blue-dim);color:var(--blue)}
 
 /* ── EXPAND ROW ── */
-.expand-btn{background:none;border:1px solid var(--border2);border-radius:5px;color:var(--muted);cursor:pointer;padding:3px 8px;font-size:11px;font-family:'DM Sans',sans-serif;transition:all .15s}
+.expand-btn{background:none;border:1px solid var(--border2);border-radius:5px;color:var(--muted);cursor:pointer;padding:3px 8px;font-size:11px;font-family:'Barlow',sans-serif;transition:all .15s}
 .expand-btn:hover{border-color:var(--orange);color:var(--orange)}
 .detail-row{display:none;background:var(--card2)}
 .detail-row.open{display:table-row}
@@ -106,13 +106,13 @@ tr:hover td{background:rgba(255,255,255,.02)}
 
 /* ── SEARCH ── */
 .search-row{display:flex;gap:10px;margin-bottom:14px;align-items:center;flex-wrap:wrap}
-.search-input{background:#111;border:1px solid var(--border2);border-radius:8px;padding:8px 12px;color:var(--text);font-size:13px;outline:none;font-family:'DM Sans',sans-serif;transition:border-color .15s;min-width:220px}
+.search-input{background:#111;border:1px solid var(--border2);border-radius:8px;padding:8px 12px;color:var(--text);font-size:13px;outline:none;font-family:'Barlow',sans-serif;transition:border-color .15s;min-width:220px}
 .search-input:focus{border-color:var(--orange)}
-.filter-btn{padding:7px 12px;border-radius:7px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s}
+.filter-btn{padding:7px 12px;border-radius:7px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;font-family:'Barlow',sans-serif;transition:all .15s}
 .filter-btn.active{background:var(--orange-dim);border-color:var(--orange);color:var(--orange)}
 
 /* ── AÇÕES ── */
-.btn-action{padding:5px 10px;border-radius:6px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;margin-right:4px}
+.btn-action{padding:5px 10px;border-radius:6px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;font-family:'Barlow',sans-serif;transition:all .15s;margin-right:4px}
 .btn-action:hover{border-color:var(--orange);color:var(--orange)}
 .btn-action.danger:hover{border-color:var(--red);color:var(--red)}
 
@@ -125,20 +125,20 @@ tr:hover td{background:rgba(255,255,255,.02)}
 .receita-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:12px}
 .receita-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px}
 .receita-row:last-child{border:none}
-.receita-total{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--green);margin-top:12px}
+.receita-total{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:800;color:var(--green);margin-top:12px}
 
 /* ── MODAL ── */
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;align-items:center;justify-content:center;padding:20px}
 .modal-bg.open{display:flex}
 .modal{background:var(--card);border:1px solid var(--border2);border-radius:16px;padding:24px;width:100%;max-width:480px;max-height:80vh;overflow-y:auto}
-.modal-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;margin-bottom:16px}
+.modal-title{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;margin-bottom:16px}
 .modal-field{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
 .modal-field label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
-.modal-field input,.modal-field select{background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px 12px;color:var(--text);font-size:13px;outline:none;font-family:'DM Sans',sans-serif;width:100%}
+.modal-field input,.modal-field select{background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px 12px;color:var(--text);font-size:13px;outline:none;font-family:'Barlow',sans-serif;width:100%}
 .modal-field input:focus,.modal-field select:focus{border-color:var(--orange)}
 .modal-btns{display:flex;gap:8px;margin-top:16px;justify-content:flex-end}
-.btn-cancel{padding:9px 16px;border-radius:8px;border:1px solid var(--border2);background:transparent;color:var(--text);font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif}
-.btn-save{padding:9px 16px;border-radius:8px;border:none;background:var(--orange);color:#000;font-size:13px;font-weight:800;cursor:pointer;font-family:'Syne',sans-serif}
+.btn-cancel{padding:9px 16px;border-radius:8px;border:1px solid var(--border2);background:transparent;color:var(--text);font-size:13px;font-weight:600;cursor:pointer;font-family:'Barlow',sans-serif}
+.btn-save{padding:9px 16px;border-radius:8px;border:none;background:var(--orange);color:#000;font-size:13px;font-weight:800;cursor:pointer;font-family:'Barlow Condensed',sans-serif}
 
 /* ── TOAST ── */
 .toast{position:fixed;top:16px;left:50%;transform:translateX(-50%) translateY(-80px);background:var(--orange);color:#000;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:700;z-index:999;transition:transform .3s;max-width:300px;text-align:center}
@@ -155,6 +155,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
   th,td{padding:8px 10px}
 }
 </style>
+<script src="gf-embed.js"></script>
 <link rel="stylesheet" href="theme-gefit.css">
 </head>
 <body>
@@ -377,15 +378,15 @@ tr:hover td{background:rgba(255,255,255,.02)}
           <div class="modal-field"><label>E-mail *</label><input type="email" id="naGestorEmail" placeholder="gestor@academia.com.br"></div>
           <div class="modal-field"><label>Senha *</label>
             <div style="display:flex;gap:8px">
-              <input type="text" id="naGestorSenha" placeholder="Mínimo 8 caracteres" style="flex:1;background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px 12px;color:var(--text);font-size:13px;outline:none;font-family:'DM Sans',sans-serif">
-              <button onclick="gerarSenhaAdmin('naGestorSenha')" style="padding:10px 14px;border-radius:8px;border:1px solid var(--border2);background:#111;color:var(--muted);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">🎲 Gerar</button>
+              <input type="text" id="naGestorSenha" placeholder="Mínimo 8 caracteres" style="flex:1;background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px 12px;color:var(--text);font-size:13px;outline:none;font-family:'Barlow',sans-serif">
+              <button onclick="gerarSenhaAdmin('naGestorSenha')" style="padding:10px 14px;border-radius:8px;border:1px solid var(--border2);background:#111;color:var(--muted);font-size:12px;cursor:pointer;font-family:'Barlow',sans-serif;white-space:nowrap">🎲 Gerar</button>
             </div>
           </div>
         </div>
 
         <div class="sec">Treinadores</div>
         <div id="naTreinadoresContainer"></div>
-        <button onclick="naAddTreinador()" style="width:100%;padding:10px;border-radius:8px;border:1px dashed var(--border2);background:transparent;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;margin-bottom:16px">+ Adicionar treinador</button>
+        <button onclick="naAddTreinador()" style="width:100%;padding:10px;border-radius:8px;border:1px dashed var(--border2);background:transparent;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;font-family:'Barlow',sans-serif;margin-bottom:16px">+ Adicionar treinador</button>
 
         <!-- Progress -->
         <div id="naProgress" style="display:none;margin-bottom:12px">
@@ -396,14 +397,14 @@ tr:hover td{background:rgba(255,255,255,.02)}
 
         <!-- Resultado -->
         <div id="naResultado" style="display:none;background:var(--green-dim);border:1px solid var(--green-border);border-radius:14px;padding:20px;margin-bottom:16px">
-          <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--green);margin-bottom:8px">✅ Academia cadastrada!</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;color:var(--green);margin-bottom:8px">✅ Academia cadastrada!</div>
           <div style="font-size:13px;color:var(--muted);margin-bottom:12px">Credenciais para enviar via WhatsApp:</div>
           <div id="naCredenciais" style="background:#111;border-radius:8px;padding:14px;font-size:12px;line-height:1.8;font-family:'DM Mono',monospace;color:var(--text)"></div>
-          <button onclick="copiarCredenciais()" style="width:100%;margin-top:10px;padding:10px;border-radius:8px;border:1px solid var(--green-border);background:var(--green-dim);color:var(--green);font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">📋 Copiar credenciais</button>
-          <button onclick="novoCadastroAdmin()" style="width:100%;margin-top:8px;padding:10px;border-radius:8px;border:1px solid var(--border2);background:transparent;color:var(--text);font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">+ Cadastrar outra academia</button>
+          <button onclick="copiarCredenciais()" style="width:100%;margin-top:10px;padding:10px;border-radius:8px;border:1px solid var(--green-border);background:var(--green-dim);color:var(--green);font-size:13px;font-weight:700;cursor:pointer;font-family:'Barlow',sans-serif">📋 Copiar credenciais</button>
+          <button onclick="novoCadastroAdmin()" style="width:100%;margin-top:8px;padding:10px;border-radius:8px;border:1px solid var(--border2);background:transparent;color:var(--text);font-size:13px;font-weight:600;cursor:pointer;font-family:'Barlow',sans-serif">+ Cadastrar outra academia</button>
         </div>
 
-        <button id="naBtnCadastrar" onclick="naCadastrar()" style="width:100%;padding:16px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--orange),#D4FF4D);color:#000;font-size:15px;font-weight:800;cursor:pointer;font-family:'Syne',sans-serif">
+        <button id="naBtnCadastrar" onclick="naCadastrar()" style="width:100%;padding:16px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--orange),#D4FF4D);color:#000;font-size:15px;font-weight:800;cursor:pointer;font-family:'Barlow Condensed',sans-serif">
           🏋️ Cadastrar Academia
         </button>
       </div>
@@ -480,9 +481,9 @@ tr:hover td{background:rgba(255,255,255,.02)}
 
     <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px">Fase de ativação rápida</div>
     <div style="display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap">
-      <button onclick="aplicarFase(1)" style="padding:7px 12px;border-radius:7px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s" onmouseover="this.style.borderColor='var(--yellow)';this.style.color='var(--yellow)'" onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--muted)'">Fase 1 — Onboarding</button>
-      <button onclick="aplicarFase(2)" style="padding:7px 12px;border-radius:7px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s" onmouseover="this.style.borderColor='var(--blue)';this.style.color='var(--blue)'" onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--muted)'">Fase 2 — Operação</button>
-      <button onclick="aplicarFase(3)" style="padding:7px 12px;border-radius:7px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s" onmouseover="this.style.borderColor='var(--green)';this.style.color='var(--green)'" onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--muted)'">Fase 3 — Completo</button>
+      <button onclick="aplicarFase(1)" style="padding:7px 12px;border-radius:7px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;font-family:'Barlow',sans-serif;transition:all .15s" onmouseover="this.style.borderColor='var(--yellow)';this.style.color='var(--yellow)'" onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--muted)'">Fase 1 — Onboarding</button>
+      <button onclick="aplicarFase(2)" style="padding:7px 12px;border-radius:7px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;font-family:'Barlow',sans-serif;transition:all .15s" onmouseover="this.style.borderColor='var(--blue)';this.style.color='var(--blue)'" onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--muted)'">Fase 2 — Operação</button>
+      <button onclick="aplicarFase(3)" style="padding:7px 12px;border-radius:7px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;font-family:'Barlow',sans-serif;transition:all .15s" onmouseover="this.style.borderColor='var(--green)';this.style.color='var(--green)'" onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--muted)'">Fase 3 — Completo</button>
     </div>
 
     <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px">Módulos individuais</div>
@@ -590,14 +591,14 @@ tr:hover td{background:rgba(255,255,255,.02)}
       </div>
       <div class="modal-field"><label>Senha *</label>
         <div style="display:flex;gap:8px">
-          <input type="text" id="nuSenha" placeholder="Mínimo 8 caracteres" style="flex:1;background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px 12px;color:var(--text);font-size:13px;outline:none;font-family:'DM Sans',sans-serif">
-          <button onclick="gerarSenhaModal('nuSenha')" style="padding:10px 14px;border-radius:8px;border:1px solid var(--border2);background:#111;color:var(--muted);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">🎲 Gerar</button>
+          <input type="text" id="nuSenha" placeholder="Mínimo 8 caracteres" style="flex:1;background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px 12px;color:var(--text);font-size:13px;outline:none;font-family:'Barlow',sans-serif">
+          <button onclick="gerarSenhaModal('nuSenha')" style="padding:10px 14px;border-radius:8px;border:1px solid var(--border2);background:#111;color:var(--muted);font-size:12px;cursor:pointer;font-family:'Barlow',sans-serif;white-space:nowrap">🎲 Gerar</button>
         </div>
       </div>
       <div id="nuResultado" style="display:none;background:var(--green-dim);border:1px solid var(--green-border);border-radius:8px;padding:10px;margin-bottom:10px;font-size:12px;line-height:1.8">
         <div style="color:var(--green);font-weight:700;margin-bottom:4px">✅ Usuário criado!</div>
         <div id="nuCredenciais" style="font-family:'DM Mono',monospace"></div>
-        <button onclick="copiarTexto(window._nuCredText||'')" style="margin-top:6px;padding:5px 10px;border-radius:6px;border:1px solid var(--green-border);background:transparent;color:var(--green);font-size:11px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">📋 Copiar</button>
+        <button onclick="copiarTexto(window._nuCredText||'')" style="margin-top:6px;padding:5px 10px;border-radius:6px;border:1px solid var(--green-border);background:transparent;color:var(--green);font-size:11px;font-weight:700;cursor:pointer;font-family:'Barlow',sans-serif">📋 Copiar</button>
       </div>
       <button id="nuBtnSalvar" onclick="salvarNovoUsuario()" class="btn-save" style="width:100%;padding:10px">Criar usuário</button>
     </div>
@@ -621,14 +622,14 @@ tr:hover td{background:rgba(255,255,255,.02)}
     </div>
     <div class="modal-field"><label>Senha *</label>
       <div style="display:flex;gap:8px">
-        <input type="text" id="atSenha" placeholder="Mínimo 8 caracteres" style="flex:1;background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px 12px;color:var(--text);font-size:13px;outline:none;font-family:'DM Sans',sans-serif">
-        <button onclick="gerarSenhaModal('atSenha')" style="padding:10px 14px;border-radius:8px;border:1px solid var(--border2);background:#111;color:var(--muted);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">🎲 Gerar</button>
+        <input type="text" id="atSenha" placeholder="Mínimo 8 caracteres" style="flex:1;background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px 12px;color:var(--text);font-size:13px;outline:none;font-family:'Barlow',sans-serif">
+        <button onclick="gerarSenhaModal('atSenha')" style="padding:10px 14px;border-radius:8px;border:1px solid var(--border2);background:#111;color:var(--muted);font-size:12px;cursor:pointer;font-family:'Barlow',sans-serif;white-space:nowrap">🎲 Gerar</button>
       </div>
     </div>
     <div id="atResultado" style="display:none;background:var(--green-dim);border:1px solid var(--green-border);border-radius:10px;padding:12px;margin-top:10px;font-size:12px;line-height:1.8">
       <div style="color:var(--green);font-weight:700;margin-bottom:4px">✅ Treinador criado!</div>
       <div id="atCredenciais"></div>
-      <button onclick="copiarTexto(document.getElementById('atCredenciais').innerText)" style="margin-top:8px;padding:6px 12px;border-radius:6px;border:1px solid var(--green-border);background:transparent;color:var(--green);font-size:11px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">📋 Copiar</button>
+      <button onclick="copiarTexto(document.getElementById('atCredenciais').innerText)" style="margin-top:8px;padding:6px 12px;border-radius:6px;border:1px solid var(--green-border);background:transparent;color:var(--green);font-size:11px;font-weight:700;cursor:pointer;font-family:'Barlow',sans-serif">📋 Copiar</button>
     </div>
     <div class="modal-btns">
       <button class="btn-cancel" onclick="fecharModal('modalAddTreinador')">Fechar</button>
@@ -646,8 +647,8 @@ tr:hover td{background:rgba(255,255,255,.02)}
     <div class="modal-field"><label>E-mail</label><input type="text" id="rsEmailDisplay" readonly style="color:var(--muted)"></div>
     <div class="modal-field"><label>Nova senha *</label>
       <div style="display:flex;gap:8px">
-        <input type="text" id="rsSenha" placeholder="Mínimo 8 caracteres" style="flex:1;background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px 12px;color:var(--text);font-size:13px;outline:none;font-family:'DM Sans',sans-serif">
-        <button onclick="gerarSenhaModal('rsSenha')" style="padding:10px 14px;border-radius:8px;border:1px solid var(--border2);background:#111;color:var(--muted);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">🎲 Gerar</button>
+        <input type="text" id="rsSenha" placeholder="Mínimo 8 caracteres" style="flex:1;background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px 12px;color:var(--text);font-size:13px;outline:none;font-family:'Barlow',sans-serif">
+        <button onclick="gerarSenhaModal('rsSenha')" style="padding:10px 14px;border-radius:8px;border:1px solid var(--border2);background:#111;color:var(--muted);font-size:12px;cursor:pointer;font-family:'Barlow',sans-serif;white-space:nowrap">🎲 Gerar</button>
       </div>
     </div>
     <div style="background:var(--yellow-dim);border:1px solid rgba(234,179,8,.25);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--yellow);margin-top:4px;line-height:1.5">
@@ -659,8 +660,8 @@ tr:hover td{background:rgba(255,255,255,.02)}
     </div>
     <div id="rsCredenciais" style="display:none;background:var(--green-dim);border:1px solid var(--green-border);border-radius:10px;padding:14px;margin-top:14px;font-size:12px;line-height:1.7"></div>
     <div id="rsEnviarBtns" style="display:none;gap:8px;margin-top:10px">
-      <button onclick="copiarTexto(window._rsCredText||'')" style="flex:1;padding:9px;border-radius:8px;border:1px solid var(--green-border);background:transparent;color:var(--green);font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">📋 Copiar dados</button>
-      <button onclick="window.open('https://wa.me/?text='+encodeURIComponent(window._rsCredText||''),'_blank')" style="flex:1;padding:9px;border-radius:8px;border:1px solid var(--green-border);background:var(--green-dim);color:var(--green);font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">📲 Enviar WhatsApp</button>
+      <button onclick="copiarTexto(window._rsCredText||'')" style="flex:1;padding:9px;border-radius:8px;border:1px solid var(--green-border);background:transparent;color:var(--green);font-size:12px;font-weight:700;cursor:pointer;font-family:'Barlow',sans-serif">📋 Copiar dados</button>
+      <button onclick="window.open('https://wa.me/?text='+encodeURIComponent(window._rsCredText||''),'_blank')" style="flex:1;padding:9px;border-radius:8px;border:1px solid var(--green-border);background:var(--green-dim);color:var(--green);font-size:12px;font-weight:700;cursor:pointer;font-family:'Barlow',sans-serif">📲 Enviar WhatsApp</button>
     </div>
   </div>
 </div>
@@ -676,8 +677,8 @@ tr:hover td{background:rgba(255,255,255,.02)}
     </div>
     <div id="eaEnvioPreview" style="background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-top:12px;font-size:12px;line-height:1.7;white-space:pre-line"></div>
     <div style="display:flex;gap:8px;margin-top:12px">
-      <button onclick="copiarTexto(window._eaEnvioTexto||'')" style="flex:1;padding:9px;border-radius:8px;border:1px solid var(--green-border);background:transparent;color:var(--green);font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">📋 Copiar dados</button>
-      <button onclick="window.open('https://wa.me/?text='+encodeURIComponent(window._eaEnvioTexto||''),'_blank')" style="flex:1;padding:9px;border-radius:8px;border:1px solid var(--green-border);background:var(--green-dim);color:var(--green);font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">📲 Enviar WhatsApp</button>
+      <button onclick="copiarTexto(window._eaEnvioTexto||'')" style="flex:1;padding:9px;border-radius:8px;border:1px solid var(--green-border);background:transparent;color:var(--green);font-size:12px;font-weight:700;cursor:pointer;font-family:'Barlow',sans-serif">📋 Copiar dados</button>
+      <button onclick="window.open('https://wa.me/?text='+encodeURIComponent(window._eaEnvioTexto||''),'_blank')" style="flex:1;padding:9px;border-radius:8px;border:1px solid var(--green-border);background:var(--green-dim);color:var(--green);font-size:12px;font-weight:700;cursor:pointer;font-family:'Barlow',sans-serif">📲 Enviar WhatsApp</button>
     </div>
     <div class="modal-btns">
       <button class="btn-cancel" onclick="fecharModal('modalEnviarAcesso')">Fechar</button>
@@ -1354,9 +1355,9 @@ function usuarioCardHTML(u, acadNome){
         <div style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace">${u.email||'—'}</div>
         <div style="font-size:10px;color:${u.cor};margin-top:2px">${u.perfil}${u.tipo?' · '+u.tipo:''}</div>
       </div>
-      ${podeAcessar?`<button onclick="acessarComoUsuario('${u.id}','${u.perfil.replace(/'/g,"\\'")}','${u.academia_id}')" style="padding:5px 10px;border-radius:6px;border:1px solid rgba(96,165,250,.3);background:var(--blue-dim,rgba(96,165,250,.1));color:#60A5FA;font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">🖥️ Acessar</button>`:''}
-      <button onclick="abrirModalSenha('${nome}','${email}')" style="padding:5px 10px;border-radius:6px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">🔑 Senha</button>
-      <button onclick="abrirModalEnviarAcesso('${nome}','${email}','${acad}')" style="padding:5px 10px;border-radius:6px;border:1px solid var(--orange-border);background:var(--orange-dim);color:var(--orange);font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">📤 Enviar</button>
+      ${podeAcessar?`<button onclick="acessarComoUsuario('${u.id}','${u.perfil.replace(/'/g,"\\'")}','${u.academia_id}')" style="padding:5px 10px;border-radius:6px;border:1px solid rgba(96,165,250,.3);background:var(--blue-dim,rgba(96,165,250,.1));color:#60A5FA;font-size:11px;font-weight:600;cursor:pointer;font-family:'Barlow',sans-serif;white-space:nowrap">🖥️ Acessar</button>`:''}
+      <button onclick="abrirModalSenha('${nome}','${email}')" style="padding:5px 10px;border-radius:6px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;font-family:'Barlow',sans-serif;white-space:nowrap">🔑 Senha</button>
+      <button onclick="abrirModalEnviarAcesso('${nome}','${email}','${acad}')" style="padding:5px 10px;border-radius:6px;border:1px solid var(--orange-border);background:var(--orange-dim);color:var(--orange);font-size:11px;font-weight:600;cursor:pointer;font-family:'Barlow',sans-serif;white-space:nowrap">📤 Enviar</button>
     </div>`;
 }
 
@@ -1616,8 +1617,8 @@ function naAddTreinador(){
     </div>
     <div class="modal-field"><label>Senha *</label>
       <div style="display:flex;gap:8px">
-        <input type="text" id="na-senha-${idx}" placeholder="Mínimo 8 caracteres" oninput="naUpdateTreinador(${idx},'senha',this.value)" style="flex:1;background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px 12px;color:var(--text);font-size:13px;outline:none;font-family:'DM Sans',sans-serif">
-        <button onclick="gerarSenhaAdmin('na-senha-${idx}',${idx})" style="padding:10px 14px;border-radius:8px;border:1px solid var(--border2);background:#111;color:var(--muted);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">🎲 Gerar</button>
+        <input type="text" id="na-senha-${idx}" placeholder="Mínimo 8 caracteres" oninput="naUpdateTreinador(${idx},'senha',this.value)" style="flex:1;background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px 12px;color:var(--text);font-size:13px;outline:none;font-family:'Barlow',sans-serif">
+        <button onclick="gerarSenhaAdmin('na-senha-${idx}',${idx})" style="padding:10px 14px;border-radius:8px;border:1px solid var(--border2);background:#111;color:var(--muted);font-size:12px;cursor:pointer;font-family:'Barlow',sans-serif;white-space:nowrap">🎲 Gerar</button>
       </div>
     </div>`;
   document.getElementById('naTreinadoresContainer').appendChild(div);

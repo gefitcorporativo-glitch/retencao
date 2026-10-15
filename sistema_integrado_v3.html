@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sistema Depto. Técnico</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ── TOKENS ── */
 :root {
@@ -26,7 +26,7 @@ body.theme-performance{ --accent:#B3F400; --accent-dim:rgba(179,244,0,.12);  --a
 body.theme-funcional  { --accent:#A78BFA; --accent-dim:rgba(167,139,250,.12); --accent-border:rgba(167,139,250,.3); }
 
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh}
+body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-height:100vh}
 
 /* ── VIEWS ── */
 .view{display:none}
@@ -44,11 +44,11 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .h-header-inner{max-width:1200px;margin:0 auto;height:56px;display:flex;align-items:center;gap:14px}
 .h-content{max-width:1200px;margin:0 auto;padding:28px 24px 100px}
 .h-hero{border:1px solid var(--border);border-radius:16px;background:linear-gradient(160deg,var(--card),var(--card2));padding:26px 28px;margin-bottom:22px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
-.h-hero h1{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;margin-bottom:4px}
+.h-hero h1{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:800;margin-bottom:4px}
 .h-hero p{color:var(--muted);font-size:13px}
 .h-hero-actions{display:flex;gap:8px;flex-wrap:wrap}
 .h-itabs{display:flex;gap:4px;border-bottom:1px solid var(--border);margin-bottom:24px;overflow-x:auto}
-.h-itab-btn{background:none;border:none;color:var(--muted);font-size:14px;font-weight:700;padding:11px 16px;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;font-family:'DM Sans',sans-serif}
+.h-itab-btn{background:none;border:none;color:var(--muted);font-size:14px;font-weight:700;padding:11px 16px;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;font-family:'Barlow',sans-serif}
 .h-itab-btn.active{color:var(--orange);border-bottom-color:var(--orange)}
 .h-ipane{display:none}
 .h-ipane.active{display:block;animation:hfadein .2s ease}
@@ -56,7 +56,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 
 .home-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:20px}
 .home-kpi{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center}
-.home-kpi-val{font-family:"Syne",sans-serif;font-size:26px;font-weight:800;color:var(--orange)}
+.home-kpi-val{font-family:"Barlow Condensed",sans-serif;font-size:26px;font-weight:800;color:var(--orange)}
 .home-kpi-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:3px}
 .home-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 @media(max-width:860px){.home-grid-2{grid-template-columns:1fr}}
@@ -73,18 +73,18 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .abadge-revisao{background:var(--orange-dim);color:var(--orange);border:1px solid var(--orange-border)}
 .abadge-sem{background:#1A1A1A;color:var(--muted)}
 .home-empty{text-align:left;padding:13px 16px;color:var(--muted);font-size:13px;background:var(--card);border-radius:10px;border:1px solid var(--border)}
-.btn-home{position:fixed;bottom:20px;right:16px;padding:10px 16px;border-radius:24px;background:var(--orange);border:none;color:#000;font-size:12px;font-weight:800;cursor:pointer;font-family:"Syne",sans-serif;box-shadow:0 4px 16px rgba(179,244,0,.4);z-index:90;display:none;align-items:center;gap:6px}
+.btn-home{position:fixed;bottom:20px;right:16px;padding:10px 16px;border-radius:24px;background:var(--orange);border:none;color:#000;font-size:12px;font-weight:800;cursor:pointer;font-family:"Barlow Condensed",sans-serif;box-shadow:0 4px 16px rgba(179,244,0,.4);z-index:90;display:none;align-items:center;gap:6px}
 .btn-home.visible{display:flex}
 
 /* ── AGENDA ── */
 .ag-quickstrip{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:22px}
 .ag-qs-item{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px}
-.ag-qs-item .n{font-family:'Syne',sans-serif;font-size:24px;font-weight:800}
+.ag-qs-item .n{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:800}
 .ag-qs-item .l{font-size:11px;color:var(--muted);margin-top:2px}
 .qs-exp .n{color:var(--yellow)} .qs-cons .n{color:var(--blue)} .qs-aval .n{color:#B57BEE} .qs-rev .n{color:var(--orange)}
 .qs-atraso .n{color:var(--red)} .qs-hoje .n{color:var(--yellow)}
 .ag-view-toggle{display:flex;gap:6px;margin-bottom:18px}
-.ag-vt-btn{background:var(--card);border:1px solid var(--border);color:var(--muted);font-size:12px;font-weight:700;padding:7px 14px;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif}
+.ag-vt-btn{background:var(--card);border:1px solid var(--border);color:var(--muted);font-size:12px;font-weight:700;padding:7px 14px;border-radius:8px;cursor:pointer;font-family:'Barlow',sans-serif}
 .ag-vt-btn.active{background:var(--orange-dim);border-color:var(--orange-border);color:var(--orange)}
 .ag-section{margin-bottom:24px}
 .ag-section h3{font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px;margin-bottom:6px}
@@ -97,7 +97,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .agm{font-size:11px;color:var(--muted);margin-top:2px}
 .agd{font-size:11px;color:var(--text);font-weight:700;flex-shrink:0}
 .ag-actions{display:flex;gap:6px;flex-shrink:0}
-.ag-btn-done{padding:5px 10px;border-radius:6px;border:1px solid var(--green-border);background:var(--green-dim);color:var(--green);font-size:11px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap}
+.ag-btn-done{padding:5px 10px;border-radius:6px;border:1px solid var(--green-border);background:var(--green-dim);color:var(--green);font-size:11px;font-weight:700;cursor:pointer;font-family:'Barlow',sans-serif;white-space:nowrap}
 .ag-day-group h4{font-size:12px;color:var(--muted);text-transform:capitalize;margin:10px 0 6px}
 .ag-empty{text-align:center;padding:20px;color:var(--muted);font-size:12px;background:var(--card);border-radius:10px;border:1px solid var(--border)}
 .ag-cal-nav{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:14px}
@@ -116,24 +116,24 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 
 .p-header{background:#0D0D0D;border-bottom:1px solid var(--border);padding:0 24px;position:sticky;top:0;z-index:50}
 .p-header-inner{max-width:900px;margin:0 auto;height:52px;display:flex;align-items:center;gap:16px}
-.p-logo{width:30px;height:30px;background:var(--orange);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:13px;font-weight:900;color:#000;flex-shrink:0;cursor:pointer;overflow:hidden}
+.p-logo{width:30px;height:30px;background:var(--orange);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:900;color:#000;flex-shrink:0;cursor:pointer;overflow:hidden}
 .p-logo img{width:100%;height:100%;object-fit:cover;border-radius:8px}
-.p-logo-title{font-size:13px;font-weight:700;font-family:'Syne',sans-serif}
+.p-logo-title{font-size:13px;font-weight:700;font-family:'Barlow Condensed',sans-serif}
 .p-logo-sub{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
 .academia-name-hdr{font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;max-width:140px;overflow:hidden;text-overflow:ellipsis}
 .p-steps{flex:1;display:flex;align-items:center;gap:6px;margin-left:8px;overflow-x:auto}
-.p-step-dot{width:30px;height:30px;border-radius:50%;border:none;cursor:pointer;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;font-family:'DM Sans',sans-serif}
+.p-step-dot{width:30px;height:30px;border-radius:50%;border:none;cursor:pointer;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;font-family:'Barlow',sans-serif}
 .p-step-dot.done{background:var(--orange);color:#000}
 .p-step-dot.active{background:transparent;border:2px solid var(--orange);color:var(--orange)}
 .p-step-dot.pending{background:#1A1A1A;border:1px solid var(--border);color:var(--dim);cursor:default}
 .p-step-line{height:1px;width:16px;flex-shrink:0;transition:background .3s}
-.btn-script-toggle{padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s}
+.btn-script-toggle{padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:'Barlow',sans-serif;transition:all .15s}
 
 .p-content{max-width:900px;margin:0 auto;padding:28px 24px 100px}
 .p-panel{display:none}
 .p-panel.active{display:block}
 
-.p-title{font-size:22px;font-weight:800;color:var(--text);margin-bottom:3px;font-family:'Syne',sans-serif}
+.p-title{font-size:22px;font-weight:800;color:var(--text);margin-bottom:3px;font-family:'Barlow Condensed',sans-serif}
 .p-sub{font-size:13px;color:var(--muted);margin-bottom:22px}
 
 .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:14px}
@@ -141,7 +141,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .field-group{display:flex;gap:12px;flex-wrap:wrap}
 .field{display:flex;flex-direction:column;gap:5px}
 .field label{font-size:10px;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.1em}
-.field input,.field select,.field textarea{background:#111;border:1px solid #2A2A2A;border-radius:8px;padding:9px 12px;color:var(--text);font-size:13px;outline:none;font-family:'DM Sans',sans-serif;transition:border-color .15s;width:100%}
+.field input,.field select,.field textarea{background:#111;border:1px solid #2A2A2A;border-radius:8px;padding:9px 12px;color:var(--text);font-size:13px;outline:none;font-family:'Barlow',sans-serif;transition:border-color .15s;width:100%}
 .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--orange)}
 .field textarea{resize:vertical}
 
@@ -185,7 +185,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 
 /* revisão treino */
 .revisao-treino-box{background:var(--orange-dim);border:1px solid var(--orange-border);border-radius:10px;padding:14px 16px;margin-top:10px}
-.revisao-treino-date{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--orange);margin:6px 0 4px}
+.revisao-treino-date{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;color:var(--orange);margin:6px 0 4px}
 .revisao-treino-sub{font-size:12px;color:var(--muted)}
 
 /* testes musculares v2 */
@@ -272,7 +272,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .combinado-card{background:var(--orange-dim);border:1px solid var(--orange-border);border-radius:12px;padding:18px;margin-bottom:14px}
 .combinado-label{font-size:11px;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:.12em;margin-bottom:10px}
 .combinado-text{font-size:13px;color:#D4A866;line-height:1.75;font-style:italic}
-.btn-gerar{width:100%;padding:18px;border-radius:12px;border:none;background:linear-gradient(135deg,#B3F400,#D4FF4D);color:#000;font-size:16px;font-weight:800;cursor:pointer;letter-spacing:.04em;font-family:'Syne',sans-serif;margin-top:6px;transition:opacity .2s}
+.btn-gerar{width:100%;padding:18px;border-radius:12px;border:none;background:linear-gradient(135deg,#B3F400,#D4FF4D);color:#000;font-size:16px;font-weight:800;cursor:pointer;letter-spacing:.04em;font-family:'Barlow Condensed',sans-serif;margin-top:6px;transition:opacity .2s}
 .btn-gerar:hover{opacity:.9}
 .gerar-sub{text-align:center;font-size:12px;color:var(--muted);margin-top:10px}
 .script-panel-p{background:#0D0D0D;border:1px solid rgba(179,244,0,.2);border-radius:10px;padding:14px 16px;margin-top:14px}
@@ -284,20 +284,20 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .bio-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .bio-field{display:flex;flex-direction:column;gap:5px}
 .bio-field label{font-size:10px;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.1em}
-.bio-field input{background:#111;border:1px solid #2A2A2A;border-radius:8px;padding:9px 12px;color:var(--text);font-size:13px;outline:none;font-family:'DM Sans',sans-serif;transition:border-color .15s}
+.bio-field input{background:#111;border:1px solid #2A2A2A;border-radius:8px;padding:9px 12px;color:var(--text);font-size:13px;outline:none;font-family:'Barlow',sans-serif;transition:border-color .15s}
 .bio-field input:focus{border-color:var(--orange)}
 .bio-int-tag{font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);padding:2px 8px;border:1px solid rgba(96,165,250,.3);border-radius:3px;background:rgba(96,165,250,.1)}
 
 /* nota tag */
 .nota-int-tag{font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);padding:2px 8px;border:1px solid rgba(96,165,250,.3);border-radius:3px;background:rgba(96,165,250,.1)}
-.btn-alterar{padding:6px 12px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif}
+.btn-alterar{padding:6px 12px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11px;cursor:pointer;font-family:'Barlow',sans-serif}
 
 /* testes */
 .testes-row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;margin-bottom:10px}
 
 /* bottom nav planner */
 .p-bottom{position:fixed;bottom:0;left:0;right:0;background:rgba(10,10,10,.96);border-top:1px solid var(--border);padding:14px 24px;backdrop-filter:blur(10px);display:flex;justify-content:space-between;align-items:center;z-index:40}
-.btn-prev,.btn-next{padding:10px 22px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s}
+.btn-prev,.btn-next{padding:10px 22px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Barlow',sans-serif;transition:all .2s}
 .btn-prev{background:transparent;border:1px solid var(--border);color:var(--text)}
 .btn-prev:disabled{opacity:.3;cursor:default}
 .btn-next{background:var(--orange);border:none;color:#000;font-weight:700}
@@ -309,13 +309,13 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 /* ── QR MODAL ── */
 .qr-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
 .qr-modal{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:32px 28px;max-width:380px;width:90%;text-align:center}
-.qr-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--text);margin-bottom:6px}
+.qr-title{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;color:var(--text);margin-bottom:6px}
 .qr-sub{font-size:13px;color:var(--muted);margin-bottom:24px;line-height:1.5}
 .qr-box{width:200px;height:200px;background:#fff;border-radius:12px;margin:0 auto 20px;display:flex;align-items:center;justify-content:center;font-size:13px;color:#333;padding:10px;text-align:center}
 .qr-actions{display:flex;flex-direction:column;gap:10px}
-.btn-open-app{padding:14px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--accent),#D4FF4D);color:#000;font-size:15px;font-weight:800;cursor:pointer;font-family:'Syne',sans-serif;transition:opacity .2s}
+.btn-open-app{padding:14px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--accent),#D4FF4D);color:#000;font-size:15px;font-weight:800;cursor:pointer;font-family:'Barlow Condensed',sans-serif;transition:opacity .2s}
 .btn-open-app:hover{opacity:.9}
-.btn-close-qr{padding:10px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif}
+.btn-close-qr{padding:10px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:13px;cursor:pointer;font-family:'Barlow',sans-serif}
 
 /* ══════════════════════════════════════════════════
    APP DO ALUNO — styles
@@ -329,7 +329,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .logo-name-app{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.12em}
 .hdr-badge{font-size:10px;font-weight:700;color:var(--accent);padding:4px 10px;border-radius:20px;background:var(--accent-dim);border:1px solid var(--accent-border);text-transform:uppercase;letter-spacing:.08em}
 .greeting-hi{font-size:13px;color:var(--muted)}
-.greeting-name{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;line-height:1.1}
+.greeting-name{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:800;line-height:1.1}
 .greeting-sub{font-size:13px;color:var(--muted);margin-top:4px}
 .greeting-sub span{color:var(--accent);font-weight:600}
 
@@ -341,10 +341,10 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .ring-track{fill:none;stroke:var(--dim);stroke-width:6}
 .ring-fill-el{fill:none;stroke:var(--accent);stroke-width:6;stroke-linecap:round;transition:stroke-dashoffset 1s ease}
 .ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.ring-day{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;line-height:1}
+.ring-day{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;line-height:1}
 .ring-lbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
 .prog-info{flex:1}
-.prog-title-a{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;margin-bottom:4px}
+.prog-title-a{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;margin-bottom:4px}
 .prog-program-a{font-size:11px;color:var(--accent);font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
 .prog-bar-track{height:6px;background:var(--dim);border-radius:3px;overflow:hidden;margin-bottom:6px}
 .prog-bar-fill-a{height:100%;border-radius:3px;background:var(--accent);transition:width .8s ease}
@@ -362,7 +362,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .hoje-status{padding:16px 18px;display:flex;align-items:center;gap:14px}
 .hoje-icon-box{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;background:var(--accent-dim);border:1px solid var(--accent-border)}
 .hoje-lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px}
-.hoje-title-a{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;margin-bottom:2px}
+.hoje-title-a{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;margin-bottom:2px}
 .hoje-sub-a{font-size:12px;color:var(--muted)}
 .hoje-check{width:36px;height:36px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;transition:all .2s;flex-shrink:0;background:transparent}
 .hoje-check.done{background:var(--accent);border-color:var(--accent)}
@@ -375,7 +375,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 /* jornada */
 .checklist-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px}
 .dias-grid-app{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
-.dia-btn-app{aspect-ratio:1;border-radius:8px;border:none;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif;position:relative}
+.dia-btn-app{aspect-ratio:1;border-radius:8px;border:none;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;font-family:'Barlow',sans-serif;position:relative}
 .dia-btn-app.rest{background:var(--card2);border:1px solid var(--border)}
 .dia-btn-app.pending{background:var(--card2);border:1px dashed var(--dim)}
 .dia-btn-app.done{background:var(--accent)}
@@ -417,7 +417,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .revisao-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px 18px;display:flex;align-items:center;gap:14px}
 .revisao-icon{width:44px;height:44px;border-radius:12px;background:var(--accent-dim);border:1px solid var(--accent-border);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
 .revisao-days-box{text-align:center;background:var(--accent-dim);border:1px solid var(--accent-border);border-radius:10px;padding:8px 12px;flex-shrink:0}
-.revisao-days-num{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--accent);line-height:1}
+.revisao-days-num{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;color:var(--accent);line-height:1}
 .revisao-days-lbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
 
 /* treinador msg */
@@ -425,7 +425,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .msg-avatar{width:36px;height:36px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#000;flex-shrink:0}
 
 /* nota dia */
-.nota-dia-trigger{width:100%;padding:14px 16px;background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:10px;text-align:left;color:var(--text);font-family:'DM Sans',sans-serif}
+.nota-dia-trigger{width:100%;padding:14px 16px;background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:10px;text-align:left;color:var(--text);font-family:'Barlow',sans-serif}
 
 /* nav app */
 .app-bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:rgba(10,10,10,.92);border-top:1px solid var(--border);backdrop-filter:blur(16px);padding:10px 24px 24px;display:flex;justify-content:space-around;align-items:center;z-index:100}
@@ -454,17 +454,18 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .a-page.active{display:block}
 
 /* back btn */
-.btn-back-planner{position:fixed;top:12px;right:16px;z-index:150;padding:6px 12px;background:var(--card);border:1px solid var(--border);border-radius:8px;color:var(--muted);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif}
+.btn-back-planner{position:fixed;top:12px;right:16px;z-index:150;padding:6px 12px;background:var(--card);border:1px solid var(--border);border-radius:8px;color:var(--muted);font-size:11px;cursor:pointer;font-family:'Barlow',sans-serif}
 
 @keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.3)}100%{transform:scale(1)}}
 .pop{animation:pop .3s ease}
 </style>
+<script src="gf-embed.js"></script>
 <link rel="stylesheet" href="theme-gefit.css">
 </head>
 <body>
 
 <div id="loadingScreen" style="position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;gap:14px">
-  <div style="font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--orange)">GeFit</div>
+  <div style="font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:800;color:var(--orange)">GeFit</div>
   <div style="width:26px;height:26px;border:3px solid var(--border2);border-top-color:var(--orange);border-radius:50%;animation:qgspin .7s linear infinite"></div>
 </div>
 <style>@keyframes qgspin{to{transform:rotate(360deg)}}</style>
@@ -500,9 +501,9 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 <div id="home-view">
   <div class="h-header">
     <div class="h-header-inner">
-      <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:var(--orange)">GeFit</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:18px;color:var(--orange)">GeFit</div>
       <div style="margin-left:auto;font-size:11px;color:var(--muted)" id="homeNomeAcademia">Departamento Técnico</div>
-      <button onclick="fazerLogout()" style="padding:6px 14px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;background:transparent;border:1px solid #2A2A2A;color:#888" onmouseover="this.style.borderColor='#EF4444';this.style.color='#EF4444'" onmouseout="this.style.borderColor='#2A2A2A';this.style.color='#888'">Sair</button>
+      <button onclick="fazerLogout()" style="padding:6px 14px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;font-family:'Barlow',sans-serif;background:transparent;border:1px solid #2A2A2A;color:#888" onmouseover="this.style.borderColor='#EF4444';this.style.color='#EF4444'" onmouseout="this.style.borderColor='#2A2A2A';this.style.color='#888'">Sair</button>
     </div>
   </div>
   <div class="h-content">
@@ -513,9 +514,9 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
         <p>Sua carteira, agenda de compromissos e experiências em um só lugar.</p>
       </div>
       <div class="h-hero-actions">
-        <button onclick="abrirModalAddAluno()" style="padding:9px 14px;border-radius:8px;border:1px solid var(--orange-border);background:var(--orange-dim);color:var(--orange);font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">+ Aluno</button>
-        <button onclick="abrirModalAgendar()" style="padding:9px 14px;border-radius:8px;border:1px solid var(--border-light);background:var(--card2);color:var(--text);font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">📅 Agendar</button>
-        <button onclick="irParaPlanner()" style="padding:9px 16px;border-radius:8px;border:none;background:var(--orange);color:#000;font-size:12px;font-weight:800;cursor:pointer;font-family:'Syne',sans-serif;white-space:nowrap">+ Planner</button>
+        <button onclick="abrirModalAddAluno()" style="padding:9px 14px;border-radius:8px;border:1px solid var(--orange-border);background:var(--orange-dim);color:var(--orange);font-size:12px;font-weight:700;cursor:pointer;font-family:'Barlow',sans-serif;white-space:nowrap">+ Aluno</button>
+        <button onclick="abrirModalAgendar()" style="padding:9px 14px;border-radius:8px;border:1px solid var(--border-light);background:var(--card2);color:var(--text);font-size:12px;font-weight:700;cursor:pointer;font-family:'Barlow',sans-serif;white-space:nowrap">📅 Agendar</button>
+        <button onclick="irParaPlanner()" style="padding:9px 16px;border-radius:8px;border:none;background:var(--orange);color:#000;font-size:12px;font-weight:800;cursor:pointer;font-family:'Barlow Condensed',sans-serif;white-space:nowrap">+ Planner</button>
       </div>
     </div>
 
@@ -539,11 +540,11 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 
       <!-- Ações rápidas -->
       <div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap">
-        <button onclick="abrirModalNovaExp()" style="flex:1;min-width:140px;padding:10px;border-radius:8px;border:1px solid var(--orange-border);background:var(--orange-dim);color:var(--orange);font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">⚡ Nova Exp.</button>
-        <button onclick="window.open('diario_treinador.html','_blank')" style="flex:1;min-width:140px;padding:10px;border-radius:8px;border:none;background:var(--orange);color:#000;font-size:12px;font-weight:800;cursor:pointer;font-family:'Syne',sans-serif">📝 Diário</button>
-        <button onclick="window.open('revisao_treino.html','_blank')" style="flex:1;min-width:140px;padding:10px;border-radius:8px;border:1px solid var(--border2);background:var(--card);color:var(--muted);font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">📋 Revisão</button>
-        <button onclick="abrirUploadCSV()" style="flex:1;min-width:140px;padding:10px;border-radius:8px;border:1px solid var(--border2);background:var(--card);color:var(--muted);font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">📤 CSV</button>
-        <button onclick="window.open('pesquisa_consultoria.html','_blank')" style="flex:1;min-width:140px;padding:10px;border-radius:8px;border:1px solid var(--border2);background:var(--card);color:var(--muted);font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">📊 Pesquisa</button>
+        <button onclick="abrirModalNovaExp()" style="flex:1;min-width:140px;padding:10px;border-radius:8px;border:1px solid var(--orange-border);background:var(--orange-dim);color:var(--orange);font-size:12px;font-weight:700;cursor:pointer;font-family:'Barlow',sans-serif">⚡ Nova Exp.</button>
+        <button onclick="window.open('diario_treinador.html','_blank')" style="flex:1;min-width:140px;padding:10px;border-radius:8px;border:none;background:var(--orange);color:#000;font-size:12px;font-weight:800;cursor:pointer;font-family:'Barlow Condensed',sans-serif">📝 Diário</button>
+        <button onclick="window.open('revisao_treino.html','_blank')" style="flex:1;min-width:140px;padding:10px;border-radius:8px;border:1px solid var(--border2);background:var(--card);color:var(--muted);font-size:12px;font-weight:700;cursor:pointer;font-family:'Barlow',sans-serif">📋 Revisão</button>
+        <button onclick="abrirUploadCSV()" style="flex:1;min-width:140px;padding:10px;border-radius:8px;border:1px solid var(--border2);background:var(--card);color:var(--muted);font-size:12px;font-weight:700;cursor:pointer;font-family:'Barlow',sans-serif">📤 CSV</button>
+        <button onclick="window.open('pesquisa_consultoria.html','_blank')" style="flex:1;min-width:140px;padding:10px;border-radius:8px;border:1px solid var(--border2);background:var(--card);color:var(--muted);font-size:12px;font-weight:700;cursor:pointer;font-family:'Barlow',sans-serif">📊 Pesquisa</button>
       </div>
 
       <div class="home-grid-2">
@@ -564,7 +565,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
           <!-- Carteira ativa -->
           <div style="display:flex;align-items:center;justify-content:space-between;margin:16px 0 8px">
             <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.12em">👥 Carteira ativa</div>
-            <button onclick="toggleCarteira()" id="btnToggleCarteira" style="padding:5px 12px;border-radius:7px;border:1px solid var(--orange-border);background:var(--orange-dim);color:var(--orange);font-size:11px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">
+            <button onclick="toggleCarteira()" id="btnToggleCarteira" style="padding:5px 12px;border-radius:7px;border:1px solid var(--orange-border);background:var(--orange-dim);color:var(--orange);font-size:11px;font-weight:700;cursor:pointer;font-family:'Barlow',sans-serif">
               <span id="carteiraToggleIcon">▾ Ver todos</span>
             </button>
           </div>
@@ -585,12 +586,12 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 <div id="modalAgendar" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;align-items:center;justify-content:center;padding:20px;overflow-y:auto">
   <div style="background:var(--card);border:1px solid var(--border2);border-radius:16px;padding:24px;width:100%;max-width:440px;margin:auto">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-      <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800">📅 Agendar Compromisso</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800">📅 Agendar Compromisso</div>
       <button onclick="fecharModalHome('modalAgendar')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:20px">✕</button>
     </div>
     <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:10px">
       <label style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em">Tipo</label>
-      <select id="agTipo" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px;color:var(--text);font-size:13px;outline:none;font-family:'DM Sans',sans-serif">
+      <select id="agTipo" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px;color:var(--text);font-size:13px;outline:none;font-family:'Barlow',sans-serif">
         <option value="consultoria">📋 Consultoria</option>
         <option value="avaliacao">🩺 Avaliação física</option>
         <option value="revisao">🔄 Revisão de treino</option>
@@ -598,25 +599,25 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
     </div>
     <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:10px">
       <label style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em">Aluno *</label>
-      <select id="agAluno" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px;color:var(--text);font-size:13px;outline:none;font-family:'DM Sans',sans-serif">
+      <select id="agAluno" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px;color:var(--text);font-size:13px;outline:none;font-family:'Barlow',sans-serif">
         <option value="">Selecione...</option>
       </select>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
       <div style="display:flex;flex-direction:column;gap:5px">
         <label style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em">Data *</label>
-        <input type="date" id="agData" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px;color:var(--text);font-size:13px;outline:none;font-family:'DM Sans',sans-serif">
+        <input type="date" id="agData" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px;color:var(--text);font-size:13px;outline:none;font-family:'Barlow',sans-serif">
       </div>
       <div style="display:flex;flex-direction:column;gap:5px">
         <label style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em">Hora</label>
-        <input type="time" id="agHora" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px;color:var(--text);font-size:13px;outline:none;font-family:'DM Sans',sans-serif">
+        <input type="time" id="agHora" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px;color:var(--text);font-size:13px;outline:none;font-family:'Barlow',sans-serif">
       </div>
     </div>
     <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:14px">
       <label style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em">Observação</label>
-      <textarea id="agObs" rows="2" placeholder="Opcional..." style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px;color:var(--text);font-size:13px;outline:none;font-family:'DM Sans',sans-serif;resize:vertical"></textarea>
+      <textarea id="agObs" rows="2" placeholder="Opcional..." style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px;color:var(--text);font-size:13px;outline:none;font-family:'Barlow',sans-serif;resize:vertical"></textarea>
     </div>
-    <button onclick="salvarCompromisso()" style="width:100%;padding:13px;border-radius:10px;border:none;background:var(--orange);color:#000;font-size:14px;font-weight:800;cursor:pointer;font-family:'Syne',sans-serif">Agendar</button>
+    <button onclick="salvarCompromisso()" style="width:100%;padding:13px;border-radius:10px;border:none;background:var(--orange);color:#000;font-size:14px;font-weight:800;cursor:pointer;font-family:'Barlow Condensed',sans-serif">Agendar</button>
   </div>
 </div>
 
@@ -624,7 +625,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 <div id="modalAddAluno" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;align-items:center;justify-content:center;padding:20px;overflow-y:auto">
   <div style="background:var(--card);border:1px solid var(--border2);border-radius:16px;padding:24px;width:100%;max-width:440px;margin:auto">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-      <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800">Adicionar Aluno</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800">Adicionar Aluno</div>
       <button onclick="fecharModalHome('modalAddAluno')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:20px">✕</button>
     </div>
     <div style="display:flex;gap:8px;margin-bottom:12px">
@@ -633,21 +634,21 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
     </div>
     <!-- Manual -->
     <div id="addAlunoManual">
-      <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:10px"><label style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em">Nome *</label><input type="text" id="aaaNome" placeholder="Nome completo" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px;color:var(--text);font-size:13px;outline:none;font-family:'DM Sans',sans-serif"></div>
+      <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:10px"><label style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em">Nome *</label><input type="text" id="aaaNome" placeholder="Nome completo" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px;color:var(--text);font-size:13px;outline:none;font-family:'Barlow',sans-serif"></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-        <div style="display:flex;flex-direction:column;gap:5px"><label style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em">Matrícula</label><input type="text" id="aaaMatricula" placeholder="Ex: 2847" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px;color:var(--text);font-size:13px;outline:none;font-family:'DM Sans',sans-serif"></div>
-        <div style="display:flex;flex-direction:column;gap:5px"><label style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em">Idade</label><input type="number" id="aaaIdade" placeholder="Ex: 35" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px;color:var(--text);font-size:13px;outline:none;font-family:'DM Sans',sans-serif"></div>
+        <div style="display:flex;flex-direction:column;gap:5px"><label style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em">Matrícula</label><input type="text" id="aaaMatricula" placeholder="Ex: 2847" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px;color:var(--text);font-size:13px;outline:none;font-family:'Barlow',sans-serif"></div>
+        <div style="display:flex;flex-direction:column;gap:5px"><label style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em">Idade</label><input type="number" id="aaaIdade" placeholder="Ex: 35" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px;color:var(--text);font-size:13px;outline:none;font-family:'Barlow',sans-serif"></div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">
         <div style="display:flex;flex-direction:column;gap:5px"><label style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em">Plano</label>
-          <select id="aaaPlano" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px;color:var(--text);font-size:13px;outline:none;font-family:'DM Sans',sans-serif">
+          <select id="aaaPlano" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px;color:var(--text);font-size:13px;outline:none;font-family:'Barlow',sans-serif">
             <option value="anual">Anual</option><option value="mensal">Mensal</option><option value="recorrencia">Recorrência</option>
           </select>
         </div>
-        <div style="display:flex;flex-direction:column;gap:5px"><label style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em">Vencimento</label><input type="date" id="aaaVencimento" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px;color:var(--text);font-size:13px;outline:none;font-family:'DM Sans',sans-serif"></div>
+        <div style="display:flex;flex-direction:column;gap:5px"><label style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em">Vencimento</label><input type="date" id="aaaVencimento" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px;color:var(--text);font-size:13px;outline:none;font-family:'Barlow',sans-serif"></div>
       </div>
-      <div style="display:flex;flex-direction:column;gap:5px;margin-top:10px"><label style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em">Telefone / WhatsApp</label><input type="text" id="aaaTelefone" placeholder="(11) 99999-9999" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px;color:var(--text);font-size:13px;outline:none;font-family:'DM Sans',sans-serif"></div>
-      <button onclick="salvarNovoAluno()" style="width:100%;margin-top:14px;padding:13px;border-radius:10px;border:none;background:var(--orange);color:#000;font-size:14px;font-weight:800;cursor:pointer;font-family:'Syne',sans-serif">Adicionar à carteira</button>
+      <div style="display:flex;flex-direction:column;gap:5px;margin-top:10px"><label style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em">Telefone / WhatsApp</label><input type="text" id="aaaTelefone" placeholder="(11) 99999-9999" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px;color:var(--text);font-size:13px;outline:none;font-family:'Barlow',sans-serif"></div>
+      <button onclick="salvarNovoAluno()" style="width:100%;margin-top:14px;padding:13px;border-radius:10px;border:none;background:var(--orange);color:#000;font-size:14px;font-weight:800;cursor:pointer;font-family:'Barlow Condensed',sans-serif">Adicionar à carteira</button>
     </div>
     <!-- CSV -->
     <div id="addAlunoCSV" style="display:none">
@@ -663,7 +664,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
         <input type="file" id="csvFileInput" accept=".csv" style="display:none" onchange="processarCSV(this)">
       </div>
       <div id="csvPreview" style="margin-top:10px;display:none"></div>
-      <button id="btnImportarCSV" onclick="importarCSV()" style="display:none;width:100%;margin-top:10px;padding:13px;border-radius:10px;border:none;background:var(--orange);color:#000;font-size:14px;font-weight:800;cursor:pointer;font-family:'Syne',sans-serif">Importar alunos</button>
+      <button id="btnImportarCSV" onclick="importarCSV()" style="display:none;width:100%;margin-top:10px;padding:13px;border-radius:10px;border:none;background:var(--orange);color:#000;font-size:14px;font-weight:800;cursor:pointer;font-family:'Barlow Condensed',sans-serif">Importar alunos</button>
       <div style="text-align:center;margin-top:12px;font-size:11px;color:var(--muted)">
         Tem uma planilha grande, com e-mail, status ou treinador de cada aluno? <a href="importar_carteira.html" target="_blank" style="color:var(--orange);font-weight:700;text-decoration:underline">Use o importador completo →</a>
       </div>
@@ -675,32 +676,32 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 <div id="modalNovaExp" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;align-items:center;justify-content:center;padding:20px">
   <div style="background:var(--card);border:1px solid var(--border2);border-radius:16px;padding:24px;width:100%;max-width:440px;margin:auto">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-      <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800">Nova Experiência</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800">Nova Experiência</div>
       <button onclick="fecharModalHome('modalNovaExp')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:20px">✕</button>
     </div>
-    <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:10px"><label style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em">Nome do lead *</label><input type="text" id="expNome" placeholder="Nome completo" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px;color:var(--text);font-size:13px;outline:none;font-family:'DM Sans',sans-serif"></div>
+    <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:10px"><label style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em">Nome do lead *</label><input type="text" id="expNome" placeholder="Nome completo" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px;color:var(--text);font-size:13px;outline:none;font-family:'Barlow',sans-serif"></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
       <div style="display:flex;flex-direction:column;gap:5px"><label style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em">Duração</label>
-        <select id="expDuracao" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px;color:var(--text);font-size:13px;outline:none;font-family:'DM Sans',sans-serif">
+        <select id="expDuracao" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px;color:var(--text);font-size:13px;outline:none;font-family:'Barlow',sans-serif">
           <option value="5">5 dias (perfil 5%)</option><option value="10" selected>10 dias (perfil 95%)</option><option value="12">12 dias (perfil 95%)</option>
         </select>
       </div>
-      <div style="display:flex;flex-direction:column;gap:5px"><label style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em">Data início *</label><input type="date" id="expInicio" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px;color:var(--text);font-size:13px;outline:none;font-family:'DM Sans',sans-serif"></div>
+      <div style="display:flex;flex-direction:column;gap:5px"><label style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em">Data início *</label><input type="date" id="expInicio" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px;color:var(--text);font-size:13px;outline:none;font-family:'Barlow',sans-serif"></div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">
       <div style="display:flex;flex-direction:column;gap:5px"><label style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em">Perfil</label>
-        <select id="expPerfil" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px;color:var(--text);font-size:13px;outline:none;font-family:'DM Sans',sans-serif">
+        <select id="expPerfil" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px;color:var(--text);font-size:13px;outline:none;font-family:'Barlow',sans-serif">
           <option value="95">95% — Iniciante/sedentário</option><option value="5">5% — Treinado/autônomo</option>
         </select>
       </div>
-      <div style="display:flex;flex-direction:column;gap:5px"><label style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em">Telefone</label><input type="text" id="expTelefone" placeholder="(11) 99999-9999" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px;color:var(--text);font-size:13px;outline:none;font-family:'DM Sans',sans-serif"></div>
+      <div style="display:flex;flex-direction:column;gap:5px"><label style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em">Telefone</label><input type="text" id="expTelefone" placeholder="(11) 99999-9999" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px;color:var(--text);font-size:13px;outline:none;font-family:'Barlow',sans-serif"></div>
     </div>
     <div style="display:flex;flex-direction:column;gap:5px;margin-top:10px">
       <label style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em">Link do Mapeamento de Sintomas</label>
-      <input type="url" id="expLinkMapeamento" placeholder="https://forms.gle/... ou outro link" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px;color:var(--text);font-size:13px;outline:none;font-family:'DM Sans',sans-serif">
+      <input type="url" id="expLinkMapeamento" placeholder="https://forms.gle/... ou outro link" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:10px;color:var(--text);font-size:13px;outline:none;font-family:'Barlow',sans-serif">
       <div style="font-size:10px;color:var(--muted)">Cole o link do mapeamento respondido por este lead — ficará acessível direto da lista.</div>
     </div>
-    <button onclick="salvarNovaExp()" style="width:100%;margin-top:14px;padding:13px;border-radius:10px;border:none;background:var(--orange);color:#000;font-size:14px;font-weight:800;cursor:pointer;font-family:'Syne',sans-serif">Iniciar experiência</button>
+    <button onclick="salvarNovaExp()" style="width:100%;margin-top:14px;padding:13px;border-radius:10px;border:none;background:var(--orange);color:#000;font-size:14px;font-weight:800;cursor:pointer;font-family:'Barlow Condensed',sans-serif">Iniciar experiência</button>
   </div>
 </div>
 <!-- Botão flutuante home -->
@@ -722,7 +723,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
       </div>
       <div class="p-steps" id="stepsBar"></div>
       <button class="btn-script-toggle" id="btnScript" onclick="toggleScript()" style="background:var(--orange-dim);border:1px solid var(--orange);color:var(--orange)">Ocultar script</button>
-      <button onclick="fazerLogout()" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;background:transparent;border:1px solid #2A2A2A;color:#666;margin-left:4px;transition:all .15s" onmouseover="this.style.borderColor='#EF4444';this.style.color='#EF4444'" onmouseout="this.style.borderColor='#2A2A2A';this.style.color='#666'">Sair</button>
+      <button onclick="fazerLogout()" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:'Barlow',sans-serif;background:transparent;border:1px solid #2A2A2A;color:#666;margin-left:4px;transition:all .15s" onmouseover="this.style.borderColor='#EF4444';this.style.color='#EF4444'" onmouseout="this.style.borderColor='#2A2A2A';this.style.color='#666'">Sair</button>
     </div>
   </div>
 
@@ -764,8 +765,8 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
           <div class="field" style="flex:1">
             <label>Sexo biológico</label>
             <div style="display:flex;gap:8px;margin-top:4px">
-              <button class="chip-btn" id="sexo-m" onclick="selectSexo('M')" style="flex:1;padding:8px;border-radius:8px;border:1px solid var(--border);background:#111;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s">♂ Masculino</button>
-              <button class="chip-btn" id="sexo-f" onclick="selectSexo('F')" style="flex:1;padding:8px;border-radius:8px;border:1px solid var(--border);background:#111;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s">♀ Feminino</button>
+              <button class="chip-btn" id="sexo-m" onclick="selectSexo('M')" style="flex:1;padding:8px;border-radius:8px;border:1px solid var(--border);background:#111;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;font-family:'Barlow',sans-serif;transition:all .15s">♂ Masculino</button>
+              <button class="chip-btn" id="sexo-f" onclick="selectSexo('F')" style="flex:1;padding:8px;border-radius:8px;border:1px solid var(--border);background:#111;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;font-family:'Barlow',sans-serif;transition:all .15s">♀ Feminino</button>
             </div>
           </div>
         </div>
@@ -820,7 +821,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
           <div class="orientacoes-panel">
             <div class="script-badge"><div class="script-dot"></div><span class="script-label">Orientações do método — só você vê isso</span></div>
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-              <div style="font-size:16px;font-weight:800;font-family:'Syne',sans-serif" id="areaFocoName"></div>
+              <div style="font-size:16px;font-weight:800;font-family:'Barlow Condensed',sans-serif" id="areaFocoName"></div>
               <button class="btn-alterar" onclick="clearAreaFoco()">Alterar foco</button>
             </div>
             <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">Como abordar com o aluno</div>
@@ -881,7 +882,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
         <div class="field-group" style="align-items:flex-end">
           <div class="field" style="flex:1;max-width:180px">
             <label>Início do desafio</label>
-            <input type="date" id="f-inicio-desafio" oninput="pState.inicioDesafio=this.value;calcRevisaoTreino()" style="background:#111;border:1px solid #2A2A2A;border-radius:8px;padding:9px 12px;color:var(--text);font-size:13px;outline:none;font-family:'DM Sans',sans-serif">
+            <input type="date" id="f-inicio-desafio" oninput="pState.inicioDesafio=this.value;calcRevisaoTreino()" style="background:#111;border:1px solid #2A2A2A;border-radius:8px;padding:9px 12px;color:var(--text);font-size:13px;outline:none;font-family:'Barlow',sans-serif">
           </div>
           <div style="flex:2">
             <div class="revisao-treino-box" id="revisaoTreinoBox" style="display:none">
@@ -980,7 +981,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 ════════════════════════════════════════════════ -->
 <div class="view" id="app-view">
   <button class="btn-back-planner" onclick="backToPlanner()">← Planner</button>
-  <button onclick="fazerLogout()" style="position:fixed;top:12px;right:80px;z-index:150;padding:6px 12px;background:transparent;border:1px solid #2A2A2A;border-radius:8px;color:#666;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif" onmouseover="this.style.borderColor='#EF4444';this.style.color='#EF4444'" onmouseout="this.style.borderColor='#2A2A2A';this.style.color='#666'">Sair</button>
+  <button onclick="fazerLogout()" style="position:fixed;top:12px;right:80px;z-index:150;padding:6px 12px;background:transparent;border:1px solid #2A2A2A;border-radius:8px;color:#666;font-size:11px;cursor:pointer;font-family:'Barlow',sans-serif" onmouseover="this.style.borderColor='#EF4444';this.style.color='#EF4444'" onmouseout="this.style.borderColor='#2A2A2A';this.style.color='#666'">Sair</button>
 
   <!-- PAGE: INÍCIO -->
   <div class="a-page active" id="a-page-home">
@@ -1084,7 +1085,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
           <div style="font-size:28px" id="areaEmojiApp">—</div>
           <div>
             <div style="font-size:10px;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:2px">Seu foco nos 21 dias</div>
-            <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800" id="areaNameApp">—</div>
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800" id="areaNameApp">—</div>
           </div>
         </div>
         <div class="area-missoes-app" id="areaMissoesApp"></div>
@@ -1113,7 +1114,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
         <div class="revisao-icon">📋</div>
         <div style="flex:1">
           <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px">Check-point com o treinador</div>
-          <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800" id="revisaoDateA">—</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800" id="revisaoDateA">—</div>
           <div style="font-size:12px;color:var(--muted);margin-top:2px">Sala de Avaliação</div>
         </div>
         <div class="revisao-days-box">
@@ -1134,10 +1135,10 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
     <div class="a-section">
       <div class="a-section-label">Resumo do desafio</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-        <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center"><div style="font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--accent)" id="statTreinos">0</div><div style="font-size:11px;color:var(--muted);margin-top:4px">Treinos feitos</div></div>
-        <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center"><div style="font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--green)" id="statStreak">0</div><div style="font-size:11px;color:var(--muted);margin-top:4px">Sequência 🔥</div></div>
-        <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center"><div style="font-family:'Syne',sans-serif;font-size:28px;font-weight:800" id="statMissoes">0</div><div style="font-size:11px;color:var(--muted);margin-top:4px">Missões ✓</div></div>
-        <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center"><div style="font-family:'Syne',sans-serif;font-size:28px;font-weight:800" id="statDiasRest">21</div><div style="font-size:11px;color:var(--muted);margin-top:4px">Dias p/ revisão</div></div>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center"><div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:800;color:var(--accent)" id="statTreinos">0</div><div style="font-size:11px;color:var(--muted);margin-top:4px">Treinos feitos</div></div>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center"><div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:800;color:var(--green)" id="statStreak">0</div><div style="font-size:11px;color:var(--muted);margin-top:4px">Sequência 🔥</div></div>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center"><div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:800" id="statMissoes">0</div><div style="font-size:11px;color:var(--muted);margin-top:4px">Missões ✓</div></div>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center"><div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:800" id="statDiasRest">21</div><div style="font-size:11px;color:var(--muted);margin-top:4px">Dias p/ revisão</div></div>
       </div>
     </div>
     <!-- REVISÃO DE TREINO no Progresso -->
@@ -1148,7 +1149,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
           <div style="width:44px;height:44px;border-radius:12px;background:var(--accent-dim);border:1px solid var(--accent-border);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">🏋️</div>
           <div style="flex:1">
             <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px">No salão com seu treinador</div>
-            <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800" id="revisaoTreinoDateApp">—</div>
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800" id="revisaoTreinoDateApp">—</div>
             <div style="font-size:12px;color:var(--muted);margin-top:2px" id="revisaoTreinoRespApp">—</div>
           </div>
         </div>
@@ -1934,7 +1935,7 @@ function renderNotaDiaApp(container){
     div.innerHTML=`<button onclick="aState.showNotaDia=true;renderMissoesApp()" style="width:100%;padding:14px 16px;background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:10px;text-align:left"><span style="font-size:20px">🌙</span><div><div style="font-size:13px;font-weight:600;color:var(--text)">Como foi o seu dia?</div><div style="font-size:11px;color:var(--muted);margin-top:2px">Toque para registrar sua percepção</div></div><span style="margin-left:auto;font-size:18px;color:var(--muted)">›</span></button>`;
   } else {
     const nota=aState.notaDia;
-    div.innerHTML=`<div style="padding:14px 16px;border-bottom:1px solid var(--border)"><div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px">🌙 Como foi o seu dia?</div><div style="font-size:12px;color:var(--muted);margin-bottom:8px">Nota de percepção (1–10)</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">${[1,2,3,4,5,6,7,8,9,10].map(n=>`<button onclick="aState.notaDia=${n};renderMissoesApp()" style="width:36px;height:36px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:700;transition:all .15s;background:${nota===n?'var(--accent)':'var(--card2)'};color:${nota===n?'#000':'var(--muted)'};border:1px solid ${nota===n?'var(--accent)':'var(--border)'}">${n}</button>`).join('')}</div><div style="font-size:12px;color:var(--muted);margin-bottom:6px">Compromisso para amanhã</div><textarea placeholder="Ex: Dormir antes da meia-noite..." oninput="aState.comprometimento=this.value" style="width:100%;background:#111;border:1px solid var(--border);border-radius:8px;padding:10px;color:var(--text);font-size:12px;resize:none;height:72px;outline:none;font-family:'DM Sans',sans-serif;line-height:1.5">${aState.comprometimento}</textarea></div><div style="padding:10px 16px;display:flex;align-items:center;justify-content:space-between">${nota?`<div style="display:flex;align-items:center;gap:6px"><span style="font-size:16px">${nota>=8?'🔥':nota>=6?'💪':nota>=4?'😐':'😔'}</span><span style="font-size:12px;color:var(--accent);font-weight:600">Nota ${nota}/10</span></div>`:'<div style="font-size:12px;color:var(--muted)">Selecione uma nota</div>'}${nota?`<button onclick="showToast('✅ Percepção salva!')" style="padding:7px 14px;background:var(--accent);border:none;border-radius:8px;color:#000;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">Salvar</button>`:''}</div>`;
+    div.innerHTML=`<div style="padding:14px 16px;border-bottom:1px solid var(--border)"><div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px">🌙 Como foi o seu dia?</div><div style="font-size:12px;color:var(--muted);margin-bottom:8px">Nota de percepção (1–10)</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">${[1,2,3,4,5,6,7,8,9,10].map(n=>`<button onclick="aState.notaDia=${n};renderMissoesApp()" style="width:36px;height:36px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:700;transition:all .15s;background:${nota===n?'var(--accent)':'var(--card2)'};color:${nota===n?'#000':'var(--muted)'};border:1px solid ${nota===n?'var(--accent)':'var(--border)'}">${n}</button>`).join('')}</div><div style="font-size:12px;color:var(--muted);margin-bottom:6px">Compromisso para amanhã</div><textarea placeholder="Ex: Dormir antes da meia-noite..." oninput="aState.comprometimento=this.value" style="width:100%;background:#111;border:1px solid var(--border);border-radius:8px;padding:10px;color:var(--text);font-size:12px;resize:none;height:72px;outline:none;font-family:'Barlow',sans-serif;line-height:1.5">${aState.comprometimento}</textarea></div><div style="padding:10px 16px;display:flex;align-items:center;justify-content:space-between">${nota?`<div style="display:flex;align-items:center;gap:6px"><span style="font-size:16px">${nota>=8?'🔥':nota>=6?'💪':nota>=4?'😐':'😔'}</span><span style="font-size:12px;color:var(--accent);font-weight:600">Nota ${nota}/10</span></div>`:'<div style="font-size:12px;color:var(--muted)">Selecione uma nota</div>'}${nota?`<button onclick="showToast('✅ Percepção salva!')" style="padding:7px 14px;background:var(--accent);border:none;border-radius:8px;color:#000;font-size:12px;font-weight:700;cursor:pointer;font-family:'Barlow',sans-serif">Salvar</button>`:''}</div>`;
   }
   container.appendChild(div);
 }
@@ -2073,7 +2074,7 @@ function renderNPS1(){
   // Botão enviar
   const allDone=npsState.q1&&npsState.q2&&npsState.q3>0&&npsState.q4&&npsState.nps1>0;
   const btnDiv=document.createElement('div');
-  btnDiv.innerHTML=`<button onclick="submitNPS1()" style="width:100%;padding:16px;border-radius:12px;border:none;background:${allDone?'linear-gradient(135deg,var(--accent),#D4FF4D)':'var(--dim)'};color:${allDone?'#000':'var(--muted)'};font-size:15px;font-weight:800;cursor:${allDone?'pointer':'default'};font-family:'Syne',sans-serif;margin-bottom:6px">
+  btnDiv.innerHTML=`<button onclick="submitNPS1()" style="width:100%;padding:16px;border-radius:12px;border:none;background:${allDone?'linear-gradient(135deg,var(--accent),#D4FF4D)':'var(--dim)'};color:${allDone?'#000':'var(--muted)'};font-size:15px;font-weight:800;cursor:${allDone?'pointer':'default'};font-family:'Barlow Condensed',sans-serif;margin-bottom:6px">
     ${allDone?'✅ Enviar avaliação':'Responda todas as perguntas'}
   </button>`;
   c.appendChild(btnDiv);
@@ -2113,7 +2114,7 @@ function renderCodigoEarly(c){
   c.innerHTML=`
     <div style="text-align:center;padding:20px">
       <div style="font-size:40px;margin-bottom:10px">🙏</div>
-      <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:6px">Obrigado!</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;margin-bottom:6px">Obrigado!</div>
       <div style="font-size:13px;color:var(--muted);line-height:1.6">Sua avaliação foi enviada. Ao completar os 21 dias você ganha um código de indicação exclusivo para presentear alguém especial!</div>
     </div>`;
 }
@@ -2128,7 +2129,7 @@ function renderNPS21(){
   banner.style.cssText='background:linear-gradient(135deg,var(--accent),var(--accent-dim));border-radius:16px;padding:20px;text-align:center;margin-bottom:10px';
   banner.innerHTML=`
     <div style="font-size:36px;margin-bottom:8px">🏆</div>
-    <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:#000;margin-bottom:4px">Você completou o desafio!</div>
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;color:#000;margin-bottom:4px">Você completou o desafio!</div>
     <div style="font-size:13px;color:rgba(0,0,0,.7)">21 dias de consistência. Isso é transformação real.</div>`;
   c.appendChild(banner);
 
@@ -2163,7 +2164,7 @@ function renderNPS21(){
 
   const allDone21=npsState.r1&&npsState.r2&&npsState.r3&&npsState.nps21>0;
   const btnDiv=document.createElement('div');
-  btnDiv.innerHTML=`<button onclick="submitNPS21()" style="width:100%;padding:16px;border-radius:12px;border:none;background:${allDone21?'linear-gradient(135deg,var(--green),#4ADE80)':'var(--dim)'};color:${allDone21?'#000':'var(--muted)'};font-size:15px;font-weight:800;cursor:${allDone21?'pointer':'default'};font-family:'Syne',sans-serif;margin-bottom:6px">
+  btnDiv.innerHTML=`<button onclick="submitNPS21()" style="width:100%;padding:16px;border-radius:12px;border:none;background:${allDone21?'linear-gradient(135deg,var(--green),#4ADE80)':'var(--dim)'};color:${allDone21?'#000':'var(--muted)'};font-size:15px;font-weight:800;cursor:${allDone21?'pointer':'default'};font-family:'Barlow Condensed',sans-serif;margin-bottom:6px">
     ${allDone21?'🎁 Enviar e receber meu código de indicação':'Responda todas as perguntas'}
   </button>`;
   c.appendChild(btnDiv);
@@ -2184,14 +2185,14 @@ function renderIndicacao(c){
   c.innerHTML=`
     <div style="background:linear-gradient(135deg,rgba(34,197,94,.15),rgba(34,197,94,.05));border:1px solid rgba(34,197,94,.3);border-radius:16px;padding:24px;text-align:center;margin-bottom:12px">
       <div style="font-size:36px;margin-bottom:10px">🎁</div>
-      <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;margin-bottom:6px">Seu código de indicação</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;margin-bottom:6px">Seu código de indicação</div>
       <div style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.5">Presenteie alguém especial com uma experiência completa. Eles ganham — você também!</div>
-      <div style="font-family:'Syne',sans-serif;font-size:32px;font-weight:900;color:var(--green);letter-spacing:.15em;background:rgba(34,197,94,.1);border:2px solid rgba(34,197,94,.3);border-radius:12px;padding:14px;margin-bottom:16px">${codigo}</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;color:var(--green);letter-spacing:.15em;background:rgba(34,197,94,.1);border:2px solid rgba(34,197,94,.3);border-radius:12px;padding:14px;margin-bottom:16px">${codigo}</div>
       <div style="display:flex;flex-direction:column;gap:8px;text-align:left;background:var(--card2);border-radius:10px;padding:14px;margin-bottom:16px">
         <div style="font-size:12px;color:var(--green);font-weight:700;margin-bottom:4px">O que seu indicado ganha:</div>
         ${['✅ Mapeamento de Sintomas (15 áreas de saúde)','⚡ Experiência de treinamento personalizada','🏷️ Cupom de desconto no plano ou projeto exclusivo'].map(i=>`<div style="font-size:12px;color:var(--text)">${i}</div>`).join('')}
       </div>
-      <button onclick="compartilharWhatsApp('${codigo}','${encodeURIComponent(msg)}')" style="width:100%;padding:14px;border-radius:12px;border:none;background:#25D366;color:#fff;font-size:14px;font-weight:800;cursor:pointer;font-family:'Syne',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:8px">
+      <button onclick="compartilharWhatsApp('${codigo}','${encodeURIComponent(msg)}')" style="width:100%;padding:14px;border-radius:12px;border:none;background:#25D366;color:#fff;font-size:14px;font-weight:800;cursor:pointer;font-family:'Barlow Condensed',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:8px">
         📱 Enviar pelo WhatsApp
       </button>
       <button onclick="copiarCodigo('${codigo}')" style="width:100%;padding:12px;border-radius:12px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:13px;cursor:pointer;font-family:inherit">
@@ -2569,7 +2570,7 @@ async function carregarDadosHome(){
                 <div class="aluno-nome">📋 ${t.aluno_nome||'—'}</div>
                 <div class="aluno-sub">Revisão: ${t.data_revisao?new Date(t.data_revisao+'T00:00:00').toLocaleDateString('pt-BR'):'—'} · Por: ${t.treinador_revisao||'—'}</div>
               </div>
-              <button onclick="checkTarefa('${t.id}')" style="padding:6px 12px;border-radius:8px;border:1px solid var(--green-border);background:var(--green-dim);color:var(--green);font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;flex-shrink:0">✓ Feito</button>
+              <button onclick="checkTarefa('${t.id}')" style="padding:6px 12px;border-radius:8px;border:1px solid var(--green-border);background:var(--green-dim);color:var(--green);font-size:12px;font-weight:700;cursor:pointer;font-family:'Barlow',sans-serif;white-space:nowrap;flex-shrink:0">✓ Feito</button>
             </div>
             <div style="width:100%">
               ${(t.tarefas||[]).map(task=>`<div style="font-size:12px;padding:5px 8px;background:#111;border-radius:6px;margin-bottom:4px;border-left:2px solid var(--yellow);color:var(--text)">${task}</div>`).join('')}
@@ -2600,8 +2601,8 @@ async function carregarDadosHome(){
               ${jaAtribuido ? `<div style="font-size:10px;color:var(--green);margin-top:2px">✓ Atendido por ${e.treinador_atendeu}</div>` : `<div style="font-size:10px;color:var(--yellow);margin-top:2px">⚠️ Treinador não atribuído ainda</div>`}
             </div>
             <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0">
-              <button onclick="converterExp('${e.id}','${e.nome.replace(/'/g,"\\'")}'); event.stopPropagation()" style="padding:4px 8px;border-radius:6px;border:1px solid var(--green-border);background:var(--green-dim);color:var(--green);font-size:10px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">✅ Converteu</button>
-              <button onclick="naoConverterExp('${e.id}'); event.stopPropagation()" style="padding:4px 8px;border-radius:6px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-size:10px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">❌ Não conv.</button>
+              <button onclick="converterExp('${e.id}','${e.nome.replace(/'/g,"\\'")}'); event.stopPropagation()" style="padding:4px 8px;border-radius:6px;border:1px solid var(--green-border);background:var(--green-dim);color:var(--green);font-size:10px;font-weight:700;cursor:pointer;font-family:'Barlow',sans-serif;white-space:nowrap">✅ Converteu</button>
+              <button onclick="naoConverterExp('${e.id}'); event.stopPropagation()" style="padding:4px 8px;border-radius:6px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-size:10px;font-weight:700;cursor:pointer;font-family:'Barlow',sans-serif;white-space:nowrap">❌ Não conv.</button>
             </div>
           </div>
           <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
@@ -2609,19 +2610,19 @@ async function carregarDadosHome(){
               <div style="height:100%;width:${pct}%;background:var(--yellow);border-radius:2px"></div>
             </div>
             <span style="font-size:10px;color:var(--muted)">${pct}%</span>
-            ${!jaAtribuido ? `<button onclick="atribuirTreinador('${e.id}')" style="font-size:10px;font-weight:700;color:var(--orange);padding:2px 8px;border:1px solid var(--orange-border);border-radius:4px;background:var(--orange-dim);cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">👟 Fui eu que atendi</button>` : ''}
+            ${!jaAtribuido ? `<button onclick="atribuirTreinador('${e.id}')" style="font-size:10px;font-weight:700;color:var(--orange);padding:2px 8px;border:1px solid var(--orange-border);border-radius:4px;background:var(--orange-dim);cursor:pointer;font-family:'Barlow',sans-serif;white-space:nowrap">👟 Fui eu que atendi</button>` : ''}
             ${e.link_mapeamento ? `<a href="${e.link_mapeamento}" target="_blank" style="font-size:10px;font-weight:700;color:var(--blue);text-decoration:none;padding:2px 8px;border:1px solid rgba(96,165,250,.25);border-radius:4px;background:var(--blue-dim);white-space:nowrap">🔗 Mapeamento</a>` : ''}
           </div>
           ${!jaAtribuido ? `<div id="atribForm-${e.id}" style="display:none;flex-direction:column;gap:6px">
-            <textarea id="atribObs-${e.id}" placeholder="Observações sobre o atendimento..." rows="2" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:8px;color:var(--text);font-size:12px;outline:none;font-family:'DM Sans',sans-serif;width:100%"></textarea>
+            <textarea id="atribObs-${e.id}" placeholder="Observações sobre o atendimento..." rows="2" style="background:#111;border:1px solid var(--border2);border-radius:8px;padding:8px;color:var(--text);font-size:12px;outline:none;font-family:'Barlow',sans-serif;width:100%"></textarea>
             <div style="display:flex;gap:6px">
-              <select id="atribEngaj-${e.id}" style="flex:1;background:#111;border:1px solid var(--border2);border-radius:8px;padding:8px;color:var(--text);font-size:12px;outline:none;font-family:'DM Sans',sans-serif">
+              <select id="atribEngaj-${e.id}" style="flex:1;background:#111;border:1px solid var(--border2);border-radius:8px;padding:8px;color:var(--text);font-size:12px;outline:none;font-family:'Barlow',sans-serif">
                 <option value="">Engajamento do lead...</option>
                 <option value="bom">😊 Bom — veio, se engajou</option>
                 <option value="regular">😐 Regular — veio mas desanimado</option>
                 <option value="baixo">😟 Baixo — pouco interesse</option>
               </select>
-              <button onclick="confirmarAtribuicao('${e.id}')" style="padding:8px 12px;border-radius:8px;border:none;background:var(--orange);color:#000;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">Confirmar</button>
+              <button onclick="confirmarAtribuicao('${e.id}')" style="padding:8px 12px;border-radius:8px;border:none;background:var(--orange);color:#000;font-size:12px;font-weight:700;cursor:pointer;font-family:'Barlow',sans-serif">Confirmar</button>
             </div>
           </div>` : ''}
         </div>`;
@@ -2937,7 +2938,7 @@ function mostrarToastHome(msg){
 // ── LOGOUT ───────────────────────────────────────────────────
 function mostrarBannerModoAdmin(){
   const b = document.createElement('div');
-  b.style.cssText = 'position:sticky;top:0;z-index:200;background:#3B1F0A;border-bottom:2px solid var(--orange);color:var(--orange);font-size:12px;font-weight:700;padding:8px 16px;text-align:center;font-family:"DM Sans",sans-serif';
+  b.style.cssText = 'position:sticky;top:0;z-index:200;background:#3B1F0A;border-bottom:2px solid var(--orange);color:var(--orange);font-size:12px;font-weight:700;padding:8px 16px;text-align:center;font-family:"Barlow",sans-serif';
   b.innerHTML = '🛡️ MODO ADMIN — visualizando/editando em nome do treinador. Nenhuma senha foi usada. <button onclick="window.close()" style="margin-left:12px;padding:3px 10px;border-radius:6px;border:1px solid var(--orange);background:transparent;color:var(--orange);font-weight:700;cursor:pointer;font-size:11px">Fechar aba</button>';
   document.body.insertBefore(b, document.body.firstChild);
 }
